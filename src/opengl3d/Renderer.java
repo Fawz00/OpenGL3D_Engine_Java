@@ -313,7 +313,8 @@ public class Renderer {
 			// if(!Input.getLine( Input.getLineCount()-11 ).equals("")) Input.resetLines();
 		}
 		chat += Input.getRawLine() + "_";
-		textView.drawText(textShader, new int[] {screenResolution[0]/2, screenResolution[1]/2}, 0, 0, screenResolution[0]/2, screenResolution[1], text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
+		textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 50, screenResolution[0], screenResolution[1], text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
+		textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0], 50, "Version 1.0", 0xFFFFFFFF);
 
 		gameTexture.deleteTextures();
 	}

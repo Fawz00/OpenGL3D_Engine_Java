@@ -190,8 +190,8 @@ public class Font {
 		maxWidth = Settings.ASCIICharOnly ? font.getSize()*11 : font.getSize()*211;
 
 		System.out.println("Creating font texture: \""+font.getFontName()+"\" (Size: "+font.getSize()+") started.");
-		System.out.println("PROGRESS:-----------------------"+"--------------------------------");
-		int progress = ((unicodeLength+1)*2)/64;
+		System.out.println("PROGRESS:-----------------------"+"--------------------------------"+"--------------------------------"+"--------------------------------");
+		int progress = ((unicodeLength+1)*2)/128;
 
 		/* Loop through the characters to get charWidth and charHeight */
 		int imageWidth = 0;
@@ -291,8 +291,8 @@ public class Font {
 		int height = image.getHeight();
 
 		System.out.println("PREPARE FOR RENDERING: \""+font.getFontName()+"\" ("+width+" x "+height+" px).");
-		System.out.println("RENDERING:----------------------"+"--------------------------------");
-		int progress_render = (width*height)/64;
+		System.out.println("RENDERING:----------------------"+"--------------------------------"+"--------------------------------"+"--------------------------------");
+		int progress_render = (width*height)/128;
 		int progress_render_step = 1;
 
 		/* Get pixel data of image */
@@ -458,122 +458,122 @@ public class Font {
      * @param y        Y coordinate of the text position
      * @param c        Color to use
      */
-    public void drawText(Shader shader, int[] res, float x, float y, float width, float height, CharSequence text, int globalColor) {
-		int currentColor = globalColor;
-//        int textHeight = getHeight(text);
+    public void drawText(Shader shader, int[] res, int x, int y, int width, int height, CharSequence text, int globalColor) {
+			int currentColor = globalColor;
+	//        int textHeight = getHeight(text);
 
-		float startX = x - res[0];
-		float startY = y + res[1];
-		float drawX = startX;
-		float drawY = startY;
-//        if (textHeight > fontHeight) {
-//            drawY += textHeight - fontHeight;
-//        }
+			int startX = x;
+			int startY = -y;
+			int drawX = startX;
+			int drawY = startY;
+	//        if (textHeight > fontHeight) {
+	//            drawY += textHeight - fontHeight;
+	//        }
 
-//      renderer.begin();
+	//      renderer.begin();
 
-		boolean specialSeq = false;
-		int sequence = -1;
-		String color = "";
-		for (int i = 0; i < text.length(); i++) {
-			char ch = text.charAt(i);
-			if(i == 0) drawY -= fontHeight;
-			if (ch == '\n') {
-				/* Line feed, set x and y to draw at the next line */
-				drawY -= fontHeight;
-				drawX = startX;
-				continue;
-			}
-			if (ch == '\r') {
-				/* Carriage return, just skip it */
-				continue;
-			}
-			if (ch == '$' && !specialSeq) {
-				specialSeq = true;
-				continue;
-			}
-			if (specialSeq) {
-				switch(ch) {
-					case '$': if(sequence == -1) {
-						specialSeq = false;
-						break;
-					}
-					case 'c': if(sequence == -1) {
-						sequence = 1;
-						continue;
-					}
-					default: {
-						break;
-					}
+			boolean specialSeq = false;
+			int sequence = -1;
+			String color = "";
+			for (int i = 0; i < text.length(); i++) {
+				char ch = text.charAt(i);
+				if(i == 0) drawY -= fontHeight;
+				if (ch == '\n') {
+					/* Line feed, set x and y to draw at the next line */
+					drawY -= fontHeight;
+					drawX = startX;
+					continue;
 				}
-				specialSeq = false;
-			}
-			if(sequence != -1) {
-				switch(sequence) {
-					case 1: {
-						if(	color.length() < 8 && (
-							Character.toLowerCase(ch) == 'a' ||
-							Character.toLowerCase(ch) == 'b' ||
-							Character.toLowerCase(ch) == 'c' ||
-							Character.toLowerCase(ch) == 'd' ||
-							Character.toLowerCase(ch) == 'e' ||
-							Character.toLowerCase(ch) == 'f' ||
-							ch == '0' ||
-							ch == '1' ||
-							ch == '2' ||
-							ch == '3' ||
-							ch == '4' ||
-							ch == '5' ||
-							ch == '6' ||
-							ch == '7' ||
-							ch == '8' ||
-							ch == '9'
-							)
-						) {
-							color = color + ch;
-						} else {
-							if(color.length() == 8) {
-								try{
-									currentColor = (int) Long.parseLong(color, 16);
-								} catch(NumberFormatException e) {
-									currentColor = globalColor;
-								}
-							}
+				if (ch == '\r') {
+					/* Carriage return, just skip it */
+					continue;
+				}
+				if (ch == '$' && !specialSeq) {
+					specialSeq = true;
+					continue;
+				}
+				if (specialSeq) {
+					switch(ch) {
+						case '$': if(sequence == -1) {
 							specialSeq = false;
-							sequence = -1;
-							color = "";
 							break;
 						}
-						continue;
+						case 'c': if(sequence == -1) {
+							sequence = 1;
+							continue;
+						}
+						default: {
+							break;
+						}
 					}
-					default: {
-						specialSeq = false;
-						sequence = -1;
-						break;
+					specialSeq = false;
+				}
+				if(sequence != -1) {
+					switch(sequence) {
+						case 1: {
+							if(	color.length() < 8 && (
+								Character.toLowerCase(ch) == 'a' ||
+								Character.toLowerCase(ch) == 'b' ||
+								Character.toLowerCase(ch) == 'c' ||
+								Character.toLowerCase(ch) == 'd' ||
+								Character.toLowerCase(ch) == 'e' ||
+								Character.toLowerCase(ch) == 'f' ||
+								ch == '0' ||
+								ch == '1' ||
+								ch == '2' ||
+								ch == '3' ||
+								ch == '4' ||
+								ch == '5' ||
+								ch == '6' ||
+								ch == '7' ||
+								ch == '8' ||
+								ch == '9'
+								)
+							) {
+								color = color + ch;
+							} else {
+								if(color.length() == 8) {
+									try{
+										currentColor = (int) Long.parseLong(color, 16);
+									} catch(NumberFormatException e) {
+										currentColor = globalColor;
+									}
+								}
+								specialSeq = false;
+								sequence = -1;
+								color = "";
+								break;
+							}
+							continue;
+						}
+						default: {
+							specialSeq = false;
+							sequence = -1;
+							break;
+						}
 					}
 				}
-			}
 
-			Glyph g = glyphs.get(ch);
-			int gx=0, gy=0, gw=0, gh=0;
-			if(g != null){
-				gx=g.x; gy=g.y; gw=g.width; gh=g.height;
-			} else {
-				Glyph unknowChar = glyphs.get((char)0x0080);
-				gx=unknowChar.x; gy=unknowChar.y; gw=unknowChar.width; gh=unknowChar.height;
-//				System.out.println("FONT ERROR drawing text character: u+" + Integer.toHexString(ch | 0x10000).substring(1) );
-//				System.out.println("TEXT: \""+text+"\"");
+				Glyph g = glyphs.get(ch);
+				int gx=0, gy=0, gw=0, gh=0;
+				if(g != null){
+					gx=g.x; gy=g.y; gw=g.width; gh=g.height;
+				} else {
+					Glyph unknowChar = glyphs.get((char)0x0080);
+					gx=unknowChar.x; gy=unknowChar.y; gw=unknowChar.width; gh=unknowChar.height;
+	//				System.out.println("FONT ERROR drawing text character: u+" + Integer.toHexString(ch | 0x10000).substring(1) );
+	//				System.out.println("TEXT: \""+text+"\"");
+				}
+				if(drawX + gw > startX + width) {
+					drawY -= fontHeight;
+					drawX = startX;
+				}
+				if(drawY < startY - height) break;
+				// referensi render text dengan linebreak CJK support https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/text/BreakIterator.html
+				renderer.render(shader, texture, res, textureWidth, textureHeight, drawX, drawY, gx, gy, gw, gh, currentColor);
+	//			renderer.drawTextureRegion(texture, drawX, drawY, g.x, g.y, g.width, g.height, color);
+				drawX += gw;
 			}
-			if(drawX + gw > x + width) {
-				drawY -= fontHeight;
-				drawX = startX;
-			}
-			if(drawY < startY - height) break;
-			// referensi render text dengan linebreak CJK support https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/text/BreakIterator.html
-			renderer.render(shader, texture, res, textureWidth, textureHeight, drawX, drawY, gx, gy, gw, gh, currentColor);
-//			renderer.drawTextureRegion(texture, drawX, drawY, g.x, g.y, g.width, g.height, color);
-			drawX += gw;
-		}
 //        renderer.end();
     }
 
@@ -585,7 +585,7 @@ public class Font {
      * @param x        X coordinate of the text position
      * @param y        Y coordinate of the text position
      */
-    public void drawText(Shader shader, int[] res, float x, float y, float w, float h, CharSequence text) {
+    public void drawText(Shader shader, int[] res, int x, int y, int w, int h, CharSequence text) {
     	drawText(shader, res, x, y, w, h, text, 0xFFFFFFFF);
     }
 
