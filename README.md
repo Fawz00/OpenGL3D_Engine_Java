@@ -1,5 +1,8 @@
 # OpenGL3D_Java
 
+Proyek ini menggunakan bahasa pemrograman Java, jadi wajib install Java sebelum menjalankan kode. Rekomendasi JDK 17.
+proyek ini bisa dibuka dengan IDE Eclipse atau Visual Studio Code dengan Java Extension.
+
 <h2>references</h2>
 <ul>
   <li><a href="https://www.youtube.com/watch?v=deihUO05Br8">
