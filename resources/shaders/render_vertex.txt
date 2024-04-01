@@ -1,0 +1,57 @@
+#version 330 core
+
+precision highp float;
+
+layout (location = 0) in vec3 POSITION;
+layout (location = 1) in vec2 TEXCOORD;
+layout (location = 2) in vec3 NORMAL;
+layout (location = 3) in vec3 TANGENT;
+layout (location = 4) in vec3 BITANGENT;
+
+uniform mat4 MODEL_MATRIX;
+uniform mat4 MVP_MATRIX;
+uniform mat4 SHADOW_MVP_MATRIX;
+uniform vec3 SUN_DIR;
+uniform vec4 VIEW_POSITION;
+
+out vec2 uv;
+out vec4 position;
+out vec4 vPos;
+out vec4 shadowView;
+
+out vec3 shadowViewPosition;
+out vec3 viewPosition;
+out vec3 vNormal;
+
+out vec3 tangentShadowViewPosition;
+out vec3 tangentPosition;
+out vec3 tangentViewPosition;
+
+void main() {
+	vec4 pos = MODEL_MATRIX*vec4(POSITION, 1.0);
+//	float rad = 10000.0;
+//	float a = rad*sqrt(1-pow((VIEW_POSITION.x-pos.x)/rad,2.0)-pow((VIEW_POSITION.z-pos.z)/rad,2.0))-rad;
+//	pos.xyz = vec3(pos.x, pos.y+a, pos.z);
+
+	vec4 gPos = MVP_MATRIX*pos;
+	shadowView = SHADOW_MVP_MATRIX*pos;
+
+	uv = TEXCOORD;
+	position = pos;
+	vPos = gPos;
+
+	vec3 T = normalize(mat3(MODEL_MATRIX) * normalize(TANGENT));
+	vec3 B = normalize(mat3(MODEL_MATRIX) * normalize(BITANGENT));
+	vec3 N = normalize(mat3(MODEL_MATRIX) * normalize(NORMAL));
+	mat3 TBN = transpose(mat3(T, B, N));
+
+	shadowViewPosition = SUN_DIR;
+	viewPosition = VIEW_POSITION.xyz;
+	vNormal = normalize(NORMAL);
+
+	tangentShadowViewPosition = TBN * (SUN_DIR);
+	tangentPosition = TBN * pos.xyz;
+	tangentViewPosition = TBN * VIEW_POSITION.xyz;
+
+	gl_Position = gPos;
+}

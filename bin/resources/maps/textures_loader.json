@@ -1,0 +1,206 @@
+{
+	"version": 1,
+	"textures":{
+
+		"error": {
+			"filter": "GL_REPEAT",
+			"blur": false,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/error.png"
+				}
+			}
+		},
+		"slum": {
+			"filter": "GL_CLAMP_TO_EDGE",
+			"blur": false,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/slum.png"
+				},
+				"nor": {
+					"path": "textures/terrain/slum_nor.png"
+				},
+				"mer": {
+					"path": "textures/terrain/slum_mer.png"
+				}
+			}
+		},
+		"metalic_silver": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/metalic_silver/metalic_silver.jpg"
+				},
+				"nor": {
+					"path": "textures/terrain/metalic_silver/metalic_silver_nor.jpg"
+				},
+				"mer": {
+					"path": "textures/terrain/metalic_silver/metalic_silver_mer.jpg"
+				}
+			}
+		},
+		"colors": {
+			"filter": "GL_CLAMP_TO_EDGE",
+			"blur": false,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/colors.png"
+				}
+			}
+		},
+		"blending": {
+			"filter": "GL_REPEAT",
+			"blur": false,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/blending.png"
+				}
+			}
+		},
+		"stone": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/stone.png"
+				},
+				"par": {
+					"path": "textures/terrain/stone.png"
+				},
+				"mer": {
+					"path": "textures/terrain/stone.png"
+				}
+			}
+		},
+		"wood": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/wood.png"
+				}
+			}
+		},
+		"terrain": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/tropical.jpg"
+				},
+				"nor": {
+					"path": "textures/terrain/tropical_n.png"
+				}
+			}
+		},
+		"pine_tree": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/pines.png"
+				}
+			}
+		},
+
+		"grass": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/grass.jpeg"
+				}
+			}
+		},
+		"banana_tree_low": {
+			"filter": "GL_CLAMP_TO_EDGE",
+			"blur": false,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/banana_tree_low.png"
+				}
+			}
+		},
+		"banana_tree": {
+			"filter": "GL_CLAMP_TO_EDGE",
+			"blur": false,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/banana_tree/Banana_Plants_BaseColor.png"
+				},
+				"nor": {
+					"path": "textures/terrain/banana_tree/Banana_Plants_Normal_OpenGL.png"
+				}
+			}
+		},
+		"rock": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/rock/color.jpg"
+				},
+				"nor": {
+					"path": "textures/terrain/rock/normal_gl.jpg"
+				},
+				"par": {
+					"path": "textures/terrain/rock/displacement.jpg"
+				},
+				"mer": {
+					"path": "textures/terrain/rock/mer.jpg"
+				}
+			}
+		},
+		"metal_black": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/metal_black/color.jpg"
+				},
+				"nor": {
+					"path": "textures/terrain/metal_black/normal_gl.jpg"
+				},
+				"par": {
+					"path": "textures/terrain/metal_black/displacement.jpg"
+				},
+				"mer": {
+					"path": "textures/terrain/metal_black/mer.jpg"
+				}
+			}
+		},
+		"toy_box": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/toy_box/color.png"
+				},
+				"nor": {
+					"path": "textures/terrain/toy_box/normal.png"
+				},
+				"par": {
+					"path": "textures/terrain/toy_box/displacement.png"
+				}
+			}
+		},
+		"room": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/room/color.png"
+				},
+				"nor": {
+					"path": "textures/terrain/room/normal.png"
+				},
+				"par": {
+					"path": "textures/terrain/room/displacement.png"
+				}
+			}
+		}
+
+	}
+}

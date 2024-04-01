@@ -1,0 +1,19 @@
+#version 330 core
+
+precision highp float;
+
+uniform sampler2D TEXTURE;
+
+uniform float TIME;
+
+in vec2 uv;
+in vec3 position;
+in vec4 vPos;
+
+out vec4 FragColor;
+
+void main() {
+	if(texture(TEXTURE, uv).a < 0.5) discard;
+
+	FragColor = vec4(vPos.zzz,1.0);
+}

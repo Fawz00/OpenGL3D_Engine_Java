@@ -1,0 +1,26 @@
+#version 330 core
+
+precision highp float;
+
+layout (location = 0) in vec3 POSITION;
+layout (location = 1) in vec2 TEXCOORD;
+layout (location = 2) in vec3 NORMAL;
+layout (location = 3) in vec3 TANGENT;
+layout (location = 4) in vec3 BITANGENT;
+
+uniform mat4 MVP_MATRIX;
+uniform mat4 MODEL_MATRIX;
+
+out vec2 uv;
+out vec3 position;
+out vec4 vPos;
+
+void main() {
+	vec4 pos = MVP_MATRIX*MODEL_MATRIX*vec4(POSITION, 1.0);
+
+	uv = TEXCOORD;
+	position = POSITION;
+	vPos = pos;
+
+	gl_Position = pos;
+}

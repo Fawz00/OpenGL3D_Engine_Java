@@ -1,0 +1,21 @@
+{
+	"version": 1,
+
+	"text": {
+		"model": ["text", "text_lod"],
+		"texture": ["stone"],
+		"shader_func": {
+			"cull_face": "GL_BACK",
+			"blend_func": ["GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"]
+		}
+	},
+
+	"terrain_base": {
+		"model": ["simple_terrain"],
+		"texture": ["stone"],
+		"shader_func": {
+			"cull_face": "GL_BACK"
+		}
+	}
+
+}

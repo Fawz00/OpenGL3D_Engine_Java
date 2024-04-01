@@ -1,0 +1,15 @@
+#version 330 core
+
+uniform sampler2D TEXTURE_0;
+
+uniform vec4 BASE_COLOR;
+uniform float TIME;
+
+in vec2 uv;
+
+out vec4 FragColor;
+
+void main() {
+	vec4 color = BASE_COLOR*texture(TEXTURE_0, uv);
+	FragColor = color;
+}
