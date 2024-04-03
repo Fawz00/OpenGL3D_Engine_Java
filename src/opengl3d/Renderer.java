@@ -2,10 +2,13 @@ package opengl3d;
 
 import java.awt.FontFormatException;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
@@ -163,7 +166,7 @@ public class Renderer {
 		camera = new Camera(0, Settings.fov*toRad, new float[] {0f,0f,0f}, new float[] {0f,0f,0f});
 
 		try {
-			InputStream fontData = getClass().getClassLoader().getResourceAsStream("resources/fonts/Kosugi_Maru/KosugiMaru-Regular.ttf");
+			InputStream fontData = new ByteArrayInputStream(Files.readAllBytes(Paths.get("resources/fonts/Kosugi_Maru/KosugiMaru-Regular.ttf")));
 			textView = new Font(fontData, 38, true);
 		} catch (FontFormatException e) {
 			System.out.println("Error loading font, default value is used.");

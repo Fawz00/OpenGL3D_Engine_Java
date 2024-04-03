@@ -1,11 +1,14 @@
 package opengl3d.utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Vector;
 
 import org.joml.Vector2f;
@@ -29,7 +32,7 @@ public final class ObjReader {
 		BufferedReader reader = null;
 		try {
 			System.out.println("Loading model: "+file);
-			InputStream inputStream = getClass().getClassLoader().getResourceAsStream(file);
+			InputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(Paths.get(file)));
 			reader = new BufferedReader(new InputStreamReader(inputStream));
 
 			String line;
