@@ -1,5 +1,7 @@
 package opengl3d;
 
+import java.io.File;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
@@ -19,6 +21,8 @@ public class Main {
 		System.out.println(GL30.glGetString(GL30.GL_VENDOR));
 		System.out.println(GL30.glGetString(GL30.GL_RENDERER));
 		System.out.print("\n");
+
+		listFilesAndFolders("resources/");
 
 		//=============================//
 		//     G A M E   L O G I C     //
@@ -51,6 +55,32 @@ public class Main {
 		renderer.onDestroy();
 		AudioMaster.cleanUp();
 		window.destroy();
+	}
+
+	public static void listFilesAndFolders(String directoryPath) {
+		File directory = new File(directoryPath);
+
+		// Pastikan direktori yang diberikan adalah direktori yang valid
+		if (!directory.isDirectory()) {
+			System.out.println("Path yang diberikan bukanlah sebuah direktori.");
+			return;
+		}
+
+		// Tampilkan semua file dan folder dalam direktori
+		System.out.println("Files and folders in directory: " + directoryPath);
+		File[] filesAndFolders = directory.listFiles();
+		if (filesAndFolders != null) {
+			for (File fileOrFolder : filesAndFolders) {
+				if (fileOrFolder.isDirectory()) {
+					System.out.println("Folder: " + fileOrFolder.getName());
+				} else {
+					System.out.println("File: " + fileOrFolder.getName());
+				}
+			}
+		} else {
+			System.out.println("Tidak ada file atau folder dalam direktori.");
+		}
+		System.out.println();
 	}
 
 }

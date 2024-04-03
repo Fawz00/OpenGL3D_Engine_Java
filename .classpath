@@ -8,8 +8,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JSON"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL 3"/>
 
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="src" output="bin" path="src"/>
 
 	<classpathentry kind="lib" path="libs/java-json.jar"/>
 	<classpathentry kind="lib" path="libs/joml-1.10.5-javadoc.jar"/>
