@@ -153,7 +153,7 @@ public class GameRenderer {
 
 					GL30.glTexParameteri(GL30.GL_TEXTURE_CUBE_MAP, GL30.GL_TEXTURE_WRAP_S, GL30.GL_REPEAT);
 					GL30.glTexParameteri(GL30.GL_TEXTURE_CUBE_MAP, GL30.GL_TEXTURE_WRAP_T, GL30.GL_REPEAT);
-					GL30.glTexParameteri(GL30.GL_TEXTURE_CUBE_MAP, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_NEAREST);
+					GL30.glTexParameteri(GL30.GL_TEXTURE_CUBE_MAP, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
 					GL30.glTexParameteri(GL30.GL_TEXTURE_CUBE_MAP, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
 
 					ByteBuffer buffer;
@@ -493,11 +493,11 @@ public class GameRenderer {
 												frameTime*playerMovement*((float)Math.cos(camera.getRotation()[0]) * (float)Math.cos(camera.getRotation()[1]))
 												},
 												frameTime);
-//			entityPlayer.setAcceleration(new float[]{
-//												0f,
-//												frameTime*-9.80665f,
-//												0f },
-//												frameTime);
+			entityPlayer.setAcceleration(new float[]{
+												0f,
+												frameTime*-9.80665f,
+												0f },
+												frameTime);
 
 			//Floor collision
 			float planePos=68f;
