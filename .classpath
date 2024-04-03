@@ -7,8 +7,8 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JSON"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LWJGL 3"/>
+
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" output="resources" path="resources"/>
 	<classpathentry kind="output" path="bin"/>
 
 	<classpathentry kind="lib" path="libs/java-json.jar"/>
