@@ -34,7 +34,7 @@ public class Settings {
 	//RENDER CONFIG
 	public static boolean limitFps						= true;
 	public static int fpsLimit								= 60;
-	public static boolean vsync								= false;
+	public static boolean vsync								= true;
 	public static int FXAA										= 1; // 0: OFF; 1: ON
 
 	public static boolean ASCIICharOnly				= false; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;

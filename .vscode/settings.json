@@ -9,5 +9,9 @@
     "org.mockito.Mockito.*",
     "org.mockito.ArgumentMatchers.*",
     "org.mockito.Answers.*"
+  ],
+  "java.debug.settings.vmArgs": "-Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=100 -XX:G1HeapRegionSize=32M",
+  "java.project.referencedLibraries": [
+      
   ]
 }
