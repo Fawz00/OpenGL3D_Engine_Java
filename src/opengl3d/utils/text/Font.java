@@ -449,15 +449,6 @@ public class Font {
         return height;
     }
 
-    /**
-     * Draw text at the specified position and color.
-     *
-     * @param renderer The renderer to use
-     * @param text     Text to draw
-     * @param x        X coordinate of the text position
-     * @param y        Y coordinate of the text position
-     * @param c        Color to use
-     */
     public void drawText(Shader shader, int[] res, int x, int y, int width, int height, CharSequence text, int globalColor) {
 			int currentColor = globalColor;
 	//        int textHeight = getHeight(text);
@@ -577,21 +568,10 @@ public class Font {
 //        renderer.end();
     }
 
-    /**
-     * Draw text at the specified position.
-     *
-     * @param renderer The renderer to use
-     * @param text     Text to draw
-     * @param x        X coordinate of the text position
-     * @param y        Y coordinate of the text position
-     */
     public void drawText(Shader shader, int[] res, int x, int y, int w, int h, CharSequence text) {
     	drawText(shader, res, x, y, w, h, text, 0xFFFFFFFF);
     }
 
-    /**
-     * Disposes the font.
-     */
     public void dispose() {
     	GL30.glDeleteTextures(texture);
     }

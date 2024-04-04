@@ -32,7 +32,7 @@ public class Settings {
 	public static float volumeMusic						= 0.00f;
 
 	//RENDER CONFIG
-	public static boolean limitFps						= true;
+	public static boolean limitFps						= false;
 	public static int fpsLimit								= 60;
 	public static boolean vsync								= true;
 	public static int FXAA										= 1; // 0: OFF; 1: ON

@@ -22,6 +22,8 @@ public class Main {
 		System.out.println(GL30.glGetString(GL30.GL_RENDERER));
 		System.out.print("\n");
 
+		String userDirectory = System.getProperty("user.home");
+		System.out.println("Direktori Pengguna: " + userDirectory);
 		listFilesAndFolders("resources/");
 
 		//=============================//
