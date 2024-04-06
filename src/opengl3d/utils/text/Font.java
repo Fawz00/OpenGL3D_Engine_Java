@@ -15,8 +15,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.text.BreakIterator;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
@@ -193,25 +196,22 @@ public class Font {
 		System.out.println("PROGRESS:-----------------------"+"--------------------------------"+"--------------------------------"+"--------------------------------");
 		int progress = ((unicodeLength+1)*2)/128;
 
-		/* Loop through the characters to get charWidth and charHeight */
 		int imageWidth = 0;
 		int imageHeight = 0;
 
 		int currentWidth = 0;
 		int currentHeight = 0;
 		BufferedImage nullCharImage = createCharImage(font, (char)0x0080, antiAlias);
-		/* Start at char #32, because ASCII 0 to 31 are just control codes */
+
 		for (int i = 0x00; i <= unicodeLength; i++) {
 			if(i%progress == progress-1) System.out.print('█');
 			if (i == 127) {
-					/* ASCII 127 is the DEL control code, so we can skip it */
 				continue;
 			}
 
 			char c = (char) i;
 			BufferedImage ch = createCharImage(font, c, antiAlias);
 			if (ch == null) {
-				/* If char image is null that font does not contain the char */
 				continue;
 			}
 			if(i!=0x0080) if( isImagesEqual(nullCharImage, ch) ) continue;
@@ -277,16 +277,8 @@ public class Font {
 			glyphs.put(c, ch);
 		}
 		System.out.print('\n');
-		saveTexture(image, "C:/Users/fawwazhp/Pictures/FlashIntegro/AAAimage.png");
+		//saveTexture(image, "C:/Users/fawwazhp/Pictures/FlashIntegro/AAAimage.png");
 
-		/* Flip image Horizontal to get the origin to bottom left */
-		//AffineTransform transform = AffineTransform.getScaleInstance(1f, -1f);
-		//transform.translate(0, -image.getHeight());
-		//AffineTransformOp operation = new AffineTransformOp(transform,
-		//                                                    AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-		//image = operation.filter(image, null);
-
-		/* Get charWidth and charHeight of image */
 		int width = image.getWidth();
 		int height = image.getHeight();
 
@@ -295,25 +287,10 @@ public class Font {
 		int progress_render = (width*height)/128;
 		int progress_render_step = 1;
 
-		/* Get pixel data of image */
-		// int[] pixels = new int[width * height];
-		// image.getRGB(0, 0, width, height, pixels, 0, width);
-
-		/* Put pixel data into a ByteBuffer */
 		ByteBuffer buffer = MemoryUtil.memAlloc(width * height * 1);
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				if(progress_render_step%progress_render == progress_render-1) System.out.print('█');
-				/* Pixel as RGBA: 0xAARRGGBB */
-				//int pixel = pixels[i * width + j];
-				/* Red component 0xAARRGGBB >> 16 = 0x0000AARR */
-				//buffer.put((byte) ((pixel >> 16) & 0xFF));
-				/* Green component 0xAARRGGBB >> 8 = 0x00AARRGG */
-				//buffer.put((byte) ((pixel >> 8) & 0xFF));
-				/* Blue component 0xAARRGGBB >> 0 = 0xAARRGGBB */
-				//buffer.put((byte) (pixel & 0xFF));
-				/* Alpha component 0xAARRGGBB >> 24 = 0x000000AA */
-				//buffer.put((byte) ((pixel >> 24) & 0xFF));
 
 				int color = image.getRGB(j, (height-1)-i);
 				buffer.put((byte) ((color >> 16) & 0xFF));
@@ -386,13 +363,6 @@ public class Font {
         return image;
     }
 
-    /**
-     * Gets the width of the specified text.
-     *
-     * @param text The text
-     *
-     * @return Width of text
-     */
     public int getWidth(CharSequence text) {
         int width = 0;
         int lineWidth = 0;
@@ -411,19 +381,17 @@ public class Font {
                 continue;
             }
             Glyph g = glyphs.get(c);
-            lineWidth += g.width;
+			if(g != null){
+				lineWidth += g.width;
+			} else {
+				Glyph unknowChar = glyphs.get((char)0x0080);
+				lineWidth += unknowChar.width;
+			}
         }
         width = Math.max(width, lineWidth);
         return width;
     }
 
-    /**
-     * Gets the height of the specified text.
-     *
-     * @param text The text
-     *
-     * @return Height of text
-     */
     public int getHeight(CharSequence text) {
         int height = 0;
         int lineHeight = 0;
@@ -449,100 +417,66 @@ public class Font {
         return height;
     }
 
-    public void drawText(Shader shader, int[] res, int x, int y, int width, int height, CharSequence text, int globalColor) {
+    public void drawWord(Shader shader, int[] res, int x, int y, int width, int height, String text, int globalColor) {
+		BreakIterator boundary = BreakIterator.getWordInstance(Locale.US);
+		boundary.setText(text);
+		int start = boundary.first();
+
+		Vector<String> words = new Vector<>();
+		Vector<Integer> pixelWidth = new Vector<>();
+
+		int wordStartX = x;
+		int wordDrawX = wordStartX;
+		int wordDrawY = -y;
+
+		for (
+				int end = boundary.next();
+				end != BreakIterator.DONE;
+				start = end, end = boundary.next()
+		){
+			String wordString = text.substring(start,end);
+			if(wordString.equals(" ")) {
+				continue;
+			}
+
+			words.add(wordString);
+			pixelWidth.add(getWidth(wordString));
+
+			// 	System.out.println("===== PPP =====");
+			// 	System.out.println(wordString);
+			// 	System.out.println((int) wordString.charAt(0));
+			// 	System.out.println("\n");
+		}
+
+		int spaceWidth = glyphs.get(' ').width;
+		for(int k=0; k<words.size(); k++) {
+			String wordString = words.get(k);
+			if (wordString.equals("\n")) {
+				wordDrawY -= fontHeight;
+				wordDrawX = wordStartX;
+				continue;
+			}
+
+			int wordWidth = 0;
+			if(k != 0) if(!words.get(k-1).equals("\n")) wordDrawX += spaceWidth;
+			wordWidth += pixelWidth.get(k);
+			if(wordDrawX + wordWidth > wordStartX + width) {
+				wordDrawY -= fontHeight;
+				wordDrawX = wordStartX;
+			}
+			if(wordDrawY < y - height) break;
+			if(k == 0) wordDrawY -= fontHeight;
+
 			int currentColor = globalColor;
-	//        int textHeight = getHeight(text);
 
-			int startX = x;
-			int startY = -y;
+			int startX = wordDrawX;
 			int drawX = startX;
-			int drawY = startY;
-	//        if (textHeight > fontHeight) {
-	//            drawY += textHeight - fontHeight;
-	//        }
+			int drawY = wordDrawY;
 
-	//      renderer.begin();
-
-			boolean specialSeq = false;
-			int sequence = -1;
-			String color = "";
-			for (int i = 0; i < text.length(); i++) {
-				char ch = text.charAt(i);
-				if(i == 0) drawY -= fontHeight;
-				if (ch == '\n') {
-					/* Line feed, set x and y to draw at the next line */
-					drawY -= fontHeight;
-					drawX = startX;
-					continue;
-				}
+			for (int i = 0; i < wordString.length(); i++) {
+				char ch = wordString.charAt(i);
 				if (ch == '\r') {
-					/* Carriage return, just skip it */
 					continue;
-				}
-				if (ch == '$' && !specialSeq) {
-					specialSeq = true;
-					continue;
-				}
-				if (specialSeq) {
-					switch(ch) {
-						case '$': if(sequence == -1) {
-							specialSeq = false;
-							break;
-						}
-						case 'c': if(sequence == -1) {
-							sequence = 1;
-							continue;
-						}
-						default: {
-							break;
-						}
-					}
-					specialSeq = false;
-				}
-				if(sequence != -1) {
-					switch(sequence) {
-						case 1: {
-							if(	color.length() < 8 && (
-								Character.toLowerCase(ch) == 'a' ||
-								Character.toLowerCase(ch) == 'b' ||
-								Character.toLowerCase(ch) == 'c' ||
-								Character.toLowerCase(ch) == 'd' ||
-								Character.toLowerCase(ch) == 'e' ||
-								Character.toLowerCase(ch) == 'f' ||
-								ch == '0' ||
-								ch == '1' ||
-								ch == '2' ||
-								ch == '3' ||
-								ch == '4' ||
-								ch == '5' ||
-								ch == '6' ||
-								ch == '7' ||
-								ch == '8' ||
-								ch == '9'
-								)
-							) {
-								color = color + ch;
-							} else {
-								if(color.length() == 8) {
-									try{
-										currentColor = (int) Long.parseLong(color, 16);
-									} catch(NumberFormatException e) {
-										currentColor = globalColor;
-									}
-								}
-								specialSeq = false;
-								sequence = -1;
-								color = "";
-								break;
-							}
-							continue;
-						}
-						default: {
-							specialSeq = false;
-							sequence = -1;
-							break;
-						}
-					}
 				}
 
 				Glyph g = glyphs.get(ch);
@@ -552,23 +486,135 @@ public class Font {
 				} else {
 					Glyph unknowChar = glyphs.get((char)0x0080);
 					gx=unknowChar.x; gy=unknowChar.y; gw=unknowChar.width; gh=unknowChar.height;
-	//				System.out.println("FONT ERROR drawing text character: u+" + Integer.toHexString(ch | 0x10000).substring(1) );
-	//				System.out.println("TEXT: \""+text+"\"");
 				}
-				if(drawX + gw > startX + width) {
-					drawY -= fontHeight;
-					drawX = startX;
-				}
-				if(drawY < startY - height) break;
 				// referensi render text dengan linebreak CJK support https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/text/BreakIterator.html
 				renderer.render(shader, texture, res, textureWidth, textureHeight, drawX, drawY, gx, gy, gw, gh, currentColor);
-	//			renderer.drawTextureRegion(texture, drawX, drawY, g.x, g.y, g.width, g.height, color);
 				drawX += gw;
 			}
-//        renderer.end();
+			wordDrawX += wordWidth;
+		}
     }
 
-    public void drawText(Shader shader, int[] res, int x, int y, int w, int h, CharSequence text) {
+	public void drawText(Shader shader, int[] res, int x, int y, int width, int height, CharSequence text, int globalColor) {
+		int currentColor = globalColor;
+//        int textHeight = getHeight(text);
+
+		int startX = x;
+		int startY = -y;
+		int drawX = startX;
+		int drawY = startY;
+//        if (textHeight > fontHeight) {
+//            drawY += textHeight - fontHeight;
+//        }
+
+//      renderer.begin();
+
+		boolean specialSeq = false;
+		int sequence = -1;
+		String color = "";
+		for (int i = 0; i < text.length(); i++) {
+			char ch = text.charAt(i);
+			if(i == 0) drawY -= fontHeight;
+			if (ch == '\n') {
+				/* Line feed, set x and y to draw at the next line */
+				drawY -= fontHeight;
+				drawX = startX;
+				continue;
+			}
+			if (ch == '\r') {
+				/* Carriage return, just skip it */
+				continue;
+			}
+			if (ch == '$' && !specialSeq) {
+				specialSeq = true;
+				continue;
+			}
+			if (specialSeq) {
+				switch(ch) {
+					case '$': if(sequence == -1) {
+						specialSeq = false;
+						break;
+					}
+					case 'c': if(sequence == -1) {
+						sequence = 1;
+						continue;
+					}
+					default: {
+						break;
+					}
+				}
+				specialSeq = false;
+			}
+			if(sequence != -1) {
+				switch(sequence) {
+					case 1: {
+						if(	color.length() < 8 && (
+							Character.toLowerCase(ch) == 'a' ||
+							Character.toLowerCase(ch) == 'b' ||
+							Character.toLowerCase(ch) == 'c' ||
+							Character.toLowerCase(ch) == 'd' ||
+							Character.toLowerCase(ch) == 'e' ||
+							Character.toLowerCase(ch) == 'f' ||
+							ch == '0' ||
+							ch == '1' ||
+							ch == '2' ||
+							ch == '3' ||
+							ch == '4' ||
+							ch == '5' ||
+							ch == '6' ||
+							ch == '7' ||
+							ch == '8' ||
+							ch == '9'
+							)
+						) {
+							color = color + ch;
+						} else {
+							if(color.length() == 8) {
+								try{
+									currentColor = (int) Long.parseLong(color, 16);
+								} catch(NumberFormatException e) {
+									currentColor = globalColor;
+								}
+							}
+							specialSeq = false;
+							sequence = -1;
+							color = "";
+							break;
+						}
+						continue;
+					}
+					default: {
+						specialSeq = false;
+						sequence = -1;
+						break;
+					}
+				}
+			}
+
+			Glyph g = glyphs.get(ch);
+			int gx=0, gy=0, gw=0, gh=0;
+			if(g != null){
+				gx=g.x; gy=g.y; gw=g.width; gh=g.height;
+			} else {
+				Glyph unknowChar = glyphs.get((char)0x0080);
+				gx=unknowChar.x; gy=unknowChar.y; gw=unknowChar.width; gh=unknowChar.height;
+//				System.out.println("FONT ERROR drawing text character: u+" + Integer.toHexString(ch | 0x10000).substring(1) );
+//				System.out.println("TEXT: \""+text+"\"");
+			}
+			if(drawX + gw > startX + width) {
+				drawY -= fontHeight;
+				drawX = startX;
+			}
+			if(drawY < startY - height) break;
+			// referensi render text dengan linebreak CJK support https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/text/BreakIterator.html
+			renderer.render(shader, texture, res, textureWidth, textureHeight, drawX, drawY, gx, gy, gw, gh, currentColor);
+//			renderer.drawTextureRegion(texture, drawX, drawY, g.x, g.y, g.width, g.height, color);
+			drawX += gw;
+		}
+//        renderer.end();
+	}
+
+    public void drawText(Shader shader, int[] res, int x, int y, int w, int h, String text) {
     	drawText(shader, res, x, y, w, h, text, 0xFFFFFFFF);
     }
 

@@ -317,7 +317,7 @@ public class Renderer {
 		}
 		chat += Input.getRawLine() + "_";
 		textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 50, screenResolution[0], screenResolution[1]-50, text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
-		textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0], 50, "Version 1.0", 0xFFFFFFFF);
+		textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0], 50, "Lorem ipsum dolor sit amet, consectetur adipi\nscing elit. Sed sit amet rutrum nulla, vel fermentum justo. Donec dictum enim massa, at sagittis urna consequat in. Proin tempus vitae lorem et hendrerit. Curabitur viverra in ipsum eu pulvinar. Praesent semper mi nunc, ac auctor leo ullamcorper eu. In tincidunt commodo sapien, sit amet euismod lorem ultrices id. Fusce vehicula leo id enim lobortis, vel vestibulum lectus pulvinar. Phasellus in dolor libero. Nunc rutrum cursus lectus in tristique. Vivamus eu nulla et diam tincidunt dignissim ut eu enim. Fusce eu eros ultricies, tempus nibh ut, blandit ante. Suspendisse sit amet sagittis est. Aenean rutrum convallis urna posuere mattis. Aenean et massa vehicula, aliquam dui faucibus, tempus nisl. Suspendisse nulla lectus, sagittis nec imperdiet at, commodo a tellus.", 0xFFFFFFFF);
 
 		gameTexture.deleteTextures();
 	}

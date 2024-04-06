@@ -1,5 +1,6 @@
 package opengl3d.engine;
 
+import java.io.File;
 import java.util.Vector;
 
 import javax.swing.JFileChooser;
@@ -53,19 +54,20 @@ public class Input {
 						Renderer.togglePauseStatus();
 						return;
 					}
-					if(key == GLFW.GLFW_KEY_K && action == GLFW.GLFW_PRESS && Renderer.isPaused()) {
-						JFrame frame = new JFrame("Pilih File");
-						JFileChooser fileChooser = new JFileChooser();
-						fileChooser.setFileFilter(new FileNameExtensionFilter("File Text (*.txt)", "txt"));
-						int result = fileChooser.showOpenDialog(frame);
-						if (result == JFileChooser.APPROVE_OPTION) {
-								String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-								System.out.println("File yang dipilih: " + filePath);
-						} else {
-								System.out.println("Tidak ada file yang dipilih.");
-						}
-						return;
-					}
+					// if(key == GLFW.GLFW_KEY_K && action == GLFW.GLFW_PRESS && Renderer.isPaused()) {
+					// 	JFrame frame = new JFrame("Pilih File");
+					// 	JFileChooser fileChooser = new JFileChooser();
+					// 	fileChooser.setFileFilter(new FileNameExtensionFilter("File Text (*.txt)", "txt"));
+					// 	fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+					// 	int result = fileChooser.showOpenDialog(frame);
+					// 	if (result == JFileChooser.APPROVE_OPTION) {
+					// 			String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+					// 			System.out.println("File yang dipilih: " + filePath);
+					// 	} else {
+					// 			System.out.println("Tidak ada file yang dipilih.");
+					// 	}
+					// 	return;
+					// }
 
 					if(isTyping) {
 						if(action != GLFW.GLFW_RELEASE) handleTyping(key, false, scancode);
