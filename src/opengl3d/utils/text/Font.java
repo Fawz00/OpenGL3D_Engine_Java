@@ -464,6 +464,10 @@ public class Font {
 			if(wordDrawX + wordWidth > wordStartX + width) {
 				if(carriage == 0) wordDrawY -= fontHeight;
 				wordDrawX = wordStartX + carriage;
+				if(carriage > 0) if(wordDrawX + wordWidth > wordStartX + width) {
+					wordDrawY -= fontHeight;
+					wordDrawX = wordStartX;
+				}
 				carriage = 0;
 			}
 			if(wordDrawY < y - height) break;

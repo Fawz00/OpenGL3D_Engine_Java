@@ -9,7 +9,7 @@ public class Settings {
 	//=========================//
 
 	//CREATE WINDOW
-	public static int[] windowSize				= new int[] {50, 720};
+	public static int[] windowSize				= new int[] {1080, 720};
 	public static boolean fullscreen			= false;
 	public static boolean maximized				= false;
 
@@ -37,7 +37,7 @@ public class Settings {
 	public static boolean vsync					= true;
 	public static int FXAA						= 1; // 0: OFF; 1: ON
 
-	public static boolean ASCIICharOnly			= true; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
+	public static boolean ASCIICharOnly			= false; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
 
 	public static float screenQuality			= 1.00f; // Percent of display resolution
 
