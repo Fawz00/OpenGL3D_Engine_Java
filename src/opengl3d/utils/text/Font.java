@@ -449,6 +449,7 @@ public class Font {
 		}
 
 		int spaceWidth = glyphs.get(' ').width;
+		int carriage = 0;
 		for(int k=0; k<words.size(); k++) {
 			String wordString = words.get(k);
 			if (wordString.equals("\n")) {
@@ -461,8 +462,9 @@ public class Font {
 			if(k != 0) if(!words.get(k-1).equals("\n")) wordDrawX += spaceWidth;
 			wordWidth += pixelWidth.get(k);
 			if(wordDrawX + wordWidth > wordStartX + width) {
-				wordDrawY -= fontHeight;
-				wordDrawX = wordStartX;
+				if(carriage == 0) wordDrawY -= fontHeight;
+				wordDrawX = wordStartX + carriage;
+				carriage = 0;
 			}
 			if(wordDrawY < y - height) break;
 			if(k == 0) wordDrawY -= fontHeight;
@@ -487,6 +489,18 @@ public class Font {
 					Glyph unknowChar = glyphs.get((char)0x0080);
 					gx=unknowChar.x; gy=unknowChar.y; gw=unknowChar.width; gh=unknowChar.height;
 				}
+				if(drawX + gw > startX + width) {
+					wordDrawY -= fontHeight;
+					wordDrawX = wordStartX;
+					carriage += gw + spaceWidth;
+					startX = wordDrawX;
+					drawY -= fontHeight;
+					drawX = startX;
+				} else if(carriage > 0) carriage += gw;
+				if(startX + carriage > startX + width) carriage = 0;
+				// TODO Fix linebreak issue in HERE!
+				if(drawY < -y - height) break;
+
 				// referensi render text dengan linebreak CJK support https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/text/BreakIterator.html
 				renderer.render(shader, texture, res, textureWidth, textureHeight, drawX, drawY, gx, gy, gw, gh, currentColor);
 				drawX += gw;

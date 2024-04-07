@@ -303,11 +303,12 @@ public class Renderer {
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
 		// ModelReader.resetModel();
 
-		String text = "しばらくお待ちください。\n私は私、貴方は貴方。\n";
+		String text = "しばらくお待ちください。\n第二次世界大戦では、1942年初頭に大日本帝国がオランダ植民地軍を破り東インドのほぼ全域を占領し、その後日本軍政当局がバタヴィアをジャカルタと改称した。以後、その名称は現在に至っている[7]。なお日本軍は市政からオランダ人を放逐した。日本軍の占領は1945年8月まで続いた。";
 		String halo = "游戏剧情于虚构世界的提瓦特大陆上展开，该世界分成七个国家，每个国家分别以一种元素为主题，并由对应元素的神明所分管。\n"
 				+ "游戏剧情的主角为“旅行者”，是一对在无数个世界中旅行的兄妹，因遭遇陌生神明阻拦在提瓦特被迫分離。玩家将扮演旅行者，为了寻找自己失散的唯一血亲，並與派蒙一同游历七国。\r\n"
 				+ "\r\n"
 				+ "괜찮아요.";
+		String lorem = "Lorem ipsum dolor sit amet, AGBDLCIDHESOYAM il consectetur adipiscing elit. Sed sit amet rutrum nulla, vel fermentum justo. Donec dictum enim massa, at sagittis urna consequat in. Proin tempus vitae lorem et hendrerit. Curabitur viverra in ipsum eu pulvinar. Praesent semper mi nunc, ac auctor leo ullamcorper eu. In tincidunt commodo sapien, sit amet euismod lorem ultrices id. Fusce vehicula leo id enim lobortis, vel vestibulum lectus pulvinar. Phasellus in dolor libero. Nunc rutrum cursus lectus in tristique. Vivamus eu nulla et diam tincidunt dignissim ut eu enim. Fusce eu eros ultricies, tempus nibh ut, blandit ante. Suspendisse sit amet sagittis est. Aenean rutrum convallis urna posuere mattis. Aenean et massa vehicula, aliquam dui faucibus, tempus nisl. Suspendisse nulla lectus, sagittis nec imperdiet at, commodo a tellus.";
 		Input.isTyping(isPaused());
 		String chat = "";
 		for(int i=10; i>0; i--) {
@@ -316,8 +317,8 @@ public class Renderer {
 			// if(!Input.getLine( Input.getLineCount()-11 ).equals("")) Input.resetLines();
 		}
 		chat += Input.getRawLine() + "_";
-		textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 50, screenResolution[0], screenResolution[1]-50, text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
-		textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0], 50, "Lorem ipsum dolor sit amet, consectetur adipi\nscing elit. Sed sit amet rutrum nulla, vel fermentum justo. Donec dictum enim massa, at sagittis urna consequat in. Proin tempus vitae lorem et hendrerit. Curabitur viverra in ipsum eu pulvinar. Praesent semper mi nunc, ac auctor leo ullamcorper eu. In tincidunt commodo sapien, sit amet euismod lorem ultrices id. Fusce vehicula leo id enim lobortis, vel vestibulum lectus pulvinar. Phasellus in dolor libero. Nunc rutrum cursus lectus in tristique. Vivamus eu nulla et diam tincidunt dignissim ut eu enim. Fusce eu eros ultricies, tempus nibh ut, blandit ante. Suspendisse sit amet sagittis est. Aenean rutrum convallis urna posuere mattis. Aenean et massa vehicula, aliquam dui faucibus, tempus nisl. Suspendisse nulla lectus, sagittis nec imperdiet at, commodo a tellus.", 0xFFFFFFFF);
+		//textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 50, screenResolution[0], screenResolution[1]-50, text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
+		textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0], screenResolution[1], lorem, 0xFFFFFFFF);
 
 		gameTexture.deleteTextures();
 	}
