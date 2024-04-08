@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
 import opengl3d.engine.Input;
+import opengl3d.utils.MatMat;
 
 public class Camera {
 	private boolean isPaused = false;
@@ -41,8 +42,8 @@ public class Camera {
 
 	public void update() {
 		getCameraRotation();
-		rotation[0] = matRepeat(rotation[0], -180f*toRad, 180f*toRad);
-		rotation[1] = matClamp(rotation[1], -90f*toRad, 90f*toRad);
+		rotation[0] = MatMat.repeat(rotation[0], -180f*toRad, 180f*toRad);
+		rotation[1] = MatMat.clamp(rotation[1], -90f*toRad, 90f*toRad);
 	}
 
 	public void setPivotPosition(float[] pos) {
@@ -76,25 +77,6 @@ public class Camera {
 
 	public float getDistance() {
 		return offset[currentMode];
-	}
-
-
-
-	private float matClamp(float x, float y, float z) {
-		if(x>z) {
-			return z-0.0001f;
-		} else if(x<y) {
-			return y+0.0001f;
-		}
-		return x;
-	}
-	private float matRepeat(float x, float y, float z) {
-		if(x>z) {
-			return y;
-		} else if(x<y) {
-			return z;
-		}
-		return x;
 	}
 
 	public void toggleCameraMode() {

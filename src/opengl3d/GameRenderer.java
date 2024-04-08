@@ -18,6 +18,7 @@ import opengl3d.engine.Input;
 import opengl3d.render.ModelLoader;
 import opengl3d.render.ObjectEntity;
 import opengl3d.render.TextureLoader;
+import opengl3d.utils.MatMat;
 import opengl3d.utils.Matriks;
 import opengl3d.utils.ModelReader;
 import opengl3d.utils.Shader;
@@ -62,6 +63,10 @@ public class GameRenderer {
 	private int treeCount = 256;
 	private float[] randTreePos = new float[treeCount*3];
 	private float toRad = 0.0174532925199f;
+	private float sceneExposure = 1.0f;
+	private float sceneExposureMultiplier = 1.0f;
+	private float sceneExposureRangeMax = 2.0f;
+	private float sceneExposureRangeMin = -2.0f;
 
 	private Matrix4f rotationMatrix = new Matrix4f();
 	private Matrix4f translationMatrix = new Matrix4f();
@@ -779,9 +784,22 @@ public class GameRenderer {
 		postProcessShader.setVec2("MAIN_RESOLUTION", new float[]{(float)screenResolution[0], (float)screenResolution[1]});
 		postProcessShader.setVec2("REFLECTION_RESOLUTION", new float[]{(float)reflectionResolution[0], (float)reflectionResolution[1]});
 		postProcessShader.setFloat("TIME", time);
+		postProcessShader.setFloat("gamma", Settings.gamma);
 
 		GL30.glActiveTexture(GL30.GL_TEXTURE0);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderColorTexture);
+		if(Settings.HDR == 1) {
+			GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D);
+			float[] luminescence = new float[3];
+			GL30.glGetTexImage(GL30.GL_TEXTURE_2D, 10, GL30.GL_RGB, GL30.GL_FLOAT, luminescence);
+			float lum = 0.2126f * luminescence[0] + 0.7152f * luminescence[1] + 0.0722f * luminescence[2];
+
+			float adjSpeed = 0.05f;
+			sceneExposure = MatMat.lerp(sceneExposure, 0.5f / lum * sceneExposureMultiplier, adjSpeed);
+			sceneExposure = MatMat.clamp(sceneExposure, sceneExposureRangeMin, sceneExposureRangeMax);
+
+			postProcessShader.setFloat("exposure", sceneExposure);
+		}
 		postProcessShader.setInt("TEXTURE_0", 0);
 		GL30.glActiveTexture(GL30.GL_TEXTURE1);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderMerTexture);

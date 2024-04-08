@@ -14,10 +14,14 @@ uniform mat4 MVP_MATRIX;
 uniform vec2 MAIN_RESOLUTION;
 uniform vec2 REFLECTION_RESOLUTION;
 uniform float TIME;
+uniform float gamma;
+uniform float exposure;
 
 in vec2 uv;
 
 out vec4 FragColor;
+
+#define USE_HDR
 
 #define PI 3.14159265358979323
 
@@ -206,11 +210,19 @@ void main() {
 	#endif
 
 	// GAMMA
-	float gamma = 1.5;
-	color.rgb = pow(color.rgb, vec3(1.0/gamma));
+	#if USE_HDR
+        // reinhard
+        // vec3 result = color.rgb / (color.rgb + vec3(1.0));
+        // exposure
+        vec3 result = vec3(1.0) - exp(-color.rgb * exposure);
+        // also gamma correct while we're at it       
+        result = pow(result, vec3(1.0 / gamma));
+		color.rgb = result;
+    #else
+    	color.rgb = pow(color.rgb, vec3(1.0 / gamma));
+    #endif
 
-	//color.rgb=texture(TEXTURE_REFLECTION,uv).rgb;
-
+//	color.rgb=texture(TEXTURE_REFLECTION,uv).rgb;
 //	vec2 ap = uv - 0.5;
 //	if(ap.x>0.0 && ap.y>0.0) color.rgb += 0.1;
 

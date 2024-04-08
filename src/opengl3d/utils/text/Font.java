@@ -417,6 +417,15 @@ public class Font {
         return height;
     }
 
+	private boolean isCJK(char ch) {
+		return
+		((ch >= 0x4E00 && ch <= 0x9FFF) || // Chinese characters
+		(ch >= 0x3040 && ch <= 0x309F) || // Hiragana
+		(ch >= 0x30A0 && ch <= 0x30FF) || // Katakana
+		(ch >= 0xAC00 && ch <= 0xD7AF) || // Hangul Syllables
+		(ch >= 0x3000 && ch <= 0x303F)); // CJK Symbols and Punctuation
+	}
+
     public void drawWord(Shader shader, int[] res, int x, int y, int width, int height, String text, int globalColor) {
 		BreakIterator boundary = BreakIterator.getWordInstance(Locale.US);
 		boundary.setText(text);
@@ -441,15 +450,12 @@ public class Font {
 
 			words.add(wordString);
 			pixelWidth.add(getWidth(wordString));
-
-			// 	System.out.println("===== PPP =====");
-			// 	System.out.println(wordString);
-			// 	System.out.println((int) wordString.charAt(0));
-			// 	System.out.println("\n");
 		}
 
 		int spaceWidth = glyphs.get(' ').width;
 		int carriage = 0;
+		boolean prevCJKWord = false;
+		boolean currCJKWord = false;
 		for(int k=0; k<words.size(); k++) {
 			String wordString = words.get(k);
 			if (wordString.equals("\n")) {
@@ -459,7 +465,11 @@ public class Font {
 			}
 
 			int wordWidth = 0;
-			if(k != 0) if(!words.get(k-1).equals("\n")) wordDrawX += spaceWidth;
+			currCJKWord = isCJK(words.get(k).charAt(0));
+			if(k != 0) {
+				prevCJKWord = isCJK(words.get(k-1).charAt(0));
+				if(!words.get(k-1).equals("\n") && !(prevCJKWord&&currCJKWord)) wordDrawX += spaceWidth;
+			}
 			wordWidth += pixelWidth.get(k);
 			if(wordDrawX + wordWidth > wordStartX + width) {
 				if(carriage == 0) wordDrawY -= fontHeight;
@@ -496,13 +506,13 @@ public class Font {
 				if(drawX + gw > startX + width) {
 					wordDrawY -= fontHeight;
 					wordDrawX = wordStartX;
-					carriage += gw + spaceWidth;
+					carriage += gw;
+					if(!(prevCJKWord&&currCJKWord)) carriage += spaceWidth;
 					startX = wordDrawX;
 					drawY -= fontHeight;
 					drawX = startX;
 				} else if(carriage > 0) carriage += gw;
 				if(startX + carriage > startX + width) carriage = 0;
-				// TODO Fix linebreak issue in HERE!
 				if(drawY < -y - height) break;
 
 				// referensi render text dengan linebreak CJK support https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/text/BreakIterator.html

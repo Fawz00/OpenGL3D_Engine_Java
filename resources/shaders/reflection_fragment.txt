@@ -35,7 +35,7 @@ vec4 TraceRay(vec3 rayPos, vec3 dir, int iterationCount){
 
 		sampleDepth = texture(TEXTURE_DEPTH, rayPos.xy).r;
 		float depthDif = rayPos.z - sampleDepth;
-		if(depthDif >= 0.0 && depthDif < 0.0001 && rayDistance > 0.0001){ //we have a hit
+		if(depthDif >= 0.0 && depthDif < 0.00005 && rayDistance > 0.0001){ //we have a hit
 			hit = true;
 			hitColor = texture(TEXTURE_0, rayPos.xy);
 			break;

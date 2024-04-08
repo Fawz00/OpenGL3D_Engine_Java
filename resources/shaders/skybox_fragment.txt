@@ -137,13 +137,12 @@ void main() {
 	vec3 pos = normalize(position.xyz);
 
 	#if USE_SKYBOX == 1
-		float epsilon = 0.000001;
+		//float epsilon = 0.000001;
+		float epsilon = 0.0095;
 		color = calcAtmosphericScatter(pos-epsilon*2.0, sunDirection+epsilon);
 		color = ACESFilm(color);
 	#else
-		color = mix(SHADOW_COLOR*0.125, SHADOW_COLOR, sunDirection.y);
-		color.r += pow(1.0-abs(sunDirection.y),8.)-0.008;
-		color.rgb /= color.r*2.;
+		color.rgb = texture(TEXTURE_TEMPCOLOR, vec2(1.0-((pos.y+1.0)/2.0), 0.0)).rgb * (pow(sunDirection.y+1.0, 2.0)/3.0);
 	#endif
 
 	color += pow(clamp(texture(TEXTURE_SKYNIGHT, normalize(vec4(SHADOW_ROTATION_MATRIX*position).xyz)).rgb, 0., 0.89), vec3(3.5)+(color.rgb*40.));
@@ -229,6 +228,8 @@ void main() {
 		#endif
 		#endif
 	}
+
+	if((color.r+color.g+color.b)/3.0 >= 0.98) color.rgb = vec3(1.,0.,0.);
 
 	FragColor = vec4(color, 1.0);
 	FragMer = vec4(0.0);
