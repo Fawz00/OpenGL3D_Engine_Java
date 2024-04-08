@@ -64,8 +64,8 @@ public class GameRenderer {
 	private float[] randTreePos = new float[treeCount*3];
 	private float toRad = 0.0174532925199f;
 	private float sceneExposure = 1.0f;
-	private float sceneExposureMultiplier = 1.0f;
-	private float sceneExposureRangeMax = 2.0f;
+	private float sceneExposureMultiplier = 1.12f;
+	private float sceneExposureRangeMax = 1.5f;
 	private float sceneExposureRangeMin = -2.0f;
 
 	private Matrix4f rotationMatrix = new Matrix4f();
@@ -794,7 +794,7 @@ public class GameRenderer {
 			GL30.glGetTexImage(GL30.GL_TEXTURE_2D, 10, GL30.GL_RGB, GL30.GL_FLOAT, luminescence);
 			float lum = 0.2126f * luminescence[0] + 0.7152f * luminescence[1] + 0.0722f * luminescence[2];
 
-			float adjSpeed = 0.05f;
+			float adjSpeed = 0.01f;
 			sceneExposure = MatMat.lerp(sceneExposure, 0.5f / lum * sceneExposureMultiplier, adjSpeed);
 			sceneExposure = MatMat.clamp(sceneExposure, sceneExposureRangeMin, sceneExposureRangeMax);
 

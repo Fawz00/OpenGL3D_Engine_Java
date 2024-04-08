@@ -1,7 +1,5 @@
 package opengl3d.utils;
 
-import java.lang.Math;
-
 public class MatMat {
 
     public static float lerp(float a, float b, float t){
