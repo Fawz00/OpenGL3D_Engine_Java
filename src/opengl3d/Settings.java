@@ -37,10 +37,7 @@ public class Settings {
 	public static boolean vsync					= true;
 	public static int FXAA						= 1; // 0: OFF; 1: ON
 
-	public static float gamma					= 1.3f;
-	public static int HDR						= 1;
-
-	public static boolean ASCIICharOnly			= false; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
+	public static boolean ASCIICharOnly			= true; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
 
 	public static float screenQuality			= 1.00f; // Percent of display resolution
 
@@ -50,6 +47,9 @@ public class Settings {
 
 	public static float drawDistance			= 10000f;
 	public static float entityRenderDistance	= 120f;
+
+	public static float gamma					= 1.5f;
+	public static int useHDR					= 1;
 
 	public static int useSkyBox					= 1;
 	public static int useCloud					= 1; // 0=LOW 1=MEDIUM 2=ULTRA
@@ -63,6 +63,11 @@ public class Settings {
 	public static int usePenumbraShadow			= 1;
 
 	public static int useReflection				= 1;
-	public static float reflectionQuality		= 0.5f; // Percent of main resolution
+	public static float reflectionQuality		= 0.5f; // Percent of screenQuality
+
+	public static int useBloom					= 1; // 0=OFF; 1=SIMPLE_BLUR; 2=FOG_BLOOM
+
+	public static int useSSGI					= 0;
+	public static int SSGIDenoise				= 0;
 
 }

@@ -104,9 +104,9 @@ public final class ObjReader {
 		for (String face : faces) {
 			String[] parts = face.split("/");
 
-			int posIndex = Short.valueOf(parts[0]);
-			int texIndex = Short.valueOf(parts[1]);
-			int norIndex = Short.valueOf(parts[2]);
+			int posIndex = Integer.valueOf(parts[0]);
+			int texIndex = Integer.valueOf(parts[1]);
+			int norIndex = Integer.valueOf(parts[2]);
 			index.put(posIndex).put(texIndex).put(norIndex);
 		}
 

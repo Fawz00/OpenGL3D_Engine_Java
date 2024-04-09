@@ -23,7 +23,8 @@ public class Shader {
 			shader = shader.replace("#define USE_NORMAL_MAP", "#define USE_NORMAL_MAP "+Settings.useNormalMapping);
 			shader = shader.replace("#define USE_PARALLAX", "#define USE_PARALLAX "+Settings.useParallaxMapping);
 			shader = shader.replace("#define USE_FXAA", "#define USE_FXAA "+Settings.FXAA);
-			shader = shader.replace("#define USE_HDR", "#define USE_HDR "+Settings.HDR);
+			shader = shader.replace("#define USE_HDR", "#define USE_HDR "+Settings.useHDR);
+			shader = shader.replace("#define USE_BLOOM", "#define USE_BLOOM "+Settings.useBloom);
 			return shader;
 		} catch (Exception e) {
 			e.printStackTrace();

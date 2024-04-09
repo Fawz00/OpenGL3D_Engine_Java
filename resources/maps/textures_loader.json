@@ -41,6 +41,51 @@
 				}
 			}
 		},
+		"white": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/metalic_silver/metalic_silver.jpg"
+				}
+			}
+		},
+		"red_light": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/red.png"
+				},
+				"mer": {
+					"path": "textures/terrain/green.png"
+				}
+			}
+		},
+		"green_light": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/green.png"
+				},
+				"mer": {
+					"path": "textures/terrain/green.png"
+				}
+			}
+		},
+		"blue_light": {
+			"filter": "GL_REPEAT",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/terrain/blue.png"
+				},
+				"mer": {
+					"path": "textures/terrain/green.png"
+				}
+			}
+		},
 		"colors": {
 			"filter": "GL_CLAMP_TO_EDGE",
 			"blur": false,

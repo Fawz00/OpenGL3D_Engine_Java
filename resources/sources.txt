@@ -1,0 +1,7 @@
+https://learnopengl.com/Advanced-Lighting/Bloom
+https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/6.hdr/6.hdr.fs
+https://github.com/jimmiebergmann/Sponza
+https://www.youtube.com/watch?app=desktop&v=OPFvcsQAKjc
+https://catlikecoding.com/unity/tutorials/advanced-rendering/bloom/
+https://www.learnopengles.com/tag/mipmap/
+https://www.shadertoy.com/view/fddfDX

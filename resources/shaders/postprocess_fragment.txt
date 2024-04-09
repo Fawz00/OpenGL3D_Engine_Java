@@ -9,6 +9,7 @@ uniform sampler2D TEXTURE_0;
 uniform sampler2D TEXTURE_MER;
 uniform sampler2D TEXTURE_DEPTH;
 uniform sampler2D TEXTURE_REFLECTION;
+uniform sampler2D TEXTURE_LIGHTING;
 
 uniform mat4 MVP_MATRIX;
 uniform vec2 MAIN_RESOLUTION;
@@ -22,6 +23,7 @@ in vec2 uv;
 out vec4 FragColor;
 
 #define USE_HDR
+#define USE_BLOOM
 
 #define PI 3.14159265358979323
 
@@ -209,6 +211,21 @@ void main() {
 		}
 	#endif
 
+	// BLOOM
+	#if USE_BLOOM
+		vec3 bloom = vec3(0.0);
+		for(float y=-1.0; y<=1.0; y++) for(float x=-1.0; x<=1.0; x++){
+			bloom += (
+						textureLod(TEXTURE_LIGHTING, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/32.0)), 5).rgb+
+						textureLod(TEXTURE_LIGHTING, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/16.0)), 4).rgb+
+						textureLod(TEXTURE_LIGHTING, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/8.0)), 3).rgb+
+						textureLod(TEXTURE_LIGHTING, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/4.0)), 2).rgb+
+						textureLod(TEXTURE_LIGHTING, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/2.0)), 1).rgb)/5.0;
+		}
+		bloom /= 9;
+		color.rgb += bloom;
+	#endif
+
 	// GAMMA
 	#if USE_HDR
         // reinhard
@@ -222,7 +239,7 @@ void main() {
     	color.rgb = pow(color.rgb, vec3(1.0 / gamma));
     #endif
 
-//	color.rgb=texture(TEXTURE_REFLECTION,uv).rgb;
+// color.rgb = texture(TEXTURE_LIGHTING, uv).rgb;
 //	vec2 ap = uv - 0.5;
 //	if(ap.x>0.0 && ap.y>0.0) color.rgb += 0.1;
 

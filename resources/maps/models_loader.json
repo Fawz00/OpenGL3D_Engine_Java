@@ -14,7 +14,8 @@
 		"tropical": "models/terrain/tropical.obj",
 		"simple": "models/terrain/simple.obj",
 		"terrain": "models/terrain/tropical.obj",
-		"rumah": "models/terrain/box.obj"
+		"rumah": "models/terrain/box.obj",
+		"sponza": "models/terrain/sponza_fix.obj"
 
 	}
 }
