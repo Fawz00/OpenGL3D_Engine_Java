@@ -75,6 +75,8 @@ public class Window {
 		GLFW.glfwSetWindowSizeLimits(window, Settings.windowSize[0], Settings.windowSize[1], -1, -1);
 		GLFW.glfwMakeContextCurrent(window);
 		GL.createCapabilities();
+		String version = GL11.glGetString(GL11.GL_VERSION);
+		System.out.println("OpenGL version: " + version);
 		GLFW.glfwSwapInterval(Settings.vsync ? 1 : 0);
 
 		if(Settings.enableGLDebug) GLUtil.setupDebugMessageCallback();

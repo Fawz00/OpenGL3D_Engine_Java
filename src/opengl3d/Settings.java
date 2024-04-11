@@ -19,7 +19,7 @@ public class Settings {
 	//GAME
 	public static boolean splashScreen			= false;
 	public static boolean physics				= true;
-	public static float playerSpeed				= 150f/3.6f;
+	public static float playerSpeed				= 50f/3.6f;
 
 	//CONTROL MAPPING
 	public static float cameraSensitivity		= 0.005f;
@@ -48,7 +48,7 @@ public class Settings {
 	public static float drawDistance			= 10000f;
 	public static float entityRenderDistance	= 120f;
 
-	public static float gamma					= 1.5f;
+	public static float gamma					= 1.2f;
 	public static int useHDR					= 1;
 
 	public static int useSkyBox					= 1;
@@ -59,8 +59,8 @@ public class Settings {
 
 	public static int useShadow					= 1;
 	public static int shadowResolution			= 1024;
-	public static float shadowDistance			= 50;
-	public static int usePenumbraShadow			= 1;
+	public static float shadowDistance			= 25;
+	public static int usePenumbraShadow			= 0;
 
 	public static int useReflection				= 1;
 	public static float reflectionQuality		= 0.5f; // Percent of screenQuality

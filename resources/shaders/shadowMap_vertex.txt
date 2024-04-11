@@ -8,6 +8,12 @@ layout (location = 2) in vec3 NORMAL;
 layout (location = 3) in vec3 TANGENT;
 layout (location = 4) in vec3 BITANGENT;
 
+layout (location = 5) in vec3 I_TRANSLATION;
+layout (location = 6) in vec3 I_ROTATION;
+layout (location = 7) in vec3 I_SCALE;
+
+uniform float INSTANCED;
+
 uniform mat4 MVP_MATRIX;
 uniform mat4 MODEL_MATRIX;
 
@@ -15,12 +21,42 @@ out vec2 uv;
 out vec3 position;
 out vec4 vPos;
 
+mat3 calculateRotation(vec3 rotation) {
+	mat3 rotationX = mat3(
+		1.0, 0.0, 0.0,
+		0.0, cos(rotation.x), -sin(rotation.x),
+		0.0, sin(rotation.x), cos(rotation.x)
+	);
+	mat3 rotationY = mat3(
+		cos(rotation.y), 0.0, sin(rotation.y),
+		0.0, 1.0, 0.0,
+		-sin(rotation.y), 0.0, cos(rotation.y)
+	);
+	mat3 rotationZ = mat3(
+		cos(rotation.z), -sin(rotation.z), 0.0,
+		sin(rotation.z), cos(rotation.z), 0.0,
+		0.0, 0.0, 1.0
+	);
+	return rotationZ * rotationY * rotationX;
+}
+
 void main() {
-	vec4 pos = MVP_MATRIX*MODEL_MATRIX*vec4(POSITION, 1.0);
+	vec4 pos;
+
+	if(INSTANCED == 1.0) {
+		pos = vec4(POSITION, 1.0);
+		pos.xyz *= I_SCALE;
+		pos.xyz = calculateRotation(I_ROTATION*0.01745329251994329576923690768489) * pos.xyz;
+		pos.xyz += I_TRANSLATION;
+	} else {
+		pos = MODEL_MATRIX*vec4(POSITION, 1.0);
+	}
+
+	vec4 gPos = MVP_MATRIX*pos;
 
 	uv = TEXCOORD;
 	position = POSITION;
-	vPos = pos;
+	vPos = gPos;
 
-	gl_Position = pos;
+	gl_Position = gPos;
 }

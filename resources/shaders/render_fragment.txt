@@ -13,8 +13,6 @@ uniform sampler2D TEXTURE_PARALLAX;
 uniform sampler2D TEXTURE_MER;
 uniform sampler2D DEPTH_MAP;
 
-uniform mat4 NORMAL_MATRIX;
-
 uniform float USE_NORMAL_TEXTURE;
 uniform float USE_PARALLAX_TEXTURE;
 uniform float USE_MER_TEXTURE;
@@ -24,15 +22,16 @@ uniform float DAYLIGHT;
 uniform vec3 SUN_DIR;
 uniform float SHADOW_SIZE;
 uniform float SHADOW_RESOLUTION;
+uniform float INSTANCED;
 
 in vec2 uv;
 in vec4 position;
 in vec4 vPos;
 in vec4 shadowView;
+in vec3 dNormal;
 
 in vec3 shadowViewPosition;
 in vec3 viewPosition;
-in vec3 vNormal;
 
 in vec3 tangentShadowViewPosition;
 in vec3 tangentPosition;
@@ -44,8 +43,8 @@ layout (location = 2) out vec4 FragMer;
 layout (location = 3) out vec4 FragNormal;
 
 //define SHADOW_COLOR vec3(0.25098039215, 0.61176470588, 1.0)
-#define SHADOW_COLOR vec3(0.004, 0.00701960784313, 0.01)
-//define SHADOW_COLOR vec3(0.4, 0.701960784313, 1.0)
+//define SHADOW_COLOR vec3(0.004, 0.00701960784313, 0.01)
+#define SHADOW_COLOR vec3(0.4, 0.701960784313, 1.0)
 #define DISPLACEMENT_HEIGHT_SCALE 0.015
 
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
@@ -189,7 +188,7 @@ void main() {
 		if(texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 0.0) discard;
 	}
 
-	normal = petrub_normal(mat3(NORMAL_MATRIX) * vNormal, viewDir, texCoords);
+	normal = petrub_normal(dNormal, viewDir, texCoords);
 
 
 	//diffuse

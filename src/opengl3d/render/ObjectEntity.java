@@ -74,6 +74,8 @@ public class ObjectEntity {
 			shader.setMat4("MODEL_MATRIX", transformM);
 			shader.setMat4("NORMAL_MATRIX", Matriks.RotasiKe(rotation[0],rotation[1],rotation[2]));
 	
+			shader.setFloat("INSTANCED", 0f);
+
 			model.getModel();
 			shader.setInt("TEXTURE", 0);
 			GL30.glActiveTexture(GL30.GL_TEXTURE0);

@@ -151,7 +151,7 @@ void main() {
 		float cloudSize = 0.875; //Lower value => Overcast; Higher value => Clear
 		float shadowStep = 4.;
 		float animTime = TIME * 0.025;
-		bool dynamicCloud = true;
+		bool dynamicCloud = false;
 
 		#if USE_CLOUD == 1
 
@@ -232,7 +232,7 @@ void main() {
 	// if((color.r+color.g+color.b)/3.0 >= 0.98) color.rgb = vec3(1.,0.,0.);
 
 	FragColor = vec4(color, 1.0);
-	FragMer = vec4(0.0, 0.0012, 0.0, 1.0);
+	FragMer = vec4(0.0, 0.012, 0.0, 1.0);
 	FragNormal = vec4(-pos.xyz, 1.0);
 	FragDepth = vec4(1.0);
 }

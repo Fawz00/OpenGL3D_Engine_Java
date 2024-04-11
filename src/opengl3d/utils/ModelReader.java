@@ -29,8 +29,62 @@ public class ModelReader {
 		setAttributes();
 		resetModel();
 	}
+	public ModelReader(String modelDir, FloatBuffer data){
+		ObjReader modelOBJ = new ObjReader(modelDir);
+		faces = modelOBJ.numFaces;
+		stride = modelOBJ.stride;
+
+		setInstanceData(data);
+
+		vao = GL30.glGenVertexArrays();
+		vbo = GL30.glGenBuffers();
+		getModel();
+		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, modelOBJ.out, GL30.GL_STATIC_DRAW);
+		modelOBJ.deleteBuffer();
+		setAttributes();
+		bindInstanceData();
+
+		setAttr(5, 3, Float.BYTES*9, 0);
+		setAttrAsInstance(5);
+		setAttr(6, 3, Float.BYTES*9, Float.BYTES*3);
+		setAttrAsInstance(6);
+		setAttr(7, 3, Float.BYTES*9, Float.BYTES*6);
+		setAttrAsInstance(7);
+
+		resetModel();
+	}
+	public ModelReader(String modelDir, float[] data){
+		ObjReader modelOBJ = new ObjReader(modelDir);
+		faces = modelOBJ.numFaces;
+		stride = modelOBJ.stride;
+
+		setInstanceData(data);
+		
+		vao = GL30.glGenVertexArrays();
+		vbo = GL30.glGenBuffers();
+		getModel();
+		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, modelOBJ.out, GL30.GL_STATIC_DRAW);
+		modelOBJ.deleteBuffer();
+		setAttributes();
+		bindInstanceData();
+		
+		setAttr(5, 3, Float.BYTES*9, 0);
+		setAttrAsInstance(5);
+		setAttr(6, 3, Float.BYTES*9, 3);
+		setAttrAsInstance(6);
+		setAttr(7, 3, Float.BYTES*9, 6);
+		setAttrAsInstance(7);
+
+		resetModel();
+	}
 
 	public void setInstanceData(FloatBuffer data){
+		instanceVbo = GL30.glGenBuffers();
+		bindInstanceData();
+		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, data, GL30.GL_STATIC_DRAW);
+		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
+	}
+	public void setInstanceData(float[] data){
 		instanceVbo = GL30.glGenBuffers();
 		bindInstanceData();
 		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, data, GL30.GL_STATIC_DRAW);
@@ -81,8 +135,8 @@ public class ModelReader {
 	}
 
 	public void deleteModel(){
-		GL30.glDeleteVertexArrays(vao);
-		GL30.glDeleteBuffers(vbo);
+		if(vao != 0) GL30.glDeleteVertexArrays(vao);
+		if(vbo != 0) GL30.glDeleteBuffers(vbo);
 		if(instanceVbo != 0) GL30.glDeleteBuffers(instanceVbo);
 	}
 
