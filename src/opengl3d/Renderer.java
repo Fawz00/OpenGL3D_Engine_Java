@@ -229,9 +229,6 @@ public class Renderer {
 			float delay = 12f;
 			if(!Settings.splashScreen) delay = 0f;
 			gameTexture.onLoop(camera, gameTime-delay, frameTime, isPaused);
-			if(!isPaused) {
-				camera.update();
-			}
 		}
 
 		////__Splash Screen__////

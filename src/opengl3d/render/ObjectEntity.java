@@ -60,7 +60,7 @@ public class ObjectEntity {
 
 	public void render(Shader shader, Camera camera) {
 		float distance = Vector3f.distance(	camera.getPosition()[0],camera.getPosition()[1],camera.getPosition()[2],
-											position[0],position[1],position[2]);;
+											position[0],position[1],position[2]);
 		if(distance <= Settings.entityRenderDistance) {
 			float[] transformM = new float[16];
 			Matrix4f tr = new Matrix4f()

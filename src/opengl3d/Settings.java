@@ -22,7 +22,8 @@ public class Settings {
 	public static float playerSpeed				= 50f/3.6f;
 
 	//CONTROL MAPPING
-	public static float cameraSensitivity		= 0.005f;
+	public static float cameraSensitivity		= 0.9f;
+	public static boolean smoothCamera			= true;
 	public static int keyForward				= GLFW.GLFW_KEY_SPACE;
 	public static int keyToggleCamera			= GLFW.GLFW_KEY_C;
 	public static int keyZoom					= GLFW.GLFW_KEY_Z;

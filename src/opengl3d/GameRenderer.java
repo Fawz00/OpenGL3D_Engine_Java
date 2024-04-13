@@ -578,6 +578,15 @@ public class GameRenderer {
 		float playerMovement = 0f;
 		if(Input.isKeyDown(Settings.keyForward) && !isPaused) {playerMovement = -Settings.playerSpeed;}else playerMovement = 0f;
 
+		// if((int)time%10 == 0) {
+		// 	entityPlayer.setPosition(new float[]{
+		// 		180f*(2f*(float)Math.random()-1f),
+		// 		180f*(float)Math.random(),
+		// 		180f*(2f*(float)Math.random()-1f)
+		// 	});
+		// 	entityPlayer.setVelocity(new float[]{0f,0f,0f});
+		// }
+
 		if(Settings.physics){
 			entityPlayer.setAcceleration(new float[]{	
 												frameTime*playerMovement*((float)Math.sin(-camera.getRotation()[0]) * (float)Math.cos(camera.getRotation()[1])),
@@ -624,16 +633,18 @@ public class GameRenderer {
 		sunDir.mul(tr);
 
 		//RENDER MATRIX
+		if(!isPaused) {
+			camera.update(new float[]{entityPlayer.getPosition()[0], entityPlayer.getPosition()[1], entityPlayer.getPosition()[2]}, frameTime);
+		}
 		float daylight = (float)Math.sin((time/4f)*toRad);
 		float ratio = (float) screenResolution[0] / (float) screenResolution[1];
-		camera.setPivotPosition(entityPlayer.getPosition());
 
 		camera.setFovY((Input.isKeyDown(Settings.keyZoom) && !isPaused) ? Settings.fovZoom*toRad : Settings.fov*toRad);
 		projectionMatrix.identity();
 		projectionMatrix.perspective(camera.getFovY(), ratio, 0.0125f, Settings.drawDistance);
 
 		translationMatrix.identity();
-		translationMatrix.translate(-entityPlayer.getPosition()[0], -entityPlayer.getPosition()[1], -entityPlayer.getPosition()[2]);
+		translationMatrix.translate(-camera.getPivotPosition()[0], -camera.getPivotPosition()[1], -camera.getPivotPosition()[2]);
 		rotationMatrix.identity();
 		rotationMatrix.rotate(camera.getRotation()[1], 1f, 0f, 0f).rotate(camera.getRotation()[0], 0f, 1f, 0f);
 		rotationMatrix.mul(translationMatrix, transformationMatrix);
