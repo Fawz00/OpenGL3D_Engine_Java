@@ -15,10 +15,9 @@ public class Camera {
 			10f*Settings.cameraDistance,
 			-Settings.cameraDistance
 	};
-	private float[] pivotPosition = new float[3];
+	private Float[] pivotPosition;
 	private float[] rotation = new float[3];
 	private float previousCursorPosition[] = new float[2];
-	private float previousPivotPosition[] = new float[3];
 	private float rotVel[] = new float[2];
 	private float posVel[] = new float[3];
 	private boolean isSmooth = false;
@@ -27,9 +26,8 @@ public class Camera {
 
 
 
-	public Camera(int mode, float fov, float[] position, float[] rotation) {
+	public Camera(int mode, float fov, float[] rotation) {
 		this.currentMode = mode;
-		this.pivotPosition = position;
 		this.rotation = rotation;
 		this.fovY = fov;
 	}
@@ -53,29 +51,32 @@ public class Camera {
 	}
 
 	private void setPivotPosition(float[] pos, float time) {
-		pivotPosition = pos;
-
+		if(pivotPosition == null) pivotPosition = new Float[]{pos[0], pos[1], pos[2]};
+		if(pivotPosition[0] == null || Float.isNaN(pivotPosition[0])) pivotPosition[0] = pos[0];
+		if(pivotPosition[1] == null || Float.isNaN(pivotPosition[1])) pivotPosition[1] = pos[1];
+		if(pivotPosition[2] == null || Float.isNaN(pivotPosition[2])) pivotPosition[2] = pos[2];
 		if(isSmooth) {
-			float dx = pivotPosition[0] - previousPivotPosition[0];
-			float dy = pivotPosition[1] - previousPivotPosition[1];
-			float dz = pivotPosition[2] - previousPivotPosition[2];
+			float dx = pos[0] - pivotPosition[0];
+			float dy = pos[1] - pivotPosition[1];
+			float dz = pos[2] - pivotPosition[2];
 
-			posVel[0] += 0.0001f*dx*time*time;
-			posVel[1] += 0.0001f*dy*time*time;
-			posVel[2] += 0.0001f*dz*time*time;
+			posVel[0] += dx*time*time*4f;
+			posVel[1] += dy*time*time*4f;
+			posVel[2] += dz*time*time*4f;
 
-			float smoothness = 1000.0f;
+			//System.out.println(MatMat.distance(pivotPosition[2], pos[2]));
 
-			pivotPosition[0] += Math.min(posVel[0], smoothness);
-			pivotPosition[1] += Math.min(posVel[1], smoothness);
-			pivotPosition[2] += Math.min(posVel[2], smoothness);
+			pivotPosition[0] += posVel[0];
+			pivotPosition[1] += posVel[1];
+			pivotPosition[2] += posVel[2];
 
-			posVel[0]/=1.0025f;
-			posVel[1]/=1.0025f;
-			posVel[2]/=1.0025f;
+			posVel[0] *= 0.98*MatMat.clamp((float) Math.pow(MatMat.distance(pos, new float[]{pivotPosition[0], pivotPosition[1], pivotPosition[2]}), 1f)/5f, 0.9f, 1f);
+			posVel[1] *= 0.98*MatMat.clamp((float) Math.pow(MatMat.distance(pos, new float[]{pivotPosition[0], pivotPosition[1], pivotPosition[2]}), 1f)/5f, 0.9f, 1f);
+			posVel[2] *= 0.98*MatMat.clamp((float) Math.pow(MatMat.distance(pos, new float[]{pivotPosition[0], pivotPosition[1], pivotPosition[2]}), 1f)/5f, 0.9f, 1f);
+		} else {
+			pivotPosition = new Float[]{pos[0], pos[1], pos[2]};
 		}
 
-		previousPivotPosition = pivotPosition;
 	}
 	private void setCameraRotation(float time) {
 		float x = (float) Input.getMouseX();
@@ -93,8 +94,8 @@ public class Camera {
 			rotation[0] += Math.min(rotVel[0], smoothness);
 			rotation[1] += Math.min(rotVel[1], smoothness);
 
-			rotVel[0]/=1.075f;
-			rotVel[1]/=1.075f;
+			rotVel[0]/=1.07f;
+			rotVel[1]/=1.07f;
 		} else {
 			float smoothness = 0.25f;
 			float lerpFactor = Math.min(1.0f, smoothness * time);
@@ -131,7 +132,7 @@ public class Camera {
 		return new float[] {a.y, a.x, a.z, a.w};
 	}
 	public float[] getPivotPosition() {
-		return pivotPosition;
+		return new float[]{pivotPosition[0], pivotPosition[1], pivotPosition[2]};
 	}
 	public float[] getRotation() {
 		return rotation;

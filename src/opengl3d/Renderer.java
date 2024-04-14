@@ -163,7 +163,7 @@ public class Renderer {
 		textures[0] = loadTexture("resources/textures/ui/splash0.png");
 		textures[1] = loadTexture("resources/textures/ui/splash1.png");
 		textures[2] = loadTexture("resources/textures/ui/splash2.png");
-		camera = new Camera(0, Settings.fov*toRad, new float[] {0f,0f,0f}, new float[] {0f,0f,0f});
+		camera = new Camera(0, Settings.fov*toRad, new float[] {0f,0f,0f});
 
 		try {
 			InputStream fontData = new ByteArrayInputStream(Files.readAllBytes(Paths.get("resources/fonts/Kosugi_Maru/KosugiMaru-Regular.ttf")));
