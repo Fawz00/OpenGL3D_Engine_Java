@@ -14,7 +14,7 @@ public class Settings {
 	public static boolean maximized				= false;
 
 	//DEBUGGING
-	public static boolean enableGLDebug			= false;
+	public static boolean enableGLDebug			= true;
 
 	//GAME
 	public static boolean splashScreen			= false;
@@ -30,24 +30,25 @@ public class Settings {
 	public static int keyTogglePhysics			= GLFW.GLFW_KEY_P;
 
 	//AUDIO CONFIG
-	public static float volumeMusic				= 0.00f;
+	public static float volumeMusic				= 1.00f;
 
 	//RENDER CONFIG
 	public static boolean limitFps				= false;
 	public static int fpsLimit					= 60;
 	public static boolean vsync					= true;
-	public static int FXAA						= 1; // 0: OFF; 1: ON
 
 	public static boolean ASCIICharOnly			= true; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
 
-	public static float screenQuality			= 1.00f; // Percent of display resolution
-
 	public static float fov						= 70f;
 	public static float fovZoom					= 20f;
-	public static float cameraDistance			= 10f;
+	public static float cameraDistance			= 8f;
 
 	public static float drawDistance			= 10000f;
 	public static float entityRenderDistance	= 120f;
+
+	//GRAPHICS
+	public static float screenQuality			= 1.00f; // Percent of display resolution
+	public static int FXAA						= 1; // 0: OFF; 1: ON
 
 	public static float gamma					= 1.2f;
 	public static int useHDR					= 1;
@@ -66,9 +67,11 @@ public class Settings {
 	public static int useReflection				= 1;
 	public static float reflectionQuality		= 0.5f; // Percent of screenQuality
 
-	public static int useBloom					= 1; // 0=OFF; 1=SIMPLE_BLUR; 2=FOG_BLOOM
+	public static int useBloom					= 1;
 
-	public static int useSSGI					= 0;
-	public static int SSGIDenoise				= 0;
+	public static int useSSAO					= 0; // in development
+
+	public static int useSSGI					= 0; // in development
+	public static int SSGIDenoise				= 0; // in development
 
 }

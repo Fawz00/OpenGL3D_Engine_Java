@@ -71,8 +71,8 @@ public class GameRenderer {
 	private float HDRSpeed = 0.005f;
 	private float sceneExposure = 1.0f;
 	private float sceneExposureMultiplier = 1.1f;
-	private float sceneExposureRangeMax = 2.4f;
-	private float sceneExposureRangeMin = -1.5f;
+	private float sceneExposureRangeMax = 2.2f;
+	private float sceneExposureRangeMin = -1.2f;
 
 	private Matrix4f rotationMatrix = new Matrix4f();
 	private Matrix4f translationMatrix = new Matrix4f();
@@ -325,7 +325,7 @@ public class GameRenderer {
 				0f,400f,0f,  0f,0f,0f,  1f,1f,1f);
 		renderModel(shader,
 				modelAll.getModelData(modelAll.getModelId("sponza")),
-				textureAll.getTextureData(textureAll.getTextureId("white")),
+				textureAll.getTextureData(textureAll.getTextureId("stone")),
 				300f,75,100f,  0f,0f,0f,  1.2f,1.2f,1.2f);
 		renderModel(shader,
 				modelAll.getModelData(modelAll.getModelId("box")),
@@ -722,6 +722,7 @@ public class GameRenderer {
 
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderColorTexture);
 		GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGB, screenResolution[0], screenResolution[1], 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+		GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D);
 
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderDepthTexture);
 		GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RG32F, screenResolution[0], screenResolution[1], 0, GL30.GL_RG, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
@@ -890,7 +891,7 @@ public class GameRenderer {
 
 			GL30.glActiveTexture(GL30.GL_TEXTURE0);
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderColorTexture);
-			if(Settings.useHDR == 10) {
+			if(Settings.useHDR == 1) {
 				float[] luminescence = new float[3];
 				GL30.glGetTexImage(GL30.GL_TEXTURE_2D, 10, GL30.GL_RGB, GL30.GL_FLOAT, luminescence);
 				float lum = 0.2126f * luminescence[0] + 0.7152f * luminescence[1] + 0.0722f * luminescence[2];

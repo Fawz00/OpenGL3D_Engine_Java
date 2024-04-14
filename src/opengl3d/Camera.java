@@ -122,16 +122,17 @@ public class Camera {
 	public float[] getPosition() {
 		Vector4f a = new Vector4f(0f, 0f, 0f, 1f);
 		Matrix4f tr = new Matrix4f()
-				.translate(pivotPosition[1], pivotPosition[0], pivotPosition[2])
-				.rotate(rotation[0], 1f, 0f, 0f)
-				.rotate(rotation[1], 0f, 1f, 0f)
-				.rotate(rotation[2], 0f, 0f, 1f)
-				.translate(0f, 0f, getDistance());
+			.translate(pivotPosition[1], pivotPosition[0], pivotPosition[2])
+			.rotate(rotation[0], 1f, 0f, 0f)
+			.rotate(rotation[1], 0f, 1f, 0f)
+			.rotate(rotation[2], 0f, 0f, 1f)
+			.translate(0f, 0f, getDistance());
 		a.mul(tr);
 
 		return new float[] {a.y, a.x, a.z, a.w};
 	}
 	public float[] getPivotPosition() {
+		if(pivotPosition == null) return new float[]{0f, 0f, 0f};
 		return new float[]{pivotPosition[0], pivotPosition[1], pivotPosition[2]};
 	}
 	public float[] getRotation() {
