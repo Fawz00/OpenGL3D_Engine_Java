@@ -64,7 +64,7 @@ public class TextureReader {
 	}
 	public void setTextureAo(String dir){
 		if(hasAO == true && dir != null){
-			textures[3] = loadTexture(4, dir, blur, filter);
+			textures[4] = loadTexture(4, dir, blur, filter);
 			if(PRINT_LOG) System.out.println("INFO: " + "TEXTURE READER: "+dir+"\nSuccess set the Ambient Occlusion texture");
 		} else {
 			hasAO= false;

@@ -7,8 +7,8 @@ import org.lwjgl.opengl.GL33;
 
 public class ModelReader {
 
-	private int faces;
-	private int stride;
+	private int faces = -1;
+	private int stride = -1;
 
 	private static int FLOAT_BYTE_SIZE = Float.BYTES;
 

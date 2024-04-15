@@ -14,7 +14,7 @@ public class Settings {
 	public static boolean maximized				= false;
 
 	//DEBUGGING
-	public static boolean enableGLDebug			= true;
+	public static boolean enableGLDebug			= false;
 
 	//GAME
 	public static boolean splashScreen			= false;
@@ -33,8 +33,8 @@ public class Settings {
 	public static float volumeMusic				= 1.00f;
 
 	//RENDER CONFIG
-	public static boolean limitFps				= false;
-	public static int fpsLimit					= 60;
+	public static boolean limitFps				= true;
+	public static int fpsLimit					= 160;
 	public static boolean vsync					= true;
 
 	public static boolean ASCIICharOnly			= true; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;

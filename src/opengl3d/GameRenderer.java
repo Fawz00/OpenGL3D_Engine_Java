@@ -72,7 +72,7 @@ public class GameRenderer {
 	private float sceneExposure = 1.0f;
 	private float sceneExposureMultiplier = 1.1f;
 	private float sceneExposureRangeMax = 2.2f;
-	private float sceneExposureRangeMin = -1.2f;
+	private float sceneExposureRangeMin = -0.8f;
 
 	private Matrix4f rotationMatrix = new Matrix4f();
 	private Matrix4f translationMatrix = new Matrix4f();

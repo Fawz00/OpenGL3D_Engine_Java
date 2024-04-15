@@ -55,7 +55,7 @@ public class Camera {
 		if(pivotPosition[0] == null || Float.isNaN(pivotPosition[0])) pivotPosition[0] = pos[0];
 		if(pivotPosition[1] == null || Float.isNaN(pivotPosition[1])) pivotPosition[1] = pos[1];
 		if(pivotPosition[2] == null || Float.isNaN(pivotPosition[2])) pivotPosition[2] = pos[2];
-		if(isSmooth) {
+		if(isSmooth && currentMode != 0) {
 			float dx = pos[0] - pivotPosition[0];
 			float dy = pos[1] - pivotPosition[1];
 			float dz = pos[2] - pivotPosition[2];
@@ -94,8 +94,8 @@ public class Camera {
 			rotation[0] += Math.min(rotVel[0], smoothness);
 			rotation[1] += Math.min(rotVel[1], smoothness);
 
-			rotVel[0]/=1.07f;
-			rotVel[1]/=1.07f;
+			rotVel[0] /= 1.07f*(1f-0.2f*time);
+			rotVel[1] /= 1.07f*(1f-0.2f*time);
 		} else {
 			float smoothness = 0.25f;
 			float lerpFactor = Math.min(1.0f, smoothness * time);
@@ -120,6 +120,7 @@ public class Camera {
 		return (float) (2*Math.atan(Math.tan((fovY)/2)*ratio));
 	}
 	public float[] getPosition() {
+		if(pivotPosition == null) return new float[]{0f, 0f, 0f};
 		Vector4f a = new Vector4f(0f, 0f, 0f, 1f);
 		Matrix4f tr = new Matrix4f()
 			.translate(pivotPosition[1], pivotPosition[0], pivotPosition[2])
