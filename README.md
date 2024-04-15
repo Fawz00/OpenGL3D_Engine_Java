@@ -50,4 +50,10 @@ proyek ini bisa dibuka dengan IDE Eclipse atau Visual Studio Code dengan Java Ex
   <li><a href="https://zhuanlan.zhihu.com/p/555476307">
       Reflective Shadow Map </a>
   </li>
+  <li><a href="https://github.com/KhronosGroup/glTF/blob/main/specification/2.0/README.md">
+      GLTF file documentation </a>
+  </li>
+  <li><a href="https://vrm.dev/">
+      VRM file documentation </a>
+  </li>
 </ul>
