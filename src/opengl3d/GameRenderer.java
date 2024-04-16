@@ -64,7 +64,7 @@ public class GameRenderer {
 	private int lightingFBO;
 	private int postProcessFBO;
 
-	private int treeCount = 1000;
+	private int treeCount = 500;
 	private ModelReader treeInstance;
 	private FloatBuffer randTreePos = MemoryUtil.memAllocFloat(treeCount*9);
 	private float toRad = 0.0174532925199f;
@@ -326,7 +326,7 @@ public class GameRenderer {
 		renderModel(shader,
 				modelAll.getModelData(modelAll.getModelId("sponza")),
 				textureAll.getTextureData(textureAll.getTextureId("stone")),
-				300f,75,100f,  0f,0f,0f,  1.2f,1.2f,1.2f);
+				300f,75,100f,  0f,0f,0f,  1f,1f,1f);
 		renderModel(shader,
 				modelAll.getModelData(modelAll.getModelId("box")),
 				textureAll.getTextureData(textureAll.getTextureId("red_light")),
@@ -401,11 +401,12 @@ public class GameRenderer {
 		postProcessShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/postprocess_fragment.txt");
 
 		entityPlayer = new ObjectEntity(
-				modelAll.getModelData(modelAll.getModelId("sphere")),
-				textureAll.getTextureData(textureAll.getTextureId("metalic_silver")),
+				modelAll.getModelData(modelAll.getModelId("char")),
+				textureAll.getTextureData(textureAll.getTextureId("char")),
 				new float[] {300f,100f,200f},
 				new float[] {0f,0f,0f},
 				1f);
+				entityPlayer.setCameraOffset(new float[] {0f,1.45f,0.1f});
 		entityThing = new ObjectEntity(
 				modelAll.getModelData(modelAll.getModelId("wolf")),
 				textureAll.getTextureData(textureAll.getTextureId("wood")),
@@ -601,7 +602,7 @@ public class GameRenderer {
 												frameTime);
 
 			//Floor collision
-			float planePos=68f;
+			float planePos=67.5f;
 			if(entityPlayer.getPosition()[1]<planePos){
 				entityPlayer.setPosition(new float[]{entityPlayer.getPosition()[0],planePos,entityPlayer.getPosition()[2]});
 //				if(playerCol.getVelocity()[1]>=0.01625){
@@ -634,7 +635,7 @@ public class GameRenderer {
 
 		//RENDER MATRIX
 		if(!isPaused) {
-			camera.update(new float[]{entityPlayer.getPosition()[0], entityPlayer.getPosition()[1], entityPlayer.getPosition()[2]}, frameTime);
+			camera.update(new float[]{entityPlayer.getCameraPosition()[0], entityPlayer.getCameraPosition()[1], entityPlayer.getCameraPosition()[2]}, frameTime);
 		}
 		float daylight = (float)Math.sin((time/4f)*toRad);
 		float ratio = (float) screenResolution[0] / (float) screenResolution[1];

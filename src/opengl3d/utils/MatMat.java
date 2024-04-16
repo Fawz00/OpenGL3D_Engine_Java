@@ -12,30 +12,34 @@ public class MatMat {
 
 	public static float[] sub(float[] a, float[] b){
 		if(a.length != b.length) return null;
+		float[] c = new float[a.length];
 		for(int i=0; i<a.length; i++)
-			a[i] -= b[i];
-		return a;
+			c[i] = a[i]-b[i];
+		return c;
 	}
 
 	public static float[] sum(float[] a, float[] b){
 		if(a.length != b.length) return null;
+		float[] c = new float[a.length];
 		for(int i=0; i<a.length; i++)
-			a[i] += b[i];
-		return a;
+			c[i] = a[i]+b[i];
+		return c;
 	}
 
 	public static float[] mul(float[] a, float[] b){
 		if(a.length != b.length) return null;
+		float[] c = new float[a.length];
 		for(int i=0; i<a.length; i++)
-			a[i] *= b[i];
-		return a;
+			c[i] = a[i]*b[i];
+		return c;
 	}
 
 	public static float[] div(float[] a, float[] b){
 		if(a.length != b.length) return null;
+		float[] c = new float[a.length];
 		for(int i=0; i<a.length; i++)
-			a[i] /= b[i];
-		return a;
+			c[i] = a[i]/b[i];
+		return c;
 	}
 
 	public static float distance(float[] a){

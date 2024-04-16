@@ -143,7 +143,7 @@ By: Sir Bird / Zerofile
 
 #define GOLDEN_ANGLE 2.3999632 //3PI-sqrt(5)PI
 
-#define pow(a,b) pow(max(a,0.),b) // @morimea
+// define pow(a,b) pow(max(a,0.),b) // @morimea
 
 mat2 sample2D = mat2(cos(GOLDEN_ANGLE),sin(GOLDEN_ANGLE),-sin(GOLDEN_ANGLE),cos(GOLDEN_ANGLE));
 

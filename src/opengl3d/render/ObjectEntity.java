@@ -4,10 +4,12 @@ import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL30;
 
 import opengl3d.Camera;
 import opengl3d.Settings;
+import opengl3d.utils.MatMat;
 import opengl3d.utils.Matriks;
 import opengl3d.utils.ModelReader;
 import opengl3d.utils.Shader;
@@ -16,6 +18,7 @@ import opengl3d.utils.TextureReader;
 public class ObjectEntity {
 	private boolean isPaused = false;
 
+	private float[] cameraPosition = new float[3];
 	private float[] position = new float[3];
 	private float[] rotation = new float[3];
 	private float[] velocity = new float[3];
@@ -32,6 +35,9 @@ public class ObjectEntity {
 		setVelocity(new float[]{0f,0f,0f});
 	}
 
+	public void setCameraOffset(float[] pos) {
+		cameraPosition = pos;
+	}
 	public void setPosition(float[] pos) {
 		position = pos;
 	}
@@ -111,6 +117,17 @@ public class ObjectEntity {
 		isPaused = a;
 	}
 
+	public float[] getCameraPosition() {
+		Vector4f a = new Vector4f(0f, 0f, 0f, 1f);
+		Matrix4f tr = new Matrix4f()
+			.rotate((float)Math.toRadians(-rotation[0]), 1f, 0f, 0f)
+			.rotate((float)Math.toRadians(-rotation[1]), 0f, 1f, 0f)
+			.rotate((float)Math.toRadians(-rotation[2]), 0f, 0f, 1f)
+			.translate(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+		a.mul(tr);
+
+		return MatMat.sum(position, new float[] {a.x, a.y, a.z});
+	}
 	public float[] getPosition() {
 		return position;
 	}

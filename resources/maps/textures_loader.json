@@ -245,6 +245,16 @@
 					"path": "textures/terrain/room/displacement.png"
 				}
 			}
+		},
+
+		"char": {
+			"filter": "GL_CLAMP_TO_EDGE",
+			"blur": true,
+			"texture":{
+				"color": {
+					"path": "textures/char/char1_baked.png"
+				}
+			}
 		}
 
 	}

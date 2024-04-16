@@ -15,7 +15,8 @@
 		"simple": "models/terrain/simple.obj",
 		"terrain": "models/terrain/tropical.obj",
 		"rumah": "models/terrain/box.obj",
-		"sponza": "models/terrain/sponza_fix.obj"
+		"sponza": "models/terrain/sponza_fix.obj",
+		"char": "models/char/char1.obj"
 
 	}
 }
