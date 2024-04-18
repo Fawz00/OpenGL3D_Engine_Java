@@ -2,14 +2,12 @@
 
 precision highp float;
 
-#define USE_REFLECTION
-#define USE_FXAA
-
 uniform sampler2D TEXTURE_0;
 uniform sampler2D TEXTURE_MER;
 uniform sampler2D TEXTURE_DEPTH;
 uniform sampler2D TEXTURE_REFLECTION;
 uniform sampler2D TEXTURE_LIGHTING;
+uniform sampler2D TEXTURE_SSGI;
 
 uniform mat4 MVP_MATRIX;
 uniform vec2 MAIN_RESOLUTION;
@@ -24,6 +22,9 @@ out vec4 FragColor;
 
 #define USE_HDR
 #define USE_BLOOM
+#define USE_SSGI
+#define USE_REFLECTION
+#define USE_FXAA
 
 #define PI 3.14159265358979323
 
@@ -211,6 +212,19 @@ void main() {
 		}
 	#endif
 
+	// HDR & GAMMA
+	#if USE_HDR
+        // reinhard
+        // vec3 result = color.rgb / (color.rgb + vec3(1.0));
+        // exposure
+        vec3 result = vec3(1.0) - exp(-color.rgb * exposure);
+        // also gamma correct while we're at it
+		result = pow(color.rgb, vec3(1.0 / gamma));
+		color.rgb = result;
+    #else
+		color.rgb = pow(color.rgb, vec3(1.0 / gamma));
+	#endif
+
 	// BLOOM
 	#if USE_BLOOM
 		vec3 bloom = vec3(0.0);
@@ -226,20 +240,7 @@ void main() {
 		color.rgb += bloom;
 	#endif
 
-	// GAMMA
-	#if USE_HDR
-        // reinhard
-        // vec3 result = color.rgb / (color.rgb + vec3(1.0));
-        // exposure
-        vec3 result = vec3(1.0) - exp(-color.rgb * exposure);
-        // also gamma correct while we're at it       
-        result = pow(result, vec3(1.0 / gamma));
-		color.rgb = result;
-    #else
-    	color.rgb = pow(color.rgb, vec3(1.0 / gamma));
-    #endif
-
-// color.rgb = texture(TEXTURE_LIGHTING, uv).rgb;
+ color.rgb = texture(TEXTURE_SSGI, uv).rgb;
 //	vec2 ap = uv - 0.5;
 //	if(ap.x>0.0 && ap.y>0.0) color.rgb += 0.1;
 

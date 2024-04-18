@@ -22,7 +22,7 @@ public class Settings {
 	public static float playerSpeed				= 50f/3.6f;
 
 	//CONTROL MAPPING
-	public static float cameraSensitivity		= 1.0f;
+	public static float cameraSensitivity		= 0.9f;
 	public static boolean smoothCamera			= true;
 	public static int keyForward				= GLFW.GLFW_KEY_SPACE;
 	public static int keyToggleCamera			= GLFW.GLFW_KEY_C;
@@ -37,7 +37,7 @@ public class Settings {
 	public static int fpsLimit					= 160;
 	public static boolean vsync					= true;
 
-	public static boolean ASCIICharOnly			= false; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
+	public static boolean ASCIICharOnly			= true; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
 
 	public static float fov						= 70f;
 	public static float fovZoom					= 20f;
@@ -52,6 +52,10 @@ public class Settings {
 
 	public static float gamma					= 1.2f;
 	public static int useHDR					= 1;
+	public static float HDRSpeed				= 0.05f;
+	public static float sceneExposureMultiplier	= 1.1f;
+	public static float sceneExposureRangeMax	= 2.0f;
+	public static float sceneExposureRangeMin	= -2.2f;
 
 	public static int useSkyBox					= 1;
 	public static int useCloud					= 1; // 0=LOW 1=MEDIUM 2=ULTRA
@@ -71,7 +75,8 @@ public class Settings {
 
 	public static int useSSAO					= 0; // in development
 
-	public static int useSSGI					= 0; // in development
+	public static int useSSGI					= 1; // in development
+	public static float SSGIQuality				= 0.4f; // Percent of screenQuality
 	public static int SSGIDenoise				= 0; // in development
 
 }

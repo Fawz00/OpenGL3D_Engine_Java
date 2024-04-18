@@ -19,7 +19,7 @@ out vec4 FragColor;
 void main() {
 	vec4 color = texture(TEXTURE_0, uv);
 
-    vec3 result = vec3(1.0) - exp(-color.rgb * (exposure-1.9));
+    vec3 result = vec3(1.0) - exp(-color.rgb * (exposure-1.8));
     color.rgb = mix(result, color.rgb*4.0, texture(TEXTURE_MER, uv).y);
 
 	FragColor = clamp(color, vec4(0.0), vec4(1.0));

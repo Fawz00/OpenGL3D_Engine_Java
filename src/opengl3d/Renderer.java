@@ -315,7 +315,7 @@ public class Renderer {
 		}
 		chat += Input.getRawLine() + "_";
 		//textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
-		textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0], screenResolution[1], "こんいちは、世界！" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
+		textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
 
 		gameTexture.deleteTextures();
 	}
@@ -324,6 +324,7 @@ public class Renderer {
 		if(textures[0]!=0) GL30.glDeleteTextures(textures[0]);
 		if(textures[1]!=0) GL30.glDeleteTextures(textures[1]);
 		if(textures[2]!=0) GL30.glDeleteTextures(textures[2]);
+		textShader.delete();
 		mainShader.delete();
 		modelQuad.deleteModel();
 		gameTexture.onDestroy();

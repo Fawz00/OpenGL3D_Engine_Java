@@ -24,6 +24,7 @@ import opengl3d.utils.Matriks;
 import opengl3d.utils.ModelReader;
 import opengl3d.utils.Shader;
 import opengl3d.utils.TextureReader;
+import opengl3d.utils.text.Font;
 
 public class GameRenderer {
 	//private static boolean firstFrame;
@@ -37,11 +38,13 @@ public class GameRenderer {
 	private ModelReader modelCubemap;
 	private ModelReader modelQuad;
 
+	private Shader textShader;
 	private Shader renderShader;
 	private Shader skyBoxShader;
 	private Shader shadowMapShader;
 	private Shader reflectionShader;
 	private Shader lightingShader;
+	private Shader SSGIShader;
 	private Shader postProcessShader;
 
 	private int cubemapTexture;
@@ -56,23 +59,23 @@ public class GameRenderer {
 	private int shadowDepthTexture;
 	private int reflectionTexture;
 	private int lightingTexture;
+	private int SSGITexture;
 	private int finalTextureId;
 
 	private int renderFBO, renderRBO;
 	private int shadowDepthFBO;
 	private int reflectionFBO;
 	private int lightingFBO;
+	private int SSGIFBO;
 	private int postProcessFBO;
 
-	private int treeCount = 500;
+	private int treeCount = 800;
 	private ModelReader treeInstance;
 	private FloatBuffer randTreePos = MemoryUtil.memAllocFloat(treeCount*9);
 	private float toRad = 0.0174532925199f;
-	private float HDRSpeed = 0.005f;
 	private float sceneExposure = 1.0f;
-	private float sceneExposureMultiplier = 1.1f;
-	private float sceneExposureRangeMax = 2.2f;
-	private float sceneExposureRangeMin = -0.8f;
+
+	private Font textView;
 
 	private Matrix4f rotationMatrix = new Matrix4f();
 	private Matrix4f translationMatrix = new Matrix4f();
@@ -378,6 +381,7 @@ public class GameRenderer {
 
 	public void onCreate(int width, int height) {
 		//firstFrame=true;
+		textView = new Font(38, true);
 
 		modelAll = new ModelLoader();
 		modelCubemap = new ModelReader("resources/models/box.obj");
@@ -396,6 +400,7 @@ public class GameRenderer {
 		tempcolorTexture = loadTexture("resources/shaders/sample/atmosphere_gradient.png");
 		textureAll = new TextureLoader();
 
+		textShader = new Shader("resources/shaders/text_vertex.txt", "resources/shaders/text_fragment.txt");
 		renderShader = new Shader("resources/shaders/render_vertex.txt", "resources/shaders/render_fragment.txt");
 		skyBoxShader = new Shader("resources/shaders/skybox_vertex.txt", "resources/shaders/skybox_fragment.txt");
 		postProcessShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/postprocess_fragment.txt");
@@ -498,11 +503,30 @@ public class GameRenderer {
 			lightingTexture = GL30.glGenTextures();
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, lightingTexture);
 			GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGB, screenResolution[0], screenResolution[1], 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
-			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR_MIPMAP_LINEAR);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
 			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
 			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
 			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
 			GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_TEXTURE_2D, lightingTexture, 0);
+
+			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
+		}
+		if(Settings.useSSGI==1) {
+			int[] ssgiResolution = new int[]{(int)Math.ceil((float)screenResolution[0]*Settings.SSGIQuality), (int)Math.ceil((float)screenResolution[1]*Settings.SSGIQuality)};
+			SSGIShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/ssgi_fragment.txt");
+
+			SSGIFBO = GL30.glGenFramebuffers();
+			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, SSGIFBO);
+			
+			SSGITexture = GL30.glGenTextures();
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSGITexture);
+			GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGB, ssgiResolution[0], ssgiResolution[1], 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
+			GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_TEXTURE_2D, SSGITexture, 0);
 
 			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
@@ -637,6 +661,7 @@ public class GameRenderer {
 		if(!isPaused) {
 			camera.update(new float[]{entityPlayer.getCameraPosition()[0], entityPlayer.getCameraPosition()[1], entityPlayer.getCameraPosition()[2]}, frameTime);
 		}
+		float[] cameraPosition = camera.getPosition();
 		float daylight = (float)Math.sin((time/4f)*toRad);
 		float ratio = (float) screenResolution[0] / (float) screenResolution[1];
 
@@ -770,7 +795,7 @@ public class GameRenderer {
 		//MAIN RENDER
 		renderShader.useShader();
 		renderShader.setMat4("MVP_MATRIX", MVPMatrixF);
-		renderShader.setVec4("VIEW_POSITION", camera.getPosition());
+		renderShader.setVec4("VIEW_POSITION", cameraPosition);
 		renderShader.setFloat("TIME", time);
 		renderShader.setFloat("DAYLIGHT", daylight);
 		renderShader.setVec3("SUN_DIR", new float[] {sunDir.x,sunDir.y,sunDir.z});
@@ -869,10 +894,6 @@ public class GameRenderer {
 
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, lightingTexture);
 			GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGB, screenResolution[0], screenResolution[1], 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
-			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR_MIPMAP_LINEAR);
-			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
-			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
-			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
 			GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D);
 
 			if(GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER) != GL30.GL_FRAMEBUFFER_COMPLETE) System.out.println("FrameBuffer error");
@@ -897,8 +918,8 @@ public class GameRenderer {
 				GL30.glGetTexImage(GL30.GL_TEXTURE_2D, 10, GL30.GL_RGB, GL30.GL_FLOAT, luminescence);
 				float lum = 0.2126f * luminescence[0] + 0.7152f * luminescence[1] + 0.0722f * luminescence[2];
 
-				sceneExposure = MatMat.lerp(sceneExposure, 0.5f / lum * sceneExposureMultiplier, HDRSpeed);
-				sceneExposure = MatMat.clamp(sceneExposure, sceneExposureRangeMin, sceneExposureRangeMax);
+				sceneExposure = MatMat.lerp(sceneExposure, 0.5f / lum * Settings.sceneExposureMultiplier, Settings.HDRSpeed);
+				sceneExposure = MatMat.clamp(sceneExposure, Settings.sceneExposureRangeMin, Settings.sceneExposureRangeMax);
 
 				lightingShader.setFloat("exposure", sceneExposure);
 			} else lightingShader.setFloat("exposure", 1.0f);
@@ -924,6 +945,61 @@ public class GameRenderer {
 
 
 
+		//=========================================================================//
+		//     S C R E E N   S P A C E   G L O B A L   I L L U M I N A T I O N     //
+		//=========================================================================//
+		if(Settings.useSSGI==1) {
+			int[] ssgiResolution = new int[]{(int)Math.ceil((float)screenResolution[0]*Settings.SSGIQuality), (int)Math.ceil((float)screenResolution[1]*Settings.SSGIQuality)};
+			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, SSGIFBO);
+
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSGITexture);
+			GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGB, ssgiResolution[0], ssgiResolution[1], 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+			GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D);
+
+			if(GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER) != GL30.GL_FRAMEBUFFER_COMPLETE) System.out.println("FrameBuffer error");
+
+			GL30.glViewport(0, 0, ssgiResolution[0], ssgiResolution[1]);
+			GL30.glClearColor(0f, 0f, 0f, 1f);
+			GL30.glClearDepth(1.0f);
+			GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
+
+			SSGIShader.useShader();
+
+			modelQuad.getModel();
+			SSGIShader.setMat4("PROJ", Matriks.IdentityM4());
+			SSGIShader.setVec2("RESOLUTION", new float[]{(float)ssgiResolution[0], (float)ssgiResolution[1]});
+			SSGIShader.setFloat("TIME", time);
+			SSGIShader.setFloat("RANDOM", (float)Math.random());
+			SSGIShader.setVec4("VIEW_POSITION", cameraPosition);
+			SSGIShader.setMat4("MVP_MATRIX", MVPMatrixF);
+
+			GL30.glActiveTexture(GL30.GL_TEXTURE0);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSGITexture);
+			SSGIShader.setInt("TEXTURE_0", 0);
+			GL30.glActiveTexture(GL30.GL_TEXTURE1);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderColorTexture);
+			SSGIShader.setInt("TEXTURE_COLOR", 1);
+			GL30.glActiveTexture(GL30.GL_TEXTURE2);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderDepthTexture);
+			SSGIShader.setInt("TEXTURE_DEPTH", 2);
+			GL30.glActiveTexture(GL30.GL_TEXTURE3);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderNormalTexture);
+			SSGIShader.setInt("TEXTURE_NORMAL", 3);
+			GL30.glActiveTexture(GL30.GL_TEXTURE4);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, lightingTexture);
+			SSGIShader.setInt("TEXTURE_LIGHT", 4);
+
+			GL30.glDisable(GL30.GL_CULL_FACE);
+			GL30.glDisable(GL30.GL_DEPTH_TEST);
+
+			modelQuad.drawModel();
+			GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, 0);
+			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
+		}
+
+
+
 		//===============================//
 		//     P O S T P R O C E S S     //
 		//===============================//
@@ -931,7 +1007,7 @@ public class GameRenderer {
 
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, finalTextureId);
 		GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGB, screenResolution[0], screenResolution[1], 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
-		
+
 		if(GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER) != GL30.GL_FRAMEBUFFER_COMPLETE) System.out.println("FrameBuffer error");
 
 		GL30.glViewport(0, 0, screenResolution[0], screenResolution[1]);
@@ -951,16 +1027,6 @@ public class GameRenderer {
 
 		GL30.glActiveTexture(GL30.GL_TEXTURE0);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderColorTexture);
-		if(Settings.useHDR == 1) {
-			float[] luminescence = new float[3];
-			GL30.glGetTexImage(GL30.GL_TEXTURE_2D, 10, GL30.GL_RGB, GL30.GL_FLOAT, luminescence);
-			float lum = 0.2126f * luminescence[0] + 0.7152f * luminescence[1] + 0.0722f * luminescence[2];
-
-			sceneExposure = MatMat.lerp(sceneExposure, 0.5f / lum * sceneExposureMultiplier, HDRSpeed);
-			sceneExposure = MatMat.clamp(sceneExposure, sceneExposureRangeMin, sceneExposureRangeMax);
-
-			postProcessShader.setFloat("exposure", sceneExposure);
-		}
 		postProcessShader.setInt("TEXTURE_0", 0);
 		GL30.glActiveTexture(GL30.GL_TEXTURE1);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderMerTexture);
@@ -973,15 +1039,36 @@ public class GameRenderer {
 		postProcessShader.setInt("TEXTURE_REFLECTION", 3);
 		GL30.glActiveTexture(GL30.GL_TEXTURE4);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, lightingTexture);
+		if(Settings.useHDR == 1) {
+			float[] luminescence = new float[3];
+			GL30.glGetTexImage(GL30.GL_TEXTURE_2D, 10, GL30.GL_RGB, GL30.GL_FLOAT, luminescence);
+			float lum = 0.2126f * luminescence[0] + 0.7152f * luminescence[1] + 0.0722f * luminescence[2];
+
+			sceneExposure = MatMat.lerp(sceneExposure, 0.5f / lum * Settings.sceneExposureMultiplier, Settings.HDRSpeed);
+			sceneExposure = MatMat.clamp(sceneExposure, Settings.sceneExposureRangeMin, Settings.sceneExposureRangeMax);
+			//System.out.println(sceneExposure);
+
+			postProcessShader.setFloat("exposure", sceneExposure);
+		}
 		postProcessShader.setInt("TEXTURE_LIGHTING", 4);
+		GL30.glActiveTexture(GL30.GL_TEXTURE5);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSGITexture);
+		postProcessShader.setInt("TEXTURE_SSGI", 5);
 
 		GL30.glDisable(GL30.GL_CULL_FACE);
 		GL30.glDisable(GL30.GL_DEPTH_TEST);
 
 		modelQuad.drawModel();
+		textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, screenResolution[0]/2, 0, screenResolution[0]/2, screenResolution[1],
+				"FPS: " + Main.fpsLimiter.getFps() +"\n"+
+				"XYZ: " + String.format("%.6f", entityPlayer.getPosition()[0]) + ", " + String.format("%.6f", entityPlayer.getPosition()[1]) + ", " + String.format("%.6f", entityPlayer.getPosition()[2]) +"\n"+
+				"View: " + String.format("%.6f", camera.getRotation()[0]*57.295779513082) + ", " + String.format("%.6f", camera.getRotation()[1]*57.295779513082) + ", " + String.format("%.6f", camera.getRotation()[2]*57.295779513082) +"\n"+
+				"FOV Y: " + String.format("%.6f", camera.getFovY()*57.295779513082)
+			, 0xFFFFFFFF);
 		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, 0);
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
+
 		//firstFrame=false;
 	}
 
@@ -994,6 +1081,10 @@ public class GameRenderer {
 
 	public void onDestroy() {
 		isRunning = false;
+
+		textView.dispose();
+
+		textShader.delete();
 		renderShader.delete();
 		skyBoxShader.delete();
 		postProcessShader.delete();
@@ -1010,6 +1101,11 @@ public class GameRenderer {
 			lightingShader.delete();
 			GL30.glDeleteFramebuffers(lightingFBO);
 			GL30.glDeleteTextures(lightingTexture);
+		}
+		if(Settings.useSSGI==1) {
+			SSGIShader.delete();
+			GL30.glDeleteFramebuffers(SSGIFBO);
+			GL30.glDeleteTextures(SSGITexture);
 		}
 		if(Settings.useReflection==1) {
 			reflectionShader.delete();
