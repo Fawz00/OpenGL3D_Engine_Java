@@ -76,7 +76,7 @@ public class Settings {
 	public static int useSSAO					= 0; // in development
 
 	public static int useSSGI					= 1; // in development
-	public static float SSGIQuality				= 0.4f; // Percent of screenQuality
+	public static float SSGIQuality				= 1.00f; // Percent of screenQuality
 	public static int SSGIDenoise				= 0; // in development
 
 }

@@ -85,27 +85,27 @@ public class Camera {
 		float dx = x - previousCursorPosition[0];
 		float dy = y - previousCursorPosition[1];
 		
-		if(isSmooth) {
-			rotVel[0] += Settings.cameraSensitivity*dx*time*time;
-			rotVel[1] += Settings.cameraSensitivity*dy*time*time;
+		// if(isSmooth) {
+		// 	rotVel[0] += Settings.cameraSensitivity*dx*time*time;
+		// 	rotVel[1] += Settings.cameraSensitivity*dy*time*time;
 
-			float smoothness = 2f;
+		// 	rotation[0] += rotVel[0];
+		// 	rotation[1] += rotVel[1];
 
-			rotation[0] += Math.min(rotVel[0], smoothness);
-			rotation[1] += Math.min(rotVel[1], smoothness);
+		// 	rotVel[0] /= 1.2f*(1f-0.2f*time);
+		// 	rotVel[1] /= 1.2f*(1f-0.2f*time);
+		// } else {
+		// 	float smoothness = 0.25f;
+		// 	float lerpFactor = Math.min(1.0f, smoothness * time);
 
-			rotVel[0] /= 1.02f*(1f-0.2f*time);
-			rotVel[1] /= 1.02f*(1f-0.2f*time);
-		} else {
-			float smoothness = 0.25f;
-			float lerpFactor = Math.min(1.0f, smoothness * time);
+		// 	float targetRotationX = rotation[0] + dx * Settings.cameraSensitivity;
+		// 	float targetRotationY = rotation[1] + dy * Settings.cameraSensitivity;
 
-			float targetRotationX = rotation[0] + dx * Settings.cameraSensitivity;
-			float targetRotationY = rotation[1] + dy * Settings.cameraSensitivity;
-
-			rotation[0] = MatMat.lerp(rotation[0], targetRotationX, lerpFactor);
-			rotation[1] = MatMat.lerp(rotation[1], targetRotationY, lerpFactor);
-		}
+		// 	rotation[0] = MatMat.lerp(rotation[0], targetRotationX, lerpFactor);
+		// 	rotation[1] = MatMat.lerp(rotation[1], targetRotationY, lerpFactor);
+		// }
+		rotation[0] += dx * Settings.cameraSensitivity * 0.01;
+		rotation[1] += dy * Settings.cameraSensitivity * 0.01;
 
 		previousCursorPosition[0] = x; previousCursorPosition[1] = y;
 	}

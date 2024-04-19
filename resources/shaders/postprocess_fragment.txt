@@ -201,6 +201,19 @@ void main() {
 	float depth = 10.0; // view.z;
 	float roughness = texture(TEXTURE_MER,uv).b*5.0;
 
+	// SSGI
+	#if USE_SSGI
+		vec3 ssgi = vec3(0.0);
+		for(float y=-1.0; y<=1.0; y++) for(float x=-1.0; x<=1.0; x++){
+			ssgi += (
+						textureLod(TEXTURE_SSGI, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/8.0)), 3).rgb+
+						textureLod(TEXTURE_SSGI, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/4.0)), 2).rgb+
+						textureLod(TEXTURE_SSGI, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/2.0)), 1).rgb)/3.0;
+		}
+		ssgi /= 4.5;
+		color.rgb += ssgi;
+	#endif
+
 	// SCREEN SPACE REFLECTION
 	#if USE_REFLECTION == 1
 		if(texture(TEXTURE_MER,uv).r > 0.125){

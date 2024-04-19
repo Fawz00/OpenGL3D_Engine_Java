@@ -109,7 +109,7 @@ public class Window {
 		GLFW.glfwSetWindowFocusCallback(window, windowFocusCallback);
 		GLFW.glfwSetWindowSizeCallback(window, windowSizeCallback);
 
-		//GLFW.glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
+		GLFW.glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
 
 		IntBuffer WINDOW_WIDTH_BUFFER = BufferUtils.createIntBuffer(1);
 		IntBuffer WINDOW_HEIGHT_BUFFER = BufferUtils.createIntBuffer(1);
@@ -182,6 +182,7 @@ public class Window {
 			GLFW.glfwSetWindowMonitor(window, 0, WINDOW_LAST_POSX, WINDOW_LAST_POSY, WINDOW_LAST_WIDTH, WINDOW_LAST_HEIGHT, 0);
 			isFullscreen = false;
 		} else {
+			GLFW.glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
 			GLFW.glfwSetWindowMonitor(window, GLFW.glfwGetPrimaryMonitor(), 0, 0, vidmode.width(), vidmode.height(), vidmode.refreshRate());
 			isFullscreen = true;
 		}
