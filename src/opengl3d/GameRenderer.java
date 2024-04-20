@@ -494,7 +494,7 @@ public class GameRenderer {
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
 
-		if(Settings.useBloom==1 || Settings.useSSGI==1) {
+		if(Settings.useHDR==1 || Settings.useBloom==1 || Settings.useSSGI==1) {
 			lightingShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/lighting_fragment.txt");
 
 			lightingFBO = GL30.glGenFramebuffers();
@@ -774,6 +774,7 @@ public class GameRenderer {
 		skyBoxShader.setMat4("SHADOW_ROTATION_MATRIX", shadowRotationMatrixF);
 		skyBoxShader.setVec3("SUN_DIR", new float[] {sunDir.x,sunDir.y,sunDir.z});
 		skyBoxShader.setFloat("TIME", time);
+		skyBoxShader.setFloat("DRAW_DISTANCE", Settings.drawDistance);
 
 		GL30.glActiveTexture(GL30.GL_TEXTURE0);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, cloudNoiseTexture);
@@ -889,7 +890,7 @@ public class GameRenderer {
 		//=========================//
 		//     L I G H T I N G     //
 		//=========================//
-		if(Settings.useBloom==1 || Settings.useSSGI==1) {
+		if(Settings.useHDR==1 || Settings.useBloom==1 || Settings.useSSGI==1) {
 			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, lightingFBO);
 
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, lightingTexture);
@@ -913,16 +914,7 @@ public class GameRenderer {
 
 			GL30.glActiveTexture(GL30.GL_TEXTURE0);
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderColorTexture);
-			if(Settings.useHDR == 1) {
-				float[] luminescence = new float[3];
-				GL30.glGetTexImage(GL30.GL_TEXTURE_2D, 10, GL30.GL_RGB, GL30.GL_FLOAT, luminescence);
-				float lum = 0.2126f * luminescence[0] + 0.7152f * luminescence[1] + 0.0722f * luminescence[2];
-
-				sceneExposure = MatMat.lerp(sceneExposure, 0.5f / lum * Settings.sceneExposureMultiplier, Settings.HDRSpeed);
-				sceneExposure = MatMat.clamp(sceneExposure, Settings.sceneExposureRangeMin, Settings.sceneExposureRangeMax);
-
-				lightingShader.setFloat("exposure", sceneExposure);
-			} else lightingShader.setFloat("exposure", 1.0f);
+			lightingShader.setFloat("exposure", 1.0f);
 			lightingShader.setInt("TEXTURE_0", 0);
 			GL30.glActiveTexture(GL30.GL_TEXTURE1);
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderMerTexture);

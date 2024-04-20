@@ -9,6 +9,7 @@ uniform samplerCube TEXTURE_SKYNIGHT;
 uniform sampler2D TEXTURE_NOISE;
 uniform sampler2D TEXTURE_TEMPCOLOR;
 
+uniform float DRAW_DISTANCE;
 uniform float TIME;
 uniform vec3 SUN_DIR;
 uniform mat4 SHADOW_ROTATION_MATRIX;
@@ -150,10 +151,10 @@ void main() {
 	color += pow(clamp(texture(TEXTURE_SKYNIGHT, normalize(vec4(SHADOW_ROTATION_MATRIX*position).xyz)).rgb, 0., 0.89), vec3(3.5)+(color.rgb*40.));
 
 	if(position.y > 0.){
-		float cloudSize = 0.875; //Lower value => Overcast; Higher value => Clear
+		float cloudSize = 2.0; //Lower value => Overcast; Higher value => Clear
 		float shadowStep = 4.;
 		float animTime = TIME * 0.025;
-		bool dynamicCloud = false;
+		bool dynamicCloud = true;
 
 		#if USE_CLOUD == 1
 
@@ -174,6 +175,7 @@ void main() {
 			} else {
 				cloud = pow(texture(TEXTURE_NOISE, layerUV).r, cloudSize);
 			}
+			cloud = clamp(cloud, 0.0, 1.0);
 
 			float cloudShadow = 0.;
 			for(float shd=1.; shd<=shadowStep+1.; shd++){
@@ -236,7 +238,7 @@ void main() {
 	// if((color.r+color.g+color.b)/3.0 >= 0.98) color.rgb = vec3(1.,0.,0.);
 
 	FragColor = vec4(color, 1.0);
-	FragMer = vec4(0.0, 0.025*emitter, 0.0, 1.0);
+	FragMer = vec4(0.0, 0.125*emitter, 0.0, 1.0);
 	FragNormal = vec4(-pos.xyz, 1.0);
-	FragDepth = vec4(1.0);
+	FragDepth = vec4(1.0, DRAW_DISTANCE, 0.0, 1.0);
 }

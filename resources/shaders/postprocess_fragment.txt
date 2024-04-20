@@ -203,15 +203,7 @@ void main() {
 
 	// SSGI
 	#if USE_SSGI
-		vec3 ssgi = vec3(0.0);
-		for(float y=-1.0; y<=1.0; y++) for(float x=-1.0; x<=1.0; x++){
-			ssgi += (
-						textureLod(TEXTURE_SSGI, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/8.0)), 3).rgb+
-						textureLod(TEXTURE_SSGI, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/4.0)), 2).rgb+
-						textureLod(TEXTURE_SSGI, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/2.0)), 1).rgb)/3.0;
-		}
-		ssgi /= 4.5;
-		color.rgb += ssgi;
+		//color.rgb += texture(TEXTURE_SSGI, uv).rgb;
 	#endif
 
 	// SCREEN SPACE REFLECTION
@@ -223,19 +215,6 @@ void main() {
 
 			color.rgb = mix(color.rgb, reflection.rgb, texture(TEXTURE_MER,uv).r*((reflection.r+reflection.g+reflection.b)/3.)*reflection.a);
 		}
-	#endif
-
-	// HDR & GAMMA
-	#if USE_HDR
-        // reinhard
-        // vec3 result = color.rgb / (color.rgb + vec3(1.0));
-        // exposure
-        vec3 result = vec3(1.0) - exp(-color.rgb * exposure);
-        // also gamma correct while we're at it
-		result = pow(color.rgb, vec3(1.0 / gamma));
-		color.rgb = result;
-    #else
-		color.rgb = pow(color.rgb, vec3(1.0 / gamma));
 	#endif
 
 	// BLOOM
@@ -253,7 +232,20 @@ void main() {
 		color.rgb += bloom;
 	#endif
 
- color.rgb = texture(TEXTURE_SSGI, uv).rgb;
+	// HDR & GAMMA
+	#if USE_HDR
+        // reinhard
+        // vec3 result = color.rgb / (color.rgb + vec3(1.0));
+        // exposure
+        vec3 result = vec3(1.0) - exp(-color.rgb * exposure);
+        // also gamma correct while we're at it
+		result = pow(color.rgb, vec3(1.0 / gamma));
+		color.rgb = result;
+    #else
+		color.rgb = pow(color.rgb, vec3(1.0 / gamma));
+	#endif
+
+// color.rgb = texture(TEXTURE_LIGHTING, uv).rgb;
 //	vec2 ap = uv - 0.5;
 //	if(ap.x>0.0 && ap.y>0.0) color.rgb += 0.1;
 
