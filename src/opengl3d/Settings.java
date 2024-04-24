@@ -30,7 +30,7 @@ public class Settings {
 	public static int keyTogglePhysics			= GLFW.GLFW_KEY_P;
 
 	//AUDIO CONFIG
-	public static float volumeMusic				= 1.00f;
+	public static float volumeMusic				= 0.00f;
 
 	//RENDER CONFIG
 	public static boolean limitFps				= false;

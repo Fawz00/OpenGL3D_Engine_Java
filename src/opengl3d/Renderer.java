@@ -223,10 +223,11 @@ public class Renderer {
 		frameTimeStart = (float)System.nanoTime();
 
 		if(sysTime >= 12 || !Settings.splashScreen) {
-			int ALStatusBack = AL10.alGetSourcei(audioBacksound, AL10.AL_SOURCE_STATE);
 			int ALStatusIntro = AL10.alGetSourcei(audioIntro, AL10.AL_SOURCE_STATE);
-			if(ALStatusIntro == AL10.AL_PLAYING) audioSourceSelf.stop(audioIntro);
-			if(ALStatusBack != AL10.AL_PLAYING) audioSourceSelf.play(audioBacksound);
+			if(ALStatusIntro != AL10.AL_PLAYING) {
+				audioSourceSelf.stop(audioIntro);
+				audioSourceSelf.play(audioBacksound);
+			}
 
 			float delay = 12f;
 			if(!Settings.splashScreen) delay = 0f;
