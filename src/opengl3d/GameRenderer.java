@@ -69,7 +69,7 @@ public class GameRenderer {
 	private int SSGIFBO;
 	private int postProcessFBO;
 
-	private int treeCount = 800;
+	private int treeCount = 250;
 	private ModelReader treeInstance;
 	private FloatBuffer randTreePos = MemoryUtil.memAllocFloat(treeCount*9);
 	private float toRad = 0.0174532925199f;
@@ -302,67 +302,72 @@ public class GameRenderer {
 		entityPlayer.render(shader, camera);
 		entityThing.render(shader, camera);
 
-		renderModel(shader,
-				modelAll.getModelData(modelAll.getModelId("simple")),
-				textureAll.getTextureData(textureAll.getTextureId("grass")),
-				300f,67.5f,200f,  0f,0f,0f,  1f,1f,1f);
+		// renderModel(shader,
+		// 		modelAll.getModelData(modelAll.getModelId("simple")),
+		// 		textureAll.getTextureData(textureAll.getTextureId("grass")),
+		// 		300f,67.5f,200f,  0f,0f,0f,  1f,1f,1f);
 		renderModel(shader,
 				modelAll.getModelData(modelAll.getModelId("terrain")),
 				textureAll.getTextureData(textureAll.getTextureId("terrain")),
 				-2560f,-5f,2560f,  0f,0f,0f,  5f,4f,5f);
-		renderModel(shader,
-				modelAll.getModelData(modelAll.getModelId("lighting")),
-				textureAll.getTextureData(textureAll.getTextureId("colors")),
-				100f,90f,50f,  0f,90f,0f,  5f,5f,5f);
-		renderModel(shader,
-				modelAll.getModelData(modelAll.getModelId("slum")),
-				textureAll.getTextureData(textureAll.getTextureId("slum")),
-				0f,90f,0f,  0f,0f,0f,  1f,1f,1f);
-		renderModel(shader,
-				modelAll.getModelData(modelAll.getModelId("wolf")),
-				textureAll.getTextureData(textureAll.getTextureId("metalic_silver")),
-				2f,195f,1f,  0f,0f,0f,  1f,1f,1f);
-		renderModel(shader,
-				modelAll.getModelData(modelAll.getModelId("simple")),
-				textureAll.getTextureData(textureAll.getTextureId("toy_box")),
-				0f,400f,0f,  0f,0f,0f,  1f,1f,1f);
-		renderModel(shader,
-				modelAll.getModelData(modelAll.getModelId("sponza")),
-				textureAll.getTextureData(textureAll.getTextureId("stone")),
-				300f,75,100f,  0f,0f,0f,  1f,1f,1f);
-		renderModel(shader,
-				modelAll.getModelData(modelAll.getModelId("box")),
-				textureAll.getTextureData(textureAll.getTextureId("red_light")),
-				300f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
-		renderModel(shader,
-				modelAll.getModelData(modelAll.getModelId("box")),
-				textureAll.getTextureData(textureAll.getTextureId("green_light")),
-				310f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
-		renderModel(shader,
-				modelAll.getModelData(modelAll.getModelId("box")),
-				textureAll.getTextureData(textureAll.getTextureId("blue_light")),
-				320f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
+		// renderModel(shader,
+		// 		modelAll.getModelData(modelAll.getModelId("lighting")),
+		// 		textureAll.getTextureData(textureAll.getTextureId("colors")),
+		// 		100f,90f,50f,  0f,90f,0f,  5f,5f,5f);
+		// renderModel(shader,
+		// 		modelAll.getModelData(modelAll.getModelId("slum")),
+		// 		textureAll.getTextureData(textureAll.getTextureId("slum")),
+		// 		0f,90f,0f,  0f,0f,0f,  1f,1f,1f);
+		// renderModel(shader,
+		// 		modelAll.getModelData(modelAll.getModelId("wolf")),
+		// 		textureAll.getTextureData(textureAll.getTextureId("metalic_silver")),
+		// 		2f,195f,1f,  0f,0f,0f,  1f,1f,1f);
+		// renderModel(shader,
+		// 		modelAll.getModelData(modelAll.getModelId("simple")),
+		// 		textureAll.getTextureData(textureAll.getTextureId("toy_box")),
+		// 		0f,400f,0f,  0f,0f,0f,  1f,1f,1f);
+		// renderModel(shader,
+		// 		modelAll.getModelData(modelAll.getModelId("sponza")),
+		// 		textureAll.getTextureData(textureAll.getTextureId("stone")),
+		// 		300f,75,100f,  0f,0f,0f,  1f,1f,1f);
+		// renderModel(shader,
+		// 		modelAll.getModelData(modelAll.getModelId("box")),
+		// 		textureAll.getTextureData(textureAll.getTextureId("red_light")),
+		// 		300f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
+		// renderModel(shader,
+		// 		modelAll.getModelData(modelAll.getModelId("box")),
+		// 		textureAll.getTextureData(textureAll.getTextureId("green_light")),
+		// 		310f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
+		// renderModel(shader,
+		// 		modelAll.getModelData(modelAll.getModelId("box")),
+		// 		textureAll.getTextureData(textureAll.getTextureId("blue_light")),
+		// 		320f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
 
 		GL30.glDisable(GL30.GL_CULL_FACE);
-			renderModel(shader,
-					modelAll.getModelData(modelAll.getModelId("box")),
-					textureAll.getTextureData(textureAll.getTextureId("blending")),
-					300f,200f,200f,  0f,0f,0f,  100f,100f,100f);
+		// 	renderModel(shader,
+		// 			modelAll.getModelData(modelAll.getModelId("box")),
+		// 			textureAll.getTextureData(textureAll.getTextureId("blending")),
+		// 			300f,200f,200f,  0f,0f,0f,  100f,100f,100f);
 
-			renderModel(shader,
-					modelAll.getModelData(modelAll.getModelId("pine_tree")),
-					textureAll.getTextureData(textureAll.getTextureId("pine_tree")),
-					0f,180f,0f,  0f,0f,0f,  1f,1f,1f);
-			renderModel(shader,
-					modelAll.getModelData(modelAll.getModelId("banana_tree")),
-					textureAll.getTextureData(textureAll.getTextureId("banana_tree")),
-					0f,100f,37f,  0f,0f,0f,  1.5f,1.5f,1.5f);
+		// 	renderModel(shader,
+		// 			modelAll.getModelData(modelAll.getModelId("pine_tree")),
+		// 			textureAll.getTextureData(textureAll.getTextureId("pine_tree")),
+		// 			0f,180f,0f,  0f,0f,0f,  1f,1f,1f);
+		// 	renderModel(shader,
+		// 			modelAll.getModelData(modelAll.getModelId("banana_tree")),
+		// 			textureAll.getTextureData(textureAll.getTextureId("banana_tree")),
+		// 			0f,100f,37f,  0f,0f,0f,  1.5f,1.5f,1.5f);
 
 			renderModelInstanced(
 						shader,
 						treeInstance,
 						textureAll.getTextureData(textureAll.getTextureId("banana_tree")),
 						treeCount);
+
+		renderModel(shader,
+				modelAll.getModelData(modelAll.getModelId("wolf")),
+				textureAll.getTextureData(textureAll.getTextureId("red_light")),
+				200f,70f,100f,  0f,0f,0f,  1f,1f,1f);
 
 		GL30.glEnable(GL30.GL_CULL_FACE);
 		GL30.glCullFace(GL30.GL_BACK);
@@ -406,18 +411,18 @@ public class GameRenderer {
 		postProcessShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/postprocess_fragment.txt");
 
 		entityPlayer = new ObjectEntity(
-				modelAll.getModelData(modelAll.getModelId("char")),
-				textureAll.getTextureData(textureAll.getTextureId("char")),
-				new float[] {300f,100f,200f},
-				new float[] {0f,0f,0f},
-				1f);
-				entityPlayer.setCameraOffset(new float[] {0f,1.45f,0.1f});
+			modelAll.getModelData(modelAll.getModelId("sphere")),
+			textureAll.getTextureData(textureAll.getTextureId("metalic_silver")),
+			new float[] {200f,70f,100f},
+			new float[] {0f,0f,0f},
+			1f);
+		entityPlayer.setCameraOffset(new float[] {0f,0f,0.1f});
 		entityThing = new ObjectEntity(
-				modelAll.getModelData(modelAll.getModelId("wolf")),
-				textureAll.getTextureData(textureAll.getTextureId("wood")),
-				new float[] {0f,100f,0f},
-				new float[] {0f,0f,0f},
-				1f);
+			modelAll.getModelData(modelAll.getModelId("wolf")),
+			textureAll.getTextureData(textureAll.getTextureId("wood")),
+			new float[] {200f,100f,100f},
+			new float[] {0f,0f,0f},
+			1f);
 
 		screenResolution[0] = (int)Math.ceil((float)width * Settings.screenQuality);
 		screenResolution[1] = (int)Math.ceil((float)height * Settings.screenQuality);
@@ -571,7 +576,7 @@ public class GameRenderer {
 		for(int i=0; i<treeCount; i++){
 			randTreePos
 				.put(100f*(2f*(float)Math.random()-1f)+300f)
-				.put(0.5f*(float)Math.random()+67.5f)
+				.put(0.5f*(float)Math.random()+70.5f)
 				.put(100f*(2f*(float)Math.random()-1f)+200f)
 				.put(0.0f)
 				.put(180f*(2f*(float)Math.random()-1f))
@@ -1038,7 +1043,6 @@ public class GameRenderer {
 
 			sceneExposure = MatMat.lerp(sceneExposure, 0.5f / lum * Settings.sceneExposureMultiplier, Settings.HDRSpeed);
 			sceneExposure = MatMat.clamp(sceneExposure, Settings.sceneExposureRangeMin, Settings.sceneExposureRangeMax);
-			//System.out.println(sceneExposure);
 
 			postProcessShader.setFloat("exposure", sceneExposure);
 		}

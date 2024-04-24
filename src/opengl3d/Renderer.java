@@ -151,7 +151,7 @@ public class Renderer {
 		AL10.alSourcef(audioIntro, AL10.AL_GAIN, Settings.volumeMusic);
 
 		audioBacksound = AudioMaster.loadSound("resources/sound/music.wav");
-		AL10.alSourcei(audioBacksound, AL10.AL_LOOPING, AL10.AL_FALSE);
+		AL10.alSourcei(audioBacksound, AL10.AL_LOOPING, AL10.AL_TRUE);
 		AL10.alSourcef(audioBacksound, AL10.AL_GAIN, Settings.volumeMusic);
 	}
 
@@ -223,8 +223,10 @@ public class Renderer {
 		frameTimeStart = (float)System.nanoTime();
 
 		if(sysTime >= 12 || !Settings.splashScreen) {
-			int ALStatus = AL10.alGetSourcei(audioBacksound, AL10.AL_SOURCE_STATE);
-			if(ALStatus != AL10.AL_PLAYING) audioSourceSelf.play(audioBacksound);
+			int ALStatusBack = AL10.alGetSourcei(audioBacksound, AL10.AL_SOURCE_STATE);
+			int ALStatusIntro = AL10.alGetSourcei(audioIntro, AL10.AL_SOURCE_STATE);
+			if(ALStatusIntro == AL10.AL_PLAYING) audioSourceSelf.stop(audioIntro);
+			if(ALStatusBack != AL10.AL_PLAYING) audioSourceSelf.play(audioBacksound);
 
 			float delay = 12f;
 			if(!Settings.splashScreen) delay = 0f;

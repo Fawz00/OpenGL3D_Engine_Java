@@ -20,6 +20,16 @@ public class AudioSource {
 		AL10.alSourcePlay(sourceId);
 	}
 
+	public void stop(int buffer) {
+		AL10.alSourcei(sourceId, AL10.AL_BUFFER, buffer);
+		AL10.alSourceStop(sourceId);
+	}
+
+	public void pause(int buffer) {
+		AL10.alSourcei(sourceId, AL10.AL_BUFFER, buffer);
+		AL10.alSourcePause(sourceId);
+	}
+
 	public void delete() {
 		AL10.alDeleteBuffers(sourceId);
 	}

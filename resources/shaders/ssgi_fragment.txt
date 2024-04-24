@@ -48,7 +48,6 @@ vec4 worldPos(vec2 texcoord, float depth){
     vec4 clipSpacePos =  vec4(texcoord*2.0-1.0, pxDepth, 1.0);
     vec4 worldPos = invMVP*clipSpacePos;
     worldPos = vec4((worldPos.xyz/worldPos.w), 1.0);
-    //worldPos.x = -worldPos.x;
     return worldPos;
 }
 
@@ -79,7 +78,6 @@ void main() {
 	vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
     vec3 fragNorm  = normalize(texture(TEXTURE_NORMAL, uv).xyz*2.0-1.0);
-    //fragNorm.x = -fragNorm.x;
     float fragDepth = texture(TEXTURE_DEPTH, uv, 1.0).r;
     
     fragCamPos = VIEW_POSITION.xyz;
@@ -143,15 +141,14 @@ void main() {
             
             //Sample depth and get sample horizon angle
             // MNGE BUG TEROS!!!
-            float sampleDepth = textureLod(TEXTURE_DEPTH, sampleUV.xy, 1.0).g;
+            float sampleDepth = textureLod(TEXTURE_DEPTH, sampleUV.xy, 1.0).g*2.0f;
 
             vec3 sampleWorldPos = fragCamPos + normalize(worldPos(sampleUV, 1.0).xyz - fragCamPos) * sampleDepth;
             vec3 worldDir = normalize(sampleWorldPos - fragWorldPos);
             vec2 projTangetDir = vec2(dot(rayDir, worldDir), dot(worldTangent, worldDir));
             float sampleAngle = atan(projTangetDir.y, projTangetDir.x);
-            
+            test.x = dot(worldTangent, worldDir);
             //If sampled world space position is visible then find its contribution
-            //test.xy=vec2(sampleAngle,atan(projFront.y, projFront.x));
             if(sampleAngle < maxAngle)
             {
                 //Get direct lighting (sampling in higher mip to greatly improve perf, could be dynamic)
