@@ -15,9 +15,12 @@ public class Settings {
 
 	//DEBUGGING
 	public static boolean enableGLDebug			= false;
+	public static boolean fontDebug				= false;
+	public static boolean printLog				= true; // Not implemented yet
+
 
 	//GAME
-	public static boolean splashScreen			= true;
+	public static boolean splashScreen			= false;
 	public static boolean physics				= false;
 	public static float playerSpeed				= 50f/3.6f;
 
@@ -37,7 +40,7 @@ public class Settings {
 	public static int fpsLimit					= 160;
 	public static boolean vsync					= true;
 
-	public static boolean ASCIICharOnly			= true; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
+	public static boolean ASCIICharOnly			= false; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
 
 	public static float fov						= 70f;
 	public static float fovZoom					= 20f;
