@@ -43,8 +43,8 @@ layout (location = 2) out vec4 FragMer;
 layout (location = 3) out vec4 FragNormal;
 
 //define SHADOW_COLOR vec3(0.25098039215, 0.61176470588, 1.0)
-//define SHADOW_COLOR vec3(0.04, 0.0701960784313, 0.1)
-#define SHADOW_COLOR vec3(0.4, 0.701960784313, 1.0)
+#define SHADOW_COLOR vec3(0.4, 0.701960784313, 1.0)/4.0
+//define SHADOW_COLOR vec3(0.4, 0.701960784313, 1.0)
 #define DISPLACEMENT_HEIGHT_SCALE 0.015
 
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {

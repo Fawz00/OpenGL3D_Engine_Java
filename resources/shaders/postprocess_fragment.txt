@@ -25,6 +25,7 @@ out vec4 FragColor;
 #define USE_SSGI
 #define USE_REFLECTION
 #define USE_FXAA
+#define USE_LENSFLARE
 
 #define PI 3.14159265358979323
 
@@ -188,6 +189,10 @@ vec3 sirBirdDenoise(sampler2D imageTexture, in vec2 uv, in vec2 imageResolution)
 	return denoisedColor/influenceSum;
 }
 
+vec3 ApplyThreshold(in vec3 _rgb, in float _threshold) {
+	return max(_rgb - vec3(_threshold), vec3(0.0));
+}
+
 void main() {
 //	vec4 color = vec4(sirBirdDenoise(TEXTURE_0, uv, MAIN_RESOLUTION/4.0),1.0);
 	vec4 color = texture(TEXTURE_0, uv);
@@ -234,15 +239,48 @@ void main() {
 	#if USE_BLOOM
 		vec3 bloom = vec3(0.0);
 		for(float y=-1.0; y<=1.0; y++) for(float x=-1.0; x<=1.0; x++){
+			vec2 offset = normalize(vec2(x,y))*2.0;
 			bloom += (
-						textureLod(TEXTURE_LIGHTING, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/32.0)), 5).rgb+
-						textureLod(TEXTURE_LIGHTING, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/16.0)), 4).rgb+
-						textureLod(TEXTURE_LIGHTING, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/8.0)), 3).rgb+
-						textureLod(TEXTURE_LIGHTING, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/4.0)), 2).rgb+
-						textureLod(TEXTURE_LIGHTING, uv+((vec2(x,y)+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/2.0)), 1).rgb)/5.0;
+						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/32.0)), 5).rgb+
+						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/16.0)), 4).rgb+
+						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/8.0)), 3).rgb+
+						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/4.0)), 2).rgb+
+						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/2.0)), 1).rgb)/5.0;
 		}
 		bloom /= 4.5;
 		color.rgb += bloom;
+	#endif
+
+	// LENS FLARE
+	// source https://john-chapman.github.io/2017/11/05/pseudo-lens-flare.html
+	#if USE_LENSFLARE
+		float uGhostSpacing = 1.0;
+		int uGhostCount = 3;
+
+		vec2 vUv = vec2(1.0) - uv;
+		vec3 ret = vec3(0.0);
+		vec2 ghostVec = (vec2(0.5) - vUv) * uGhostSpacing;
+		for (int i = 0; i < uGhostCount; ++i) {
+			vec2 suv = fract(vUv + ghostVec * vec2(i));
+			float d = distance(suv, vec2(0.5));
+			float weight = 1.0 - smoothstep(0.0, 0.75, d); // reduce contributions from samples at the screen edge
+			vec3 s = textureLod(TEXTURE_LIGHTING, suv, 1).rgb;
+			s = ApplyThreshold(s, 0.75);
+			ret += s * weight;
+		}
+
+		// HALO effect
+		float uAspectRatio = MAIN_RESOLUTION.x / MAIN_RESOLUTION.y;
+		vec2 haloVec = vec2(0.5) - uv;
+		haloVec.x /= uAspectRatio;
+		haloVec = normalize(haloVec);
+		haloVec.x *= uAspectRatio;
+		vec2 wuv = (uv - vec2(0.5, 0.0)) / vec2(uAspectRatio, 1.0) + vec2(0.5, 0.0);
+		float d = distance(wuv, vec2(0.5));
+		//float haloWeight = Window_Cubic(d, uHaloRadius, uHaloThickness); // cubic window function
+		//haloVec *= uHaloRadius;
+
+		color.rgb += ret;
 	#endif
 
 // color.rgb = texture(TEXTURE_SSGI, uv).rgb;

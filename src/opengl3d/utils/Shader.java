@@ -26,6 +26,7 @@ public class Shader {
 			shader = shader.replace("#define USE_HDR", "#define USE_HDR "+Settings.useHDR);
 			shader = shader.replace("#define USE_BLOOM", "#define USE_BLOOM "+Settings.useBloom);
 			shader = shader.replace("#define USE_SSGI", "#define USE_SSGI "+Settings.useSSGI);
+			shader = shader.replace("#define USE_LENSFLARE", "#define USE_LENSFLARE "+Settings.useLensFlare);
 			return shader;
 		} catch (Exception e) {
 			e.printStackTrace();

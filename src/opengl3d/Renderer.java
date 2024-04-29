@@ -150,7 +150,7 @@ public class Renderer {
 		AL10.alSourcei(audioIntro, AL10.AL_LOOPING, AL10.AL_FALSE);
 		AL10.alSourcef(audioIntro, AL10.AL_GAIN, Settings.volumeMusic);
 
-		audioBacksound = AudioMaster.loadSound("resources/sound/music.wav");
+		audioBacksound = AudioMaster.loadSound("resources/sound/ambient.wav");
 		AL10.alSourcei(audioBacksound, AL10.AL_LOOPING, AL10.AL_TRUE);
 		AL10.alSourcef(audioBacksound, AL10.AL_GAIN, Settings.volumeMusic);
 	}

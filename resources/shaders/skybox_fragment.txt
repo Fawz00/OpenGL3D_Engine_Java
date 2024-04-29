@@ -27,7 +27,7 @@ layout (location = 3) out vec4 FragNormal;
 #define mieCoeff vec3(1e-6)
 #define pi 3.14159265358979
 #define d0(x) abs(x) + 1e-8
-#define sunSize 32.32*pi/180.0
+#define sunSize 10.32*pi/180.0
 #define distToSun 14.7620
 
 vec3 totalCoeff = mieCoeff + rayleighCoeff;
@@ -59,7 +59,7 @@ float miePhase(vec3 p, vec3 lp, float depth) {
 	return 0.25 * ((1.0 - g2) * pow(1.0 + g2 - 2.0*g*dot(p, lp), -1.5));
 }
 
-vec3 calcAtmosphericScatter(vec3 p, vec3 lp) {
+vec3 calcAtmosphericScatter(vec3 p, vec3 lp, inout float emitter) {
 	const float ln2 = log(2.0);
 
 	float opticalDepth = calcParticleThickness(p.y);
@@ -77,6 +77,7 @@ vec3 calcAtmosphericScatter(vec3 p, vec3 lp) {
 	vec3 scatterSun = rayleighScatter + mieScatter;
 
 	vec3 sunSpot = smoothstep(sunSize+0.1, sunSize, distance(p, lp)*distToSun) * absorbView * (pi * 2.0);
+	emitter += length(sunSpot)*pi;
 
 	return (scatterSun * absorbSun + sunSpot) * pi;
 }
@@ -139,22 +140,22 @@ void main() {
 	float emitter = 0.0;
 
 	#if USE_SKYBOX == 1
-		//float epsilon = 0.000001;
-		float epsilon = 0.0095;
-		color = calcAtmosphericScatter(pos-epsilon*2.0, sunDirection+epsilon);
+		float epsilon = 0.000001;
+		//float epsilon = 0.0095;
+		color = calcAtmosphericScatter(pos-epsilon*2.0, sunDirection+epsilon, emitter);
 		color = ACESFilm(color);
 	#else
 		color.rgb = texture(TEXTURE_TEMPCOLOR, vec2(1.0-((pos.y+1.0)/2.0), 0.0)).rgb * (pow(sunDirection.y+1.0, 2.0)/3.0);
 	#endif
-	emitter = (color.r+color.g+color.b)/3.0;
+//	emitter = (color.r+color.g+color.b)/3.0;
 
 	color += pow(clamp(texture(TEXTURE_SKYNIGHT, normalize(vec4(SHADOW_ROTATION_MATRIX*position).xyz)).rgb, 0., 0.89), vec3(3.5)+(color.rgb*40.));
 
 	if(position.y > 0.){
-		float cloudSize = 2.0; //Lower value => Overcast; Higher value => Clear
+		float cloudSize = 4.0; //Lower value => Overcast; Higher value => Clear
 		float shadowStep = 4.;
 		float animTime = TIME * 0.025;
-		bool dynamicCloud = true;
+		bool dynamicCloud = false;
 
 		#if USE_CLOUD == 1
 
@@ -179,7 +180,7 @@ void main() {
 
 			float cloudShadow = 0.;
 			for(float shd=1.; shd<=shadowStep+1.; shd++){
-				vec2 newUV = layerUV-((sunDirection.xz*shd)/192.);
+				vec2 newUV = layerUV-((sunDirection.xz*shd)/64.);
 			//	float noiseVal = 0.5 + 0.25 * Pseudo3dNoise(vec3(newUV * 9.0, TIME*0.25));
 
 				if(dynamicCloud){
@@ -236,7 +237,7 @@ void main() {
 	}
 
 	// if((color.r+color.g+color.b)/3.0 >= 0.98) color.rgb = vec3(1.,0.,0.);
-
+	// color.rgb = vec3(emitter);
 	FragColor = vec4(color, 1.0);
 	FragMer = vec4(0.0, 0.125*emitter, 0.0, 1.0);
 	FragNormal = vec4(-pos.xyz, 1.0);
