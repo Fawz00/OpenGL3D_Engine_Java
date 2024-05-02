@@ -40,7 +40,7 @@ public class Settings {
 	public static int fpsLimit					= 160;
 	public static boolean vsync					= true;
 
-	public static boolean ASCIICharOnly			= true; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
+	public static boolean ASCIICharOnly			= false; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
 
 	public static float fov						= 70f;
 	public static float fovZoom					= 20f;
@@ -53,10 +53,10 @@ public class Settings {
 	public static float screenQuality			= 1.00f; // Percent of display resolution
 	public static int FXAA						= 1; // 0: OFF; 1: ON
 
-	public static float gamma					= 1.5f;
+	public static float gamma					= 1.75f;
 	public static int useHDR					= 1;
 	public static float HDRSpeed				= 0.05f;
-	public static float sceneExposureMultiplier	= 0.25f;
+	public static float sceneExposureMultiplier	= 0.125f;
 	public static float sceneExposureRangeMax	= 2.2f;
 	public static float sceneExposureRangeMin	= -2.2f;
 
@@ -69,12 +69,12 @@ public class Settings {
 	public static int useShadow					= 1;
 	public static int shadowResolution			= 1024;
 	public static float shadowDistance			= 25;
-	public static int usePenumbraShadow			= 1;
+	public static int usePenumbraShadow			= 0;
 
-	public static int useReflection				= 0;
+	public static int useReflection				= 1;
 	public static float reflectionQuality		= 0.5f; // Percent of screenQuality
 
-	public static int useBloom					= 1;
+	public static int useBloom					= 1; // 1=FAST; 2=QUALITY
 	public static int useLensFlare				= 0;
 
 	public static int useSSAO					= 0; // next update!

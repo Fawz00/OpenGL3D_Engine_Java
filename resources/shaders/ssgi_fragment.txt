@@ -26,7 +26,7 @@ out vec4 FragColor;
 //https://github.com/Raikiri/LegitEngine
 //
 
-//define BOUNCE
+#define BOUNCE
 const float absorbtion = 0.3;
 
 const float pi = 3.14159265f;
@@ -86,7 +86,7 @@ void main() {
 
     //Random rotation and linear jitter for all directions per pixel
     //TODO: try using some low discrepancy noise/sequence
-    float seed = TIME; //hack to get temporally stable result
+    float seed = mod(TIME,10.0); //hack to get temporally stable result
     float angleOffset = hash(uv+seed) * pi * 2.0;
     float linearOffset = hash(uv+angleOffset);
 
@@ -119,15 +119,15 @@ void main() {
         vec3 dirLight = vec3(0.0);
         vec3 dirAmbient = ambientLightAmount * HorizonContribution(rayDir, worldTangent, fragNorm, 0.0, maxAngle) * getColor() * vec3(1.0);
         
-        int sampleCount = int(log(maxPixelDist)/log(exponentialDensity)) + 2;
+        float sampleCount = (log(maxPixelDist)/log(exponentialDensity)) + 2.0;
         
         //Sample a series of points in the stright screenspace line
-        for(int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++)
+        for(float sampleIndex = 0.0; sampleIndex < sampleCount; sampleIndex++)
         {
             //Move offset along the direction with exponential sampling pattern to get
             //screen space sample position
-            float pixelOffset = pow(exponentialDensity, float(sampleIndex) + linearOffset);
-            pixelOffset = max(pixelOffset,float(sampleIndex)*2.+1.);
+            float pixelOffset = pow(exponentialDensity, sampleIndex + linearOffset);
+            pixelOffset = max(pixelOffset,sampleIndex*2.+1.);
             //pixelOffset = float(sampleIndex)*7.+1. + linearOffset;
             vec2 sampleUV = (gl_FragCoord.xy + dirVector * pixelOffset) / RESOLUTION.xy;
             
@@ -141,13 +141,14 @@ void main() {
             
             //Sample depth and get sample horizon angle
             // MNGE BUG TEROS!!!
-            float sampleDepth = textureLod(TEXTURE_DEPTH, sampleUV.xy, 1.0).g*2.0f;
+            float sampleDepth = textureLod(TEXTURE_DEPTH, sampleUV.xy, 1.0).g*1.2;
 
             vec3 sampleWorldPos = fragCamPos + normalize(worldPos(sampleUV, 1.0).xyz - fragCamPos) * sampleDepth;
             vec3 worldDir = normalize(sampleWorldPos - fragWorldPos);
             vec2 projTangetDir = vec2(dot(rayDir, worldDir), dot(worldTangent, worldDir));
             float sampleAngle = atan(projTangetDir.y, projTangetDir.x);
-            test.x = dot(worldTangent, worldDir);
+            test.x = sampleAngle;
+            test.y = maxAngle;
             //If sampled world space position is visible then find its contribution
             if(sampleAngle < maxAngle)
             {

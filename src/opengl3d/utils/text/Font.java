@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.text.BreakIterator;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
@@ -365,7 +364,7 @@ public class Font {
 	}
 
     public void drawWord(Shader shader, int[] res, int x, int y, int width, int height, String text, int globalColor) {
-		BreakIterator boundary = BreakIterator.getWordInstance(Locale.US);
+		BreakIterator boundary = BreakIterator.getWordInstance();
 		boundary.setText(text);
 		int start = boundary.first();
 

@@ -17,6 +17,8 @@ import org.lwjgl.glfw.GLFWScrollCallback;
 import opengl3d.Main;
 import opengl3d.Renderer;
 import opengl3d.Settings;
+import opengl3d.ui.Point2D;
+import opengl3d.ui.UIComponent;
 
 public class Input {
 	private static boolean[] keysDown = new boolean[GLFW.GLFW_KEY_LAST];
@@ -34,6 +36,8 @@ public class Input {
 	private static GLFWCursorPosCallback mouseMove;
 	private static GLFWMouseButtonCallback mouseButtons;
 	private static GLFWScrollCallback mouseScroll;
+
+	private static Vector<UIComponent> onClickUI = new Vector<>();
 	
 	public Input() {
 		isTyping = false;
@@ -72,7 +76,6 @@ public class Input {
 					if(isTyping) {
 						if(action != GLFW.GLFW_RELEASE) handleTyping(key, false, scancode);
 					} else {
-
 						keysDown[key] = (action != GLFW.GLFW_RELEASE);
 						if(key == Settings.keyToggleCamera && action == GLFW.GLFW_PRESS) Renderer.camera.toggleCameraMode();
 						if(key == Settings.keyTogglePhysics && action == GLFW.GLFW_PRESS) {
@@ -101,6 +104,11 @@ public class Input {
 		
 		mouseButtons = new GLFWMouseButtonCallback() {
 			public void invoke(long window, int button, int action, int mods) {
+				if(button >= 0 && button <= GLFW.GLFW_MOUSE_BUTTON_LAST) {
+					if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_PRESS) {
+						handleOnClickListener();
+					}
+				}
 				buttonsDown[button] = (action != GLFW.GLFW_RELEASE);
 			}
 		};
@@ -111,6 +119,23 @@ public class Input {
 				scrollY += offsety;
 			}
 		};
+	}
+
+	private static void handleOnClickListener() {
+		if(Renderer.isPaused()) for(UIComponent ui: onClickUI) {
+			if(ui.isActive()) {
+				int rotation = ui.getRotation();
+				Point2D size = ui.getSize();
+				Point2D center = ui.getPosition();
+				Point2D pointer = new Point2D((int)mouseX, (int)mouseY);
+				float localX = (float)(Math.cos(-rotation) * (pointer.x - center.x) - Math.sin(-rotation) * (pointer.y - center.y));
+				float localY = (float)(Math.sin(-rotation) * (pointer.x - center.x) + Math.cos(-rotation) * (pointer.y - center.y));
+
+				// Check collision with the local coordinates of the OBB
+				if(localX >= -size.x / 2 && localX <= size.x / 2 && localY >= -size.y / 2 && localY <= size.y / 2)
+					ui.onClick();
+			}
+		}
 	}
 
 	private static void handleTyping(int key, boolean isCharInput, int code) {
@@ -162,6 +187,15 @@ public class Input {
 
 	public static String getRawLine() {
 		return userInput.toString();
+	}
+
+
+
+	public static void setOnClickListener(UIComponent ui) {
+		onClickUI.add(ui);
+	}
+	public static void removeOnClickListener(UIComponent ui) {
+		onClickUI.remove(ui);
 	}
 
 	public static boolean isKeyDown(int key) {

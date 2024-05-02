@@ -4,8 +4,8 @@ precision highp float;
 
 uniform sampler2D TEXTURE_0;
 uniform sampler2D TEXTURE_MER;
-uniform sampler2D TEXTURE_DEPTH;
-uniform sampler2D TEXTURE_NORMAL;
+uniform sampler2D TEXTURE_REFLECTION_MER;
+uniform sampler2D TEXTURE_REFLECTION;
 
 uniform vec2 RESOLUTION;
 uniform float TIME;
@@ -14,13 +14,25 @@ uniform float exposure;
 
 in vec2 uv;
 
+#define USE_REFLECTION
+
 out vec4 FragColor;
 
 void main() {
 	vec4 color = texture(TEXTURE_0, uv);
 
-    vec3 result = vec3(1.0) - exp(-color.rgb * (exposure-1.5));
-    color.rgb = mix(result, color.rgb*4.0, texture(TEXTURE_MER, uv).y);
+    vec3 result = vec3(1.0) - exp(-color.rgb * (exposure-1.0));
+    color.rgb = mix(result, color.rgb*6.0, texture(TEXTURE_MER, uv).y);
+
+	// SCREEN SPACE REFLECTION
+	#if USE_REFLECTION == 1
+		if(texture(TEXTURE_MER,uv).r > 0.125){
+			vec4 reflection = texture(TEXTURE_REFLECTION, uv);
+			vec3 reflectedLight = vec3(1.0) - exp(-reflection.rgb * (exposure-1.0));
+
+			color.rgb += mix(reflectedLight, reflection.rgb*4.0, texture(TEXTURE_REFLECTION_MER, uv).y);
+		}
+	#endif
 
 	FragColor = clamp(color, vec4(0.0), vec4(1.0));
 }

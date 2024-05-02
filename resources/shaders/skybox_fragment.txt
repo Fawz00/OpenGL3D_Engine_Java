@@ -152,7 +152,7 @@ void main() {
 	color += pow(clamp(texture(TEXTURE_SKYNIGHT, normalize(vec4(SHADOW_ROTATION_MATRIX*position).xyz)).rgb, 0., 0.89), vec3(3.5)+(color.rgb*40.));
 
 	if(position.y > 0.){
-		float cloudSize = 4.0; //Lower value => Overcast; Higher value => Clear
+		float cloudSize = 2.0; //Lower value => Overcast; Higher value => Clear
 		float shadowStep = 4.;
 		float animTime = TIME * 0.025;
 		bool dynamicCloud = false;
@@ -180,7 +180,7 @@ void main() {
 
 			float cloudShadow = 0.;
 			for(float shd=1.; shd<=shadowStep+1.; shd++){
-				vec2 newUV = layerUV-((sunDirection.xz*shd)/64.);
+				vec2 newUV = layerUV-((sunDirection.xz*shd)/128.);
 			//	float noiseVal = 0.5 + 0.25 * Pseudo3dNoise(vec3(newUV * 9.0, TIME*0.25));
 
 				if(dynamicCloud){
@@ -241,5 +241,5 @@ void main() {
 	FragColor = vec4(color, 1.0);
 	FragMer = vec4(0.0, 0.125*emitter, 0.0, 1.0);
 	FragNormal = vec4(-pos.xyz, 1.0);
-	FragDepth = vec4(1.0, DRAW_DISTANCE, 0.0, 1.0);
+	FragDepth = vec4(1.0, 1.0, 0.0, 1.0);
 }

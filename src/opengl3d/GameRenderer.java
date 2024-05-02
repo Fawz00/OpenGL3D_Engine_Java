@@ -57,7 +57,8 @@ public class GameRenderer {
 	private int renderMerTexture;
 	private int renderNormalTexture;
 	private int shadowDepthTexture;
-	private int reflectionTexture;
+	private int reflectionColorTexture;
+	private int reflectionMerTexture;
 	private int lightingTexture;
 	private int SSGITexture;
 	private int finalTextureId;
@@ -302,61 +303,61 @@ public class GameRenderer {
 		entityPlayer.render(shader, camera);
 		entityThing.render(shader, camera);
 
-		// renderModel(shader,
-		// 		modelAll.getModelData(modelAll.getModelId("simple")),
-		// 		textureAll.getTextureData(textureAll.getTextureId("grass")),
-		// 		300f,67.5f,200f,  0f,0f,0f,  1f,1f,1f);
+		renderModel(shader,
+				modelAll.getModelData(modelAll.getModelId("simple")),
+				textureAll.getTextureData(textureAll.getTextureId("white")),
+				300f,67.5f,200f,  0f,0f,0f,  1f,1f,1f);
 		renderModel(shader,
 				modelAll.getModelData(modelAll.getModelId("terrain")),
 				textureAll.getTextureData(textureAll.getTextureId("terrain")),
 				-2560f,-5f,2560f,  0f,0f,0f,  5f,4f,5f);
-		// renderModel(shader,
-		// 		modelAll.getModelData(modelAll.getModelId("lighting")),
-		// 		textureAll.getTextureData(textureAll.getTextureId("colors")),
-		// 		100f,90f,50f,  0f,90f,0f,  5f,5f,5f);
-		// renderModel(shader,
-		// 		modelAll.getModelData(modelAll.getModelId("slum")),
-		// 		textureAll.getTextureData(textureAll.getTextureId("slum")),
-		// 		0f,90f,0f,  0f,0f,0f,  1f,1f,1f);
-		// renderModel(shader,
-		// 		modelAll.getModelData(modelAll.getModelId("wolf")),
-		// 		textureAll.getTextureData(textureAll.getTextureId("metalic_silver")),
-		// 		2f,195f,1f,  0f,0f,0f,  1f,1f,1f);
-		// renderModel(shader,
-		// 		modelAll.getModelData(modelAll.getModelId("simple")),
-		// 		textureAll.getTextureData(textureAll.getTextureId("toy_box")),
-		// 		0f,400f,0f,  0f,0f,0f,  1f,1f,1f);
-		// renderModel(shader,
-		// 		modelAll.getModelData(modelAll.getModelId("sponza")),
-		// 		textureAll.getTextureData(textureAll.getTextureId("stone")),
-		// 		300f,75,100f,  0f,0f,0f,  1f,1f,1f);
-		// renderModel(shader,
-		// 		modelAll.getModelData(modelAll.getModelId("box")),
-		// 		textureAll.getTextureData(textureAll.getTextureId("red_light")),
-		// 		300f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
-		// renderModel(shader,
-		// 		modelAll.getModelData(modelAll.getModelId("box")),
-		// 		textureAll.getTextureData(textureAll.getTextureId("green_light")),
-		// 		310f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
-		// renderModel(shader,
-		// 		modelAll.getModelData(modelAll.getModelId("box")),
-		// 		textureAll.getTextureData(textureAll.getTextureId("blue_light")),
-		// 		320f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
+		renderModel(shader,
+				modelAll.getModelData(modelAll.getModelId("lighting")),
+				textureAll.getTextureData(textureAll.getTextureId("colors")),
+				100f,90f,50f,  0f,90f,0f,  5f,5f,5f);
+		renderModel(shader,
+				modelAll.getModelData(modelAll.getModelId("slum")),
+				textureAll.getTextureData(textureAll.getTextureId("slum")),
+				0f,90f,0f,  0f,0f,0f,  1f,1f,1f);
+		renderModel(shader,
+				modelAll.getModelData(modelAll.getModelId("wolf")),
+				textureAll.getTextureData(textureAll.getTextureId("metalic_silver")),
+				2f,195f,1f,  0f,0f,0f,  1f,1f,1f);
+		renderModel(shader,
+				modelAll.getModelData(modelAll.getModelId("simple")),
+				textureAll.getTextureData(textureAll.getTextureId("toy_box")),
+				0f,400f,0f,  0f,0f,0f,  1f,1f,1f);
+		renderModel(shader,
+				modelAll.getModelData(modelAll.getModelId("sponza")),
+				textureAll.getTextureData(textureAll.getTextureId("stone")),
+				300f,75,100f,  0f,0f,0f,  1f,1f,1f);
+		renderModel(shader,
+				modelAll.getModelData(modelAll.getModelId("box")),
+				textureAll.getTextureData(textureAll.getTextureId("red_light")),
+				300f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
+		renderModel(shader,
+				modelAll.getModelData(modelAll.getModelId("box")),
+				textureAll.getTextureData(textureAll.getTextureId("green_light")),
+				310f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
+		renderModel(shader,
+				modelAll.getModelData(modelAll.getModelId("box")),
+				textureAll.getTextureData(textureAll.getTextureId("blue_light")),
+				320f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
 
 		GL30.glDisable(GL30.GL_CULL_FACE);
-		// 	renderModel(shader,
-		// 			modelAll.getModelData(modelAll.getModelId("box")),
-		// 			textureAll.getTextureData(textureAll.getTextureId("blending")),
-		// 			300f,200f,200f,  0f,0f,0f,  100f,100f,100f);
+			renderModel(shader,
+					modelAll.getModelData(modelAll.getModelId("box")),
+					textureAll.getTextureData(textureAll.getTextureId("blending")),
+					300f,200f,200f,  0f,0f,0f,  100f,100f,100f);
 
-		// 	renderModel(shader,
-		// 			modelAll.getModelData(modelAll.getModelId("pine_tree")),
-		// 			textureAll.getTextureData(textureAll.getTextureId("pine_tree")),
-		// 			0f,180f,0f,  0f,0f,0f,  1f,1f,1f);
-		// 	renderModel(shader,
-		// 			modelAll.getModelData(modelAll.getModelId("banana_tree")),
-		// 			textureAll.getTextureData(textureAll.getTextureId("banana_tree")),
-		// 			0f,100f,37f,  0f,0f,0f,  1.5f,1.5f,1.5f);
+			renderModel(shader,
+					modelAll.getModelData(modelAll.getModelId("pine_tree")),
+					textureAll.getTextureData(textureAll.getTextureId("pine_tree")),
+					0f,180f,0f,  0f,0f,0f,  1f,1f,1f);
+			renderModel(shader,
+					modelAll.getModelData(modelAll.getModelId("banana_tree")),
+					textureAll.getTextureData(textureAll.getTextureId("banana_tree")),
+					0f,100f,37f,  0f,0f,0f,  1.5f,1.5f,1.5f);
 
 			renderModelInstanced(
 						shader,
@@ -559,15 +560,27 @@ public class GameRenderer {
 			reflectionFBO = GL30.glGenFramebuffers();
 			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, reflectionFBO);
 			
-			reflectionTexture = GL30.glGenTextures();
-			GL30.glBindTexture(GL30.GL_TEXTURE_2D, reflectionTexture);
+			reflectionColorTexture = GL30.glGenTextures();
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, reflectionColorTexture);
 			GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGBA, reflectionResolution[0], reflectionResolution[1], 0, GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
 		//	GL30.glTexSubImage2D(GL30.GL_TEXTURE_2D, 0, 0, 0, screenResolution[0], screenResolution[1], GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
 			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
 			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
 			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
 			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
-			GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_TEXTURE_2D, reflectionTexture, 0);
+			GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_TEXTURE_2D, reflectionColorTexture, 0);
+
+			reflectionMerTexture = GL30.glGenTextures();
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, reflectionMerTexture);
+			GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGB, reflectionResolution[0], reflectionResolution[1], 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
+			GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT1, GL30.GL_TEXTURE_2D, reflectionMerTexture, 0);
+
+			int[] reflectionDrawBuffers = new int[]{GL30.GL_COLOR_ATTACHMENT0, GL30.GL_COLOR_ATTACHMENT1};
+			GL30.glDrawBuffers(reflectionDrawBuffers);
 
 			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
@@ -850,8 +863,11 @@ public class GameRenderer {
 		if(Settings.useReflection==1) {
 			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, reflectionFBO);
 
-			GL30.glBindTexture(GL30.GL_TEXTURE_2D, reflectionTexture);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, reflectionColorTexture);
 			GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGBA, reflectionResolution[0], reflectionResolution[1], 0, GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, reflectionMerTexture);
+			GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGBA, reflectionResolution[0], reflectionResolution[1], 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
 
 			if(GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER) != GL30.GL_FRAMEBUFFER_COMPLETE) System.out.println("FrameBuffer error");
 
@@ -925,11 +941,11 @@ public class GameRenderer {
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderMerTexture);
 			lightingShader.setInt("TEXTURE_MER", 1);
 			GL30.glActiveTexture(GL30.GL_TEXTURE2);
-			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderDepthTexture);
-			lightingShader.setInt("TEXTURE_DEPTH", 2);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, reflectionMerTexture);
+			lightingShader.setInt("TEXTURE_REFLECTION_MER", 2);
 			GL30.glActiveTexture(GL30.GL_TEXTURE3);
-			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderNormalTexture);
-			lightingShader.setInt("TEXTURE_NORMAL", 3);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, reflectionColorTexture);
+			lightingShader.setInt("TEXTURE_REFLECTION", 3);
 
 			GL30.glDisable(GL30.GL_CULL_FACE);
 			GL30.glDisable(GL30.GL_DEPTH_TEST);
@@ -1032,7 +1048,7 @@ public class GameRenderer {
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderDepthTexture);
 		postProcessShader.setInt("TEXTURE_DEPTH", 2);
 		GL30.glActiveTexture(GL30.GL_TEXTURE3);
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D, reflectionTexture);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, reflectionColorTexture);
 		postProcessShader.setInt("TEXTURE_REFLECTION", 3);
 		GL30.glActiveTexture(GL30.GL_TEXTURE4);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, lightingTexture);
@@ -1059,7 +1075,8 @@ public class GameRenderer {
 				"FPS: " + Main.fpsLimiter.getFps() +"\n"+
 				"XYZ: " + String.format("%.6f", entityPlayer.getPosition()[0]) + ", " + String.format("%.6f", entityPlayer.getPosition()[1]) + ", " + String.format("%.6f", entityPlayer.getPosition()[2]) +"\n"+
 				"View: " + String.format("%.6f", camera.getRotation()[0]*57.295779513082) + ", " + String.format("%.6f", camera.getRotation()[1]*57.295779513082) + ", " + String.format("%.6f", camera.getRotation()[2]*57.295779513082) +"\n"+
-				"FOV Y: " + String.format("%.6f", camera.getFovY()*57.295779513082)
+				"FOV Y: " + String.format("%.6f", camera.getFovY()*57.295779513082) + "\n" +
+				"Exposure: " + sceneExposure
 			, 0xFFFFFFFF);
 		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, 0);
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
@@ -1106,7 +1123,8 @@ public class GameRenderer {
 		if(Settings.useReflection==1) {
 			reflectionShader.delete();
 			GL30.glDeleteFramebuffers(reflectionFBO);
-			GL30.glDeleteTextures(reflectionTexture);
+			GL30.glDeleteTextures(reflectionColorTexture);
+			GL30.glDeleteTextures(reflectionMerTexture);
 		}
 		if(Settings.useShadow==1) {
 			shadowMapShader.delete();

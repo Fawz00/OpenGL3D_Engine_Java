@@ -13,15 +13,21 @@ uniform vec2 RESOLUTION;
 
 in vec2 uv;
 
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 FragMer;
+
+struct reflectedSurface {
+	vec4 color;
+	vec3 mer;
+};
 
 bool rayIsOutofScreen(vec2 ray){
 	return (ray.x > 1 || ray.y > 1 || ray.x < 0 || ray.y < 0) ? true : false;
 }
 
-vec4 TraceRay(vec3 rayPos, vec3 dir, int iterationCount){
+reflectedSurface TraceRay(vec3 rayPos, vec3 dir, int iterationCount){
 	float sampleDepth;
-	vec4 hitColor = vec4(0.);
+	reflectedSurface hitColor;
 	float rayDistance = 0.;
 	vec3 startPos = rayPos;
 	bool hit = false;
@@ -37,8 +43,9 @@ vec4 TraceRay(vec3 rayPos, vec3 dir, int iterationCount){
 		float depthDif = rayPos.z - sampleDepth;
 		if(depthDif >= 0.0 && depthDif < 0.0001 && rayDistance > 0.0001){ //we have a hit
 			hit = true;
-			hitColor = texture(TEXTURE_0, rayPos.xy)*pow(texture(TEXTURE_MER, rayPos.xy).g+1.0, 3.0);
-			hitColor.a = 1.0;
+			hitColor.color = texture(TEXTURE_0, rayPos.xy);//*pow(texture(TEXTURE_MER, rayPos.xy).g+1.0, 3.0);
+			hitColor.color.a = 1.0;
+			hitColor.mer = texture(TEXTURE_MER, rayPos.xy).rgb;
 			break;
 		}
 	}
@@ -47,6 +54,7 @@ vec4 TraceRay(vec3 rayPos, vec3 dir, int iterationCount){
 
 void main() {
 	vec4 color = vec4(0.,0.,0.,1.);
+	vec3 mer = vec3(0.);
 
 	// SCREEN SPACE REFLECTION
 	if(texture(TEXTURE_MER, uv).r >= 0.125) {
@@ -65,7 +73,8 @@ void main() {
 		positionView /= positionView.w;
 		vec3 reflectionView = reflect(-positionView.xyz, normalize(normalView.xyz));
 		if(reflectionView.z < 0){
-			color = vec4(0.);
+			color = vec4(0.0);
+			mer = vec3(0.0);
 			return;
 		}
 		vec3 rayEndPositionView = positionView.xyz + reflectionView * maxRayDistance;
@@ -84,9 +93,12 @@ void main() {
 		rayDirectionTexture /= max(screenSpaceMaxDistance, 0.001f);
 
 		//trace the ray
-		color = TraceRay(pixelPositionTexture, rayDirectionTexture, screenSpaceMaxDistance);
+		reflectedSurface colorData = TraceRay(pixelPositionTexture, rayDirectionTexture, screenSpaceMaxDistance);
+		color = colorData.color;
+		mer = colorData.mer;
 	}
 	//color.rgb = texture(TEXTURE_DEPTH, uv.xy).rgb;
 
 	FragColor = color;
+	FragMer = vec4(mer, 1.0);
 }

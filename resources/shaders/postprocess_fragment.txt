@@ -208,7 +208,7 @@ void main() {
 
 	// SSGI
 	#if USE_SSGI
-		color.rgb += texture(TEXTURE_SSGI, uv).rgb;
+		color.rgb += texture(TEXTURE_SSGI, uv).rgb*2.0;
 	#endif
 
 	// SCREEN SPACE REFLECTION
@@ -239,20 +239,25 @@ void main() {
 	#if USE_BLOOM
 		vec3 bloom = vec3(0.0);
 		for(float y=-1.0; y<=1.0; y++) for(float x=-1.0; x<=1.0; x++){
-			vec2 offset = normalize(vec2(x,y))*2.0;
+			vec2 offset = vec2(x,y)*2.0;
+			if(abs(x) == abs(y)) offset *= 0.70710678118654752440084436210485;
 			bloom += (
-						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/32.0)), 5).rgb+
-						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/16.0)), 4).rgb+
-						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/8.0)), 3).rgb+
+						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/2.0)), 1).rgb+
 						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/4.0)), 2).rgb+
-						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/2.0)), 1).rgb)/5.0;
+						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/8.0)), 3).rgb+
+						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/16.0)), 4).rgb+
+						1.25*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/32.0)), 5).rgb+
+						1.5*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/64.0)), 6).rgb+
+						1.75*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/128.0)), 7).rgb+
+						2.0*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/256.0)), 8).rgb);
 		}
-		bloom /= 4.5;
-		color.rgb += bloom;
+		bloom /= 7.5*8.0;
+		color.rgb += clamp(bloom, 0.0, 1.0);
 	#endif
 
 	// LENS FLARE
 	// source https://john-chapman.github.io/2017/11/05/pseudo-lens-flare.html
+	//			https://www.shadertoy.com/view/mtVSRd
 	#if USE_LENSFLARE
 		float uGhostSpacing = 1.0;
 		int uGhostCount = 3;

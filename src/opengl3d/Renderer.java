@@ -21,6 +21,7 @@ import org.joml.Matrix4f;
 import opengl3d.audio.AudioMaster;
 import opengl3d.audio.AudioSource;
 import opengl3d.engine.Input;
+import opengl3d.ui.UIBox;
 import opengl3d.utils.ModelReader;
 import opengl3d.utils.Shader;
 import opengl3d.utils.text.Font;
@@ -57,6 +58,8 @@ public class Renderer {
 	private static float timeOffsetStart = 0f;
 	private static float frameTime;
 	private static float frameTimeStart;
+
+	UIBox button;
 
 	public static int loadTexture(String filePath) {
 		int textureId = 0, width, height;
@@ -156,6 +159,14 @@ public class Renderer {
 	}
 
 	public void onCreate(int width, int height) {
+		button = new UIBox("button", 0, 0, 100, 50) {
+			@Override
+			public void onClick() {
+				System.out.println("Halo!");
+				super.onClick();
+			}
+		};
+		Input.setOnClickListener(button);
 		mainShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/quad_fragment.txt");
 		textShader = new Shader("resources/shaders/text_vertex.txt", "resources/shaders/text_fragment.txt");
 
@@ -318,7 +329,7 @@ public class Renderer {
 		}
 		chat += Input.getRawLine() + "_";
 		//textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
-		textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
+		textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！ ꦱꦸꦒꦼꦁ​​ꦲꦺꦚ꧀ꦗꦁ​꧈​​ꦢꦺꦴꦚ​" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
 
 		gameTexture.deleteTextures();
 	}
