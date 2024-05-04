@@ -92,8 +92,8 @@ public class Camera {
 			rotation[0] += rotVel[0];
 			rotation[1] += rotVel[1];
 
-			rotVel[0] /= 1.2f*(1f-0.2f*time);
-			rotVel[1] /= 1.2f*(1f-0.2f*time);
+			rotVel[0] /= 1.2f*(1f-0.4f*time);
+			rotVel[1] /= 1.2f*(1f-0.4f*time);
 		} else {
 			float smoothness = 0.25f;
 			float lerpFactor = Math.min(1.0f, smoothness * time);

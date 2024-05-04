@@ -11,6 +11,7 @@ uniform sampler2D TEXTURE_TEMPCOLOR;
 
 uniform float DRAW_DISTANCE;
 uniform float TIME;
+uniform float DAYLIGHT;
 uniform vec3 SUN_DIR;
 uniform mat4 SHADOW_ROTATION_MATRIX;
 
@@ -180,7 +181,7 @@ void main() {
 
 			float cloudShadow = 0.;
 			for(float shd=1.; shd<=shadowStep+1.; shd++){
-				vec2 newUV = layerUV-((sunDirection.xz*shd)/128.);
+				vec2 newUV = layerUV-((sunDirection.xz*shd)/192.);
 			//	float noiseVal = 0.5 + 0.25 * Pseudo3dNoise(vec3(newUV * 9.0, TIME*0.25));
 
 				if(dynamicCloud){
@@ -196,10 +197,17 @@ void main() {
 
 			}
 			cloudShadow = cloudShadow/(shadowStep+1.);
-			cloudColor = mix(vec3(0.4)*clamp(sunDirection.y, 0.5, 1.), vec3(1.25, 1.125, 1.125)*clamp(pow(sunDirection.y,1.7), 0.4, 0.7), cloudShadow);
+			cloudColor = mix(vec3(0.75)*clamp(sunDirection.y, 0.5, 1.), vec3(1.25, 1.125, 1.125)*clamp(pow(sunDirection.y,1.7), 0.5, 0.8), cloudShadow);
+
+			vec3 sc = vec3(0.4, 0.701960784313, 1.0)/4.0f;
+			vec3 lc = mix(vec3(1.0, 0.5294117647, 0.21176470588), vec3(1.0, 1.0, 0.98431372549), clamp(sqrt(SUN_DIR.y), 0.0, 1.0));
 
 			float cloudCast = mix(0., cloud*2.0, clamp(pow(position.y,0.5), 0., 1.));
-			color.rgb = mix(color.rgb, 1.5*cloudColor*texture(TEXTURE_TEMPCOLOR, vec2(clamp(pow(1.-sunDirection.y,1.7),0.25,0.65),0.0)).rgb, cloudCast);
+			cloudShadow = clamp(pow(DAYLIGHT, 0.5)*(cloudShadow), 0.0, 1.0);
+			cloudColor = mix(sc*0.725, lc, cloudShadow);
+			color.rgb = mix(color.rgb, cloudColor, cloudCast);
+
+			//color.rgb = mix(color.rgb, max(DAYLIGHT, 0.125)*cloudColor*texture(TEXTURE_TEMPCOLOR, vec2(clamp(pow(1.-sunDirection.y,1.7),0.25,0.65),0.0)).rgb, cloudCast);
 			emitter = mix(emitter, 0.0, cloudCast);
 
 		#else

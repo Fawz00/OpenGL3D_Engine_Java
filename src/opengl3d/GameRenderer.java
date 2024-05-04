@@ -610,6 +610,7 @@ public class GameRenderer {
 	}
 
 	public void onLoop(Camera cam, float time, float frameTime, boolean isPaused) {
+		time = time * 6.0f;
 		isRunning = true;
 		camera = cam;
 		entityPlayer.isPaused(isPaused);
@@ -663,7 +664,7 @@ public class GameRenderer {
 		}
 
 		// float sunOffset = 0.25f*0.0174532925199f*2f*((float)Math.random()-1f);
-		sunRotation[0] = toRad*(time/4f) *6.0f;
+		sunRotation[0] = toRad*(time/4f);
 		sunRotation[1] = 0f;
 		sunRotation[2] = toRad*30f;
 
@@ -792,6 +793,7 @@ public class GameRenderer {
 		skyBoxShader.setMat4("SHADOW_ROTATION_MATRIX", shadowRotationMatrixF);
 		skyBoxShader.setVec3("SUN_DIR", new float[] {sunDir.x,sunDir.y,sunDir.z});
 		skyBoxShader.setFloat("TIME", time);
+		skyBoxShader.setFloat("DAYLIGHT", daylight);
 		skyBoxShader.setFloat("DRAW_DISTANCE", Settings.drawDistance);
 
 		GL30.glActiveTexture(GL30.GL_TEXTURE0);

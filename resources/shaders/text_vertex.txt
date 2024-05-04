@@ -45,7 +45,7 @@ void main() {
 	#endif
 
 	color = COLOR;
-	vec4 gPos = vec4( (2.0*POS/RESOLUTION) + vec2(-1.0, 1.0), -0.01, 1.0 );
+	vec4 gPos = vec4( (2.0*POS/RESOLUTION) + vec2(-1.0, 1.0), -0.02, 1.0 );
 
 	gl_Position = gPos;
 }

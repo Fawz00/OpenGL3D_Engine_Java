@@ -64,6 +64,7 @@ public class Renderer {
 	private static float frameTimeStart;
 
 	UIBox button;
+	UIBox buttonShadow;
 
 	public static int loadTexture(String filePath) {
 		int textureId = 0, width, height;
@@ -163,15 +164,26 @@ public class Renderer {
 	}
 
 	public void onCreate(int width, int height) {
-		button = new UIBox("button", 0, 0, 1080, 1080);
+		button = new UIBox("button", 177, 22, 355, 45);
 		button.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
-				System.out.println("Halo!");
+				System.out.println("こんにちは、世界！");
 				super.runOnClick();
 			}
 		});
 		Input.setOnClickEventListener(button);
+
+		buttonShadow = new UIBox("button", 177, 101, 355, 45);
+		buttonShadow.setEvent(new UIEvent(){
+			@Override
+			public void runOnClick() {
+				Settings.useShadow = Settings.useShadow==0? 1:0;
+				super.runOnClick();
+			}
+		});
+		Input.setOnClickEventListener(buttonShadow);
+
 		mainShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/quad_fragment.txt");
 		textShader = new Shader("resources/shaders/text_vertex.txt", "resources/shaders/text_fragment.txt");
 		uiShader = new Shader("resources/shaders/ui_vertex.txt", "resources/shaders/ui_fragment.txt");
@@ -337,7 +349,11 @@ public class Renderer {
 		//textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
 	
 		textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！ ꦱꦸꦒꦼꦁ​​ꦲꦺꦚ꧀ꦗꦁ​꧈​​ꦢꦺꦴꦚ​" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
-		button.draw(uiShader, new Point2D(screenResolution[0], screenResolution[1]));
+
+		Point2D res = new Point2D(screenResolution[0], screenResolution[1]);
+		button.draw(uiShader, res);
+		textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 49, 355, 45, "Toggle shadow", 0xFF1010FF);
+		buttonShadow.draw(uiShader, res);
 
 		gameTexture.deleteTextures();
 	}
@@ -354,6 +370,7 @@ public class Renderer {
 		textView.dispose();
 		uiShader.delete();
 		button.destroy();
+		buttonShadow.destroy();
 	}
 
 }

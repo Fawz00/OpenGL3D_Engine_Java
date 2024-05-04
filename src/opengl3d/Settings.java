@@ -25,7 +25,7 @@ public class Settings {
 	public static float playerSpeed				= 50f/3.6f;
 
 	//CONTROL MAPPING
-	public static float cameraSensitivity		= 1.5f;
+	public static float cameraSensitivity		= 1.0f;
 	public static boolean smoothCamera			= true;
 	public static int buttonPrimary				= GLFW.GLFW_MOUSE_BUTTON_LEFT;
 	public static int keyForward				= GLFW.GLFW_KEY_SPACE;
@@ -54,11 +54,11 @@ public class Settings {
 	public static float screenQuality			= 1.00f; // Percent of display resolution
 	public static int FXAA						= 1; // 0: OFF; 1: ON
 
-	public static float gamma					= 1.75f;
+	public static float gamma					= 2.0f;
 	public static int useHDR					= 1;
-	public static float HDRSpeed				= 0.05f;
+	public static float HDRSpeed				= 0.025f;
 	public static float sceneExposureMultiplier	= 0.125f;
-	public static float sceneExposureRangeMax	= 2.2f;
+	public static float sceneExposureRangeMax	= 2.0f;
 	public static float sceneExposureRangeMin	= -2.2f;
 
 	public static int useSkyBox					= 1;

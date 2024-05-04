@@ -43,7 +43,7 @@ layout (location = 2) out vec4 FragMer;
 layout (location = 3) out vec4 FragNormal;
 
 //define SHADOW_COLOR vec3(0.25098039215, 0.61176470588, 1.0)
-#define SHADOW_COLOR vec3(0.4, 0.701960784313, 1.0)/4.0
+#define SHADOW_COLOR vec3(0.4, 0.701960784313, 1.0)/8.0
 //define SHADOW_COLOR vec3(0.4, 0.701960784313, 1.0)
 #define DISPLACEMENT_HEIGHT_SCALE 0.015
 
@@ -254,13 +254,17 @@ void main() {
 			shadowProj.y > 1.0 || shadowProj.y < 0.0 ||
 			depthTest > 1.0 || depthTest < 0.0) shadow = 1.0;
 		if(USE_PARALLAX_TEXTURE == 1.0 && USE_PARALLAX == 1) shadow = min( shadow, ParallaxShadow(texCoords, normalize(tangentLightDir)) );
-		shadow = clamp(pow(DAYLIGHT, 0.25)*min(diff, shadow), 0.0, 1.0);
+		shadow = clamp(pow(DAYLIGHT, 0.5)*min(diff, shadow), 0.0, 1.0);
 		diffuse.rgb *= mix(SHADOW_COLOR*0.725, lightColor, max(shadow, MetallicEmitnessRoughness.g));
 		diffuse.rgb += mix(vec3(0.0), vec3(spec*lightColor), shadow);
 //		diffuse.rgb = vec3(shadowProj,0.0);
 	#else
-		vec3 shading = vec3(clamp(diff, 0.34, 2.0)*ambient);
-		diffuse.rgb = (diffuse.rgb*shading)+(lightColor*spec);
+		// vec3 shading = vec3(clamp(diff, 0.34, 2.0)*ambient);
+		// diffuse.rgb = (diffuse.rgb*shading)+(lightColor*spec);
+
+		shadow = clamp(pow(DAYLIGHT, 0.5)*min(diff, shadow), 0.0, 1.0);
+		diffuse.rgb *= mix(SHADOW_COLOR*0.725, lightColor, max(shadow, MetallicEmitnessRoughness.g));
+		diffuse.rgb += mix(vec3(0.0), vec3(spec*lightColor), shadow);
 	#endif
 
 	//diffuse.rgb = mix(0.0*diffuse.rgb+ambient, diffuse.rgb+ambient+spec, shadow);

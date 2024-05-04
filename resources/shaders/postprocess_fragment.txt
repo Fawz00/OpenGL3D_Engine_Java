@@ -246,12 +246,12 @@ void main() {
 						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/4.0)), 2).rgb+
 						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/8.0)), 3).rgb+
 						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.5, 0.0)) / (MAIN_RESOLUTION/16.0)), 4).rgb+
-						1.25*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/32.0)), 5).rgb+
-						1.5*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/64.0)), 6).rgb+
-						1.75*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/128.0)), 7).rgb+
+						textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/32.0)), 5).rgb+
+						1.33*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/64.0)), 6).rgb+
+						1.66*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/128.0)), 7).rgb+
 						2.0*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/256.0)), 8).rgb);
 		}
-		bloom /= 7.5*8.0;
+		bloom /= 5.5*8.0;
 		color.rgb += clamp(bloom, 0.0, 1.0);
 	#endif
 

@@ -18,5 +18,5 @@ void main() {
 	vec4 gPos = ROTATION_MATRIX * vec4( POSITION.xy*SCALE, POSITION.z, 1.0 );
     gPos.xy = ( (gPos.xy+LOCATION*2.0) / RESOLUTION ) + vec2(-1.0, 1.0);
 
-	gl_Position = vec4(gPos.xy, -0.02, 1.0);
+	gl_Position = vec4(gPos.xy, -0.01, 1.0);
 }
