@@ -19,6 +19,7 @@ import opengl3d.Renderer;
 import opengl3d.Settings;
 import opengl3d.ui.Point2D;
 import opengl3d.ui.UIComponent;
+import opengl3d.ui.UIEvent;
 
 public class Input {
 	private static boolean[] keysDown = new boolean[GLFW.GLFW_KEY_LAST];
@@ -37,7 +38,9 @@ public class Input {
 	private static GLFWMouseButtonCallback mouseButtons;
 	private static GLFWScrollCallback mouseScroll;
 
-	private static Vector<UIComponent> onClickUI = new Vector<>();
+	private static Vector<UIComponent> UIEventOnClick = new Vector<>();
+	private static Vector<UIComponent> UIEventOnHold = new Vector<>();
+	private static Vector<UIComponent> UIEventOnRelease = new Vector<>();
 	
 	public Input() {
 		isTyping = false;
@@ -105,8 +108,12 @@ public class Input {
 		mouseButtons = new GLFWMouseButtonCallback() {
 			public void invoke(long window, int button, int action, int mods) {
 				if(button >= 0 && button <= GLFW.GLFW_MOUSE_BUTTON_LAST) {
-					if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_PRESS) {
-						handleOnClickListener();
+					if(button == Settings.buttonPrimary && action == GLFW.GLFW_PRESS) {
+						handleEventListener(UIEventOnClick, UIEvent.EVENT_ON_CLICK);
+					} else if(button == Settings.buttonPrimary && action == GLFW.GLFW_REPEAT) {
+						handleEventListener(UIEventOnHold, UIEvent.EVENT_ON_HOLD);
+					} else if(button == Settings.buttonPrimary && action == GLFW.GLFW_RELEASE) {
+						handleEventListener(UIEventOnRelease, UIEvent.EVENT_ON_RELEASE);
 					}
 				}
 				buttonsDown[button] = (action != GLFW.GLFW_RELEASE);
@@ -121,19 +128,22 @@ public class Input {
 		};
 	}
 
-	private static void handleOnClickListener() {
-		if(Renderer.isPaused()) for(UIComponent ui: onClickUI) {
+	private static void handleEventListener(Vector<UIComponent> event, int run) {
+		if(Renderer.isPaused()) for(UIComponent ui: event) {
 			if(ui.isActive()) {
 				int rotation = ui.getRotation();
 				Point2D size = ui.getSize();
 				Point2D center = ui.getPosition();
-				Point2D pointer = new Point2D((int)mouseX, (int)mouseY);
-				float localX = (float)(Math.cos(-rotation) * (pointer.x - center.x) - Math.sin(-rotation) * (pointer.y - center.y));
-				float localY = (float)(Math.sin(-rotation) * (pointer.x - center.x) + Math.cos(-rotation) * (pointer.y - center.y));
+				Point2D cursor = new Point2D((int)mouseX, (int)mouseY);
+				float localX = (float)(Math.cos(-rotation) * (cursor.x - center.x) - Math.sin(-rotation) * (cursor.y - center.y));
+				float localY = (float)(Math.sin(-rotation) * (cursor.x - center.x) + Math.cos(-rotation) * (cursor.y - center.y));
 
 				// Check collision with the local coordinates of the OBB
-				if(localX >= -size.x / 2 && localX <= size.x / 2 && localY >= -size.y / 2 && localY <= size.y / 2)
-					ui.onClick();
+				if(localX >= -size.x / 2 && localX <= size.x / 2 && localY >= -size.y / 2 && localY <= size.y / 2) {
+					if(run == UIEvent.EVENT_ON_CLICK) ui.getEvent().runOnClick();
+					else if(run == UIEvent.EVENT_ON_HOLD) ui.getEvent().runOnHold();
+					else if(run == UIEvent.EVENT_ON_RELEASE) ui.getEvent().runOnRelease();
+				}
 			}
 		}
 	}
@@ -191,11 +201,23 @@ public class Input {
 
 
 
-	public static void setOnClickListener(UIComponent ui) {
-		onClickUI.add(ui);
+	public static void setOnClickEventListener(UIComponent ui) {
+		UIEventOnClick.add(ui);
 	}
-	public static void removeOnClickListener(UIComponent ui) {
-		onClickUI.remove(ui);
+	public static void removeOnClickEventkListener(UIComponent ui) {
+		UIEventOnClick.remove(ui);
+	}
+	public static void setOnHoldEventListener(UIComponent ui) {
+		UIEventOnHold.add(ui);
+	}
+	public static void removeOnHoldEventkListener(UIComponent ui) {
+		UIEventOnHold.remove(ui);
+	}
+	public static void setOnReleaseEventListener(UIComponent ui) {
+		UIEventOnRelease.add(ui);
+	}
+	public static void removeOnReleaseEventkListener(UIComponent ui) {
+		UIEventOnRelease.remove(ui);
 	}
 
 	public static boolean isKeyDown(int key) {

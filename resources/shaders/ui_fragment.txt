@@ -1,0 +1,25 @@
+#version 330 core
+
+uniform sampler2D TEXTURE;
+uniform vec2 SCALE;
+
+in vec2 uv;
+out vec4 FragColor;
+
+float sdf_rounded_box(vec2 p, vec2 size, float radius) {
+    vec2 d = abs(p) - size + vec2(radius);
+    return min(max(d.x, d.y), 0.0) + length(max(d, 0.0)) - radius;
+}
+
+void main() {
+	vec4 col = vec4(0.0);
+
+    float d = sdf_rounded_box((uv-0.5)*SCALE, SCALE*0.5, 10.0);
+    if (d < 0.0) {
+        col = vec4(1.0, 1.0, 1.0, 0.5);
+        if (d > -12.0)
+            col = vec4(1.0);
+    }
+
+	FragColor = col;
+}

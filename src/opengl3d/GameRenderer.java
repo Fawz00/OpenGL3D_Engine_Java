@@ -216,7 +216,7 @@ public class GameRenderer {
 	}
 
 	private void renderModel(	Shader shader, ModelReader model, TextureReader texture,
-			float Px,float Py,float Pz, float Rx,float Ry,float Rz, float Sx,float Sy,float Sz) {
+		float Px,float Py,float Pz, float Rx,float Ry,float Rz, float Sx,float Sy,float Sz) {
 		float[] transformM = new float[16];
 		Matrix4f tr = new Matrix4f()
 							.translate(Px, Py, Pz)

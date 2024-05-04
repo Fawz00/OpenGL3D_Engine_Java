@@ -9,14 +9,4 @@ public class UIBox extends UIComponent {
 		super(id, new Point2D(x,y), new Point2D(sx, sy));
 	}
 
-	@Override
-	public void onClick() {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void onHover() {
-		// TODO Auto-generated method stub
-		
-	}
 }

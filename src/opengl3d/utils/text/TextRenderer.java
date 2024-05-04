@@ -2,6 +2,7 @@ package opengl3d.utils.text;
 
 import java.nio.FloatBuffer;
 
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 

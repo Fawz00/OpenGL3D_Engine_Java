@@ -27,13 +27,14 @@ public class Settings {
 	//CONTROL MAPPING
 	public static float cameraSensitivity		= 1.5f;
 	public static boolean smoothCamera			= true;
+	public static int buttonPrimary				= GLFW.GLFW_MOUSE_BUTTON_LEFT;
 	public static int keyForward				= GLFW.GLFW_KEY_SPACE;
 	public static int keyToggleCamera			= GLFW.GLFW_KEY_C;
 	public static int keyZoom					= GLFW.GLFW_KEY_Z;
 	public static int keyTogglePhysics			= GLFW.GLFW_KEY_P;
 
 	//AUDIO CONFIG
-	public static float volumeMusic				= 0.00f;
+	public static float volumeMusic				= 1.00f;
 
 	//RENDER CONFIG
 	public static boolean limitFps				= false;

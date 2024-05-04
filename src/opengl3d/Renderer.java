@@ -21,7 +21,9 @@ import org.joml.Matrix4f;
 import opengl3d.audio.AudioMaster;
 import opengl3d.audio.AudioSource;
 import opengl3d.engine.Input;
+import opengl3d.ui.Point2D;
 import opengl3d.ui.UIBox;
+import opengl3d.ui.UIEvent;
 import opengl3d.utils.ModelReader;
 import opengl3d.utils.Shader;
 import opengl3d.utils.text.Font;
@@ -35,6 +37,8 @@ public class Renderer {
 
 	private Font textView;
 	private Shader textShader;
+
+	private Shader uiShader;
 
 	private Shader mainShader;
 	private ModelReader modelQuad;
@@ -159,16 +163,18 @@ public class Renderer {
 	}
 
 	public void onCreate(int width, int height) {
-		button = new UIBox("button", 0, 0, 100, 50) {
+		button = new UIBox("button", 0, 0, 1080, 1080);
+		button.setEvent(new UIEvent(){
 			@Override
-			public void onClick() {
+			public void runOnClick() {
 				System.out.println("Halo!");
-				super.onClick();
+				super.runOnClick();
 			}
-		};
-		Input.setOnClickListener(button);
+		});
+		Input.setOnClickEventListener(button);
 		mainShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/quad_fragment.txt");
 		textShader = new Shader("resources/shaders/text_vertex.txt", "resources/shaders/text_fragment.txt");
+		uiShader = new Shader("resources/shaders/ui_vertex.txt", "resources/shaders/ui_fragment.txt");
 
 		modelQuad = new ModelReader("resources/models/quad.obj");
 		textures[0] = loadTexture("resources/textures/ui/splash0.png");
@@ -329,7 +335,9 @@ public class Renderer {
 		}
 		chat += Input.getRawLine() + "_";
 		//textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
+	
 		textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！ ꦱꦸꦒꦼꦁ​​ꦲꦺꦚ꧀ꦗꦁ​꧈​​ꦢꦺꦴꦚ​" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
+		button.draw(uiShader, new Point2D(screenResolution[0], screenResolution[1]));
 
 		gameTexture.deleteTextures();
 	}
@@ -344,6 +352,8 @@ public class Renderer {
 		gameTexture.onDestroy();
 		audioSourceSelf.delete();
 		textView.dispose();
+		uiShader.delete();
+		button.destroy();
 	}
 
 }
