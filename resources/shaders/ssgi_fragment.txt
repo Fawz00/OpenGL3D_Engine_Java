@@ -11,6 +11,7 @@ uniform vec4 VIEW_POSITION;
 uniform vec2 RESOLUTION;
 uniform float TIME;
 uniform float RANDOM;
+uniform float FOV;
 
 in vec2 uv;
 out vec4 FragColor;
@@ -51,6 +52,21 @@ vec4 worldPos(vec2 texcoord, float depth){
     return worldPos;
 }
 
+mat3 getCamMatrix(vec3 ro, vec3 look) {
+    vec3 f = normalize(ro - look);
+    vec3 r = normalize(cross(vec3(0.0, 1.0, 0.0), f)); 
+    return mat3(-r, normalize(cross(f, r)), -f);
+}
+
+vec3 screenToWorld(vec3 screenPos) {
+  screenPos.xy -= 0.5;
+  screenPos.xy /= vec2(RESOLUTION.y / RESOLUTION.x, 1);
+  vec3 ro = fragCamPos;
+  mat3 camMat = getCamMatrix(ro,vec3(0.0));
+  vec3 rd = camMat*normalize(vec3(screenPos.xy , 1./FOV)); 
+  return ro + screenPos.z*rd;
+}
+
 float HorizonContribution(vec3 rayDir, vec3 worldTangent, vec3 viewNorm, float minAngle, float maxAngle){
     minAngle *= 2.0; 
     maxAngle *= 2.0;
@@ -78,10 +94,10 @@ void main() {
 	vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
     vec3 fragNorm  = normalize(texture(TEXTURE_NORMAL, uv).xyz*2.0-1.0);
-    float fragDepth = texture(TEXTURE_DEPTH, uv, 1.0).r;
+    float fragDepth = texture(TEXTURE_DEPTH, uv, 1.0).g;
     
     fragCamPos = VIEW_POSITION.xyz;
-    vec3 fragWorldPos = worldPos(uv, fragDepth).xyz;
+    vec3 fragWorldPos = screenToWorld(vec3(uv, fragDepth));
     vec3 rayDir = normalize(fragCamPos - fragWorldPos);
 
     //Random rotation and linear jitter for all directions per pixel
@@ -104,7 +120,7 @@ void main() {
         vec2 dirVector = vec2(cos(dirAngle), sin(dirAngle));
         
         //offset world pos to get tangent vector
-        vec3 offsetWorldPos = worldPos((gl_FragCoord.xy + dirVector) / RESOLUTION.xy, fragDepth).xyz;
+        vec3 offsetWorldPos = screenToWorld(vec3((gl_FragCoord.xy + dirVector) / RESOLUTION.xy, fragDepth));
         vec3 worldTangent = normalize(rayDir + normalize(offsetWorldPos - fragCamPos));
         
         //Get 2d normal in the plane of the current direction
@@ -141,9 +157,9 @@ void main() {
             
             //Sample depth and get sample horizon angle
             // MNGE BUG TEROS!!!
-            float sampleDepth = textureLod(TEXTURE_DEPTH, sampleUV.xy, 1.0).g*1.2;
+            float sampleDepth = textureLod(TEXTURE_DEPTH, sampleUV.xy, 1.0).g;
 
-            vec3 sampleWorldPos = fragCamPos + normalize(worldPos(sampleUV, 1.0).xyz - fragCamPos) * sampleDepth;
+            vec3 sampleWorldPos = fragCamPos + normalize(screenToWorld(vec3(sampleUV, 1.0)) - fragCamPos) * sampleDepth;
             vec3 worldDir = normalize(sampleWorldPos - fragWorldPos);
             vec2 projTangetDir = vec2(dot(rayDir, worldDir), dot(worldTangent, worldDir));
             float sampleAngle = atan(projTangetDir.y, projTangetDir.x);
@@ -153,7 +169,7 @@ void main() {
             if(sampleAngle < maxAngle)
             {
                 //Get direct lighting (sampling in higher mip to greatly improve perf, could be dynamic)
-                vec3 directLight = clamp(textureLod(TEXTURE_LIGHT, sampleUV.xy, 3.0).rgb-0.1, 0.0, 1.0)*50.0;
+                vec3 directLight = clamp(textureLod(TEXTURE_LIGHT, sampleUV.xy, 3.0).rgb-0.1, 0.0, 1.0)*120.0;
 
                 
                 //Optionaly include indirect lighting from previous frame to approximate multiple bounces
@@ -183,7 +199,7 @@ void main() {
     //Accumulate a few past frames
     //This should probably use temporal reprojection but not enough buffers
     
-    color.rgb = mix(texture(TEXTURE_0,uv).rgb, indirectLight, 0.15);
+    color.rgb = mix(texture(TEXTURE_0,uv).rgb, indirectLight, 0.5);
 
 //test.r = vec4(MVP_MATRIX*vec4(fragWorldPos,1.0)).z/50.0;
 //test.g = textureLod(TEXTURE_DEPTH, uv.xy, 1.0).g/100.0;

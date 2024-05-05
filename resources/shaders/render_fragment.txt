@@ -255,7 +255,7 @@ void main() {
 			depthTest > 1.0 || depthTest < 0.0) shadow = 1.0;
 		if(USE_PARALLAX_TEXTURE == 1.0 && USE_PARALLAX == 1) shadow = min( shadow, ParallaxShadow(texCoords, normalize(tangentLightDir)) );
 		shadow = clamp(pow(DAYLIGHT, 0.5)*min(diff, shadow), 0.0, 1.0);
-		diffuse.rgb *= mix(SHADOW_COLOR*0.725, lightColor, max(shadow, MetallicEmitnessRoughness.g));
+		diffuse.rgb *= mix(SHADOW_COLOR*0.725, lightColor, max(shadow, MetallicEmitnessRoughness.g*2.0));
 		diffuse.rgb += mix(vec3(0.0), vec3(spec*lightColor), shadow);
 //		diffuse.rgb = vec3(shadowProj,0.0);
 	#else
@@ -263,7 +263,7 @@ void main() {
 		// diffuse.rgb = (diffuse.rgb*shading)+(lightColor*spec);
 
 		shadow = clamp(pow(DAYLIGHT, 0.5)*min(diff, shadow), 0.0, 1.0);
-		diffuse.rgb *= mix(SHADOW_COLOR*0.725, lightColor, max(shadow, MetallicEmitnessRoughness.g));
+		diffuse.rgb *= mix(SHADOW_COLOR*0.725, lightColor, max(shadow, MetallicEmitnessRoughness.g*2.0));
 		diffuse.rgb += mix(vec3(0.0), vec3(spec*lightColor), shadow);
 	#endif
 

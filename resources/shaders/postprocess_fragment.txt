@@ -12,6 +12,7 @@ uniform sampler2D TEXTURE_SSGI;
 uniform mat4 MVP_MATRIX;
 uniform vec2 MAIN_RESOLUTION;
 uniform vec2 REFLECTION_RESOLUTION;
+uniform vec2 SSGI_RESOLUTION;
 uniform float TIME;
 uniform float gamma;
 uniform float exposure;

@@ -68,9 +68,9 @@ public class Settings {
 	public static int useParallaxMapping		= 1;
 
 	public static int useShadow					= 1;
-	public static int shadowResolution			= 1024;
-	public static float shadowDistance			= 25;
-	public static int usePenumbraShadow			= 0;
+	public static int shadowResolution			= 8024;
+	public static float shadowDistance			= 250;
+	public static int usePenumbraShadow			= 1;
 
 	public static int useReflection				= 1;
 	public static float reflectionQuality		= 0.5f; // Percent of screenQuality
@@ -80,8 +80,8 @@ public class Settings {
 
 	public static int useSSAO					= 0; // next update!
 
-	public static int useSSGI					= 0; // in development
-	public static float SSGIQuality				= 0.50f; // Percent of screenQuality
+	public static int useSSGI					= 1; // in development
+	public static float SSGIQuality				= 0.75f; // Percent of screenQuality
 	public static int SSGIDenoise				= 0; // in development
 
 }

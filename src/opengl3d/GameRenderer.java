@@ -963,8 +963,8 @@ public class GameRenderer {
 		//=========================================================================//
 		//     S C R E E N   S P A C E   G L O B A L   I L L U M I N A T I O N     //
 		//=========================================================================//
+		int[] ssgiResolution = new int[]{(int)Math.ceil((float)screenResolution[0]*Settings.SSGIQuality), (int)Math.ceil((float)screenResolution[1]*Settings.SSGIQuality)};
 		if(Settings.useSSGI==1) {
-			int[] ssgiResolution = new int[]{(int)Math.ceil((float)screenResolution[0]*Settings.SSGIQuality), (int)Math.ceil((float)screenResolution[1]*Settings.SSGIQuality)};
 			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, SSGIFBO);
 
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSGITexture);
@@ -985,6 +985,7 @@ public class GameRenderer {
 			SSGIShader.setVec2("RESOLUTION", new float[]{(float)ssgiResolution[0], (float)ssgiResolution[1]});
 			SSGIShader.setFloat("TIME", time);
 			SSGIShader.setFloat("RANDOM", (float)Math.random());
+			SSGIShader.setFloat("FOV", cam.getFovY());
 			SSGIShader.setVec4("VIEW_POSITION", cameraPosition);
 			SSGIShader.setMat4("MVP_MATRIX", MVPMatrixF);
 
@@ -1037,6 +1038,7 @@ public class GameRenderer {
 		postProcessShader.setMat4("MVP_MATRIX", MVPMatrixF);
 		postProcessShader.setVec2("MAIN_RESOLUTION", new float[]{(float)screenResolution[0], (float)screenResolution[1]});
 		postProcessShader.setVec2("REFLECTION_RESOLUTION", new float[]{(float)reflectionResolution[0], (float)reflectionResolution[1]});
+		postProcessShader.setVec2("SSGI_RESOLUTION", new float[]{(float)ssgiResolution[0], (float)ssgiResolution[1]});
 		postProcessShader.setFloat("TIME", time);
 		postProcessShader.setFloat("gamma", Settings.gamma);
 
