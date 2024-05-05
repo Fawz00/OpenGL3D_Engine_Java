@@ -53,7 +53,8 @@ public class UIComponent {
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, backgroundTexture);
 
 		modelQuad.drawModel();
-		ModelReader.resetModel();
+		//ModelReader.resetModel();
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
 	}
 	public void destroy() {
 		active = false;

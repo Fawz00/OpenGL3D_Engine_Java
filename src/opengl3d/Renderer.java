@@ -348,11 +348,11 @@ public class Renderer {
 		chat += Input.getRawLine() + "_";
 		//textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
 	
-		textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！ ꦱꦸꦒꦼꦁ​​ꦲꦺꦚ꧀ꦗꦁ​꧈​​ꦢꦺꦴꦚ​" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
+		//textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！ ꦱꦸꦒꦼꦁ​​ꦲꦺꦚ꧀ꦗꦁ​꧈​​ꦢꦺꦴꦚ​" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
 
+		textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 49, 355, 55, "Toggle shadow\n AA", 0xFF1010FF);
 		Point2D res = new Point2D(screenResolution[0], screenResolution[1]);
 		button.draw(uiShader, res);
-		textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 49, 355, 45, "Toggle shadow", 0xFF1010FF);
 		buttonShadow.draw(uiShader, res);
 
 		gameTexture.deleteTextures();

@@ -93,7 +93,7 @@ void main() {
     vec3 test = vec3(0.0);
 	vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
-    vec3 fragNorm  = normalize(texture(TEXTURE_NORMAL, uv).xyz*2.0-1.0);
+    vec3 fragNorm  = texture(TEXTURE_NORMAL, uv).xyz;
     float fragDepth = texture(TEXTURE_DEPTH, uv, 1.0).g;
     
     fragCamPos = VIEW_POSITION.xyz;
@@ -156,20 +156,19 @@ void main() {
             float edgeFade = linstep(0.5, 0.5 - max(edgeFadeWidth,0.01), mult);
             
             //Sample depth and get sample horizon angle
-            // MNGE BUG TEROS!!!
             float sampleDepth = textureLod(TEXTURE_DEPTH, sampleUV.xy, 1.0).g;
 
             vec3 sampleWorldPos = fragCamPos + normalize(screenToWorld(vec3(sampleUV, 1.0)) - fragCamPos) * sampleDepth;
             vec3 worldDir = normalize(sampleWorldPos - fragWorldPos);
             vec2 projTangetDir = vec2(dot(rayDir, worldDir), dot(worldTangent, worldDir));
             float sampleAngle = atan(projTangetDir.y, projTangetDir.x);
-            test.x = sampleAngle;
-            test.y = maxAngle;
+            test.rg = vec2(sampleAngle, maxAngle);
+
             //If sampled world space position is visible then find its contribution
             if(sampleAngle < maxAngle)
             {
                 //Get direct lighting (sampling in higher mip to greatly improve perf, could be dynamic)
-                vec3 directLight = clamp(textureLod(TEXTURE_LIGHT, sampleUV.xy, 3.0).rgb-0.1, 0.0, 1.0)*120.0;
+                vec3 directLight = clamp(textureLod(TEXTURE_LIGHT, sampleUV.xy, 3.0).rgb-0.1, 0.0, 1.0)*100.0;
 
                 
                 //Optionaly include indirect lighting from previous frame to approximate multiple bounces

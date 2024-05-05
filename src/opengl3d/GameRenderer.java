@@ -329,7 +329,7 @@ public class GameRenderer {
 				0f,400f,0f,  0f,0f,0f,  1f,1f,1f);
 		renderModel(shader,
 				modelAll.getModelData(modelAll.getModelId("sponza")),
-				textureAll.getTextureData(textureAll.getTextureId("stone")),
+				textureAll.getTextureData(textureAll.getTextureId("metalic_silver")),
 				300f,75,100f,  0f,0f,0f,  1f,1f,1f);
 		renderModel(shader,
 				modelAll.getModelData(modelAll.getModelId("box")),
@@ -413,7 +413,7 @@ public class GameRenderer {
 
 		entityPlayer = new ObjectEntity(
 			modelAll.getModelData(modelAll.getModelId("sphere")),
-			textureAll.getTextureData(textureAll.getTextureId("metalic_silver")),
+			textureAll.getTextureData(textureAll.getTextureId("red_light")),
 			new float[] {200f,70f,100f},
 			new float[] {0f,0f,0f},
 			1f);
@@ -937,7 +937,7 @@ public class GameRenderer {
 
 			GL30.glActiveTexture(GL30.GL_TEXTURE0);
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderColorTexture);
-			lightingShader.setFloat("exposure", 1.0f);
+			lightingShader.setFloat("exposure", sceneExposure);
 			lightingShader.setInt("TEXTURE_0", 0);
 			GL30.glActiveTexture(GL30.GL_TEXTURE1);
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderMerTexture);
