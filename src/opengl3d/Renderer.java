@@ -23,7 +23,9 @@ import opengl3d.audio.AudioSource;
 import opengl3d.engine.Input;
 import opengl3d.ui.Point2D;
 import opengl3d.ui.UIBox;
+import opengl3d.ui.UIButton;
 import opengl3d.ui.UIEvent;
+import opengl3d.ui.UIRenderer;
 import opengl3d.utils.ModelReader;
 import opengl3d.utils.Shader;
 import opengl3d.utils.text.Font;
@@ -34,11 +36,6 @@ public class Renderer {
 	private AudioSource audioSourceSelf;
 	private int audioBacksound;
 	private int audioIntro;
-
-	private Font textView;
-	private Shader textShader;
-
-	private Shader uiShader;
 
 	private Shader mainShader;
 	private ModelReader modelQuad;
@@ -63,7 +60,7 @@ public class Renderer {
 	private static float frameTime;
 	private static float frameTimeStart;
 
-	UIBox button;
+	UIButton button;
 	UIBox buttonShadow;
 
 	public static int loadTexture(String filePath) {
@@ -164,7 +161,9 @@ public class Renderer {
 	}
 
 	public void onCreate(int width, int height) {
-		button = new UIBox("button", 177, 22, 355, 45);
+		UIRenderer.init();
+		button = new UIButton("button", 177, 22, 355, 45);
+		button.setText("Click me!");
 		button.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
@@ -185,25 +184,12 @@ public class Renderer {
 		Input.setOnClickEventListener(buttonShadow);
 
 		mainShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/quad_fragment.txt");
-		textShader = new Shader("resources/shaders/text_vertex.txt", "resources/shaders/text_fragment.txt");
-		uiShader = new Shader("resources/shaders/ui_vertex.txt", "resources/shaders/ui_fragment.txt");
 
 		modelQuad = new ModelReader("resources/models/quad.obj");
 		textures[0] = loadTexture("resources/textures/ui/splash0.png");
 		textures[1] = loadTexture("resources/textures/ui/splash1.png");
 		textures[2] = loadTexture("resources/textures/ui/splash2.png");
 		camera = new Camera(0, Settings.fov*toRad, new float[] {0f,0f,0f});
-
-		try {
-			InputStream fontData = new ByteArrayInputStream(Files.readAllBytes(Paths.get("resources/fonts/Kosugi_Maru/KosugiMaru-Regular.ttf")));
-			textView = new Font(fontData, 38, true);
-		} catch (FontFormatException e) {
-			System.out.println("Error loading font, default value is used.");
-			textView = new Font(38, false);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		//textView = new Font(38, true);
 
 		gameTexture = new GameRenderer(width, height);
 
@@ -216,6 +202,7 @@ public class Renderer {
 		float ratio = (float) width / (float) height;
 		screenResolution[0] = width;
 		screenResolution[1] = height;
+		UIRenderer.setScreenResolution(new Point2D(width, height));
 
 		projectionMatrix.setOrtho(-ratio, ratio, -1f, 1f, -1f, 1f, false);
 		gameTexture.onScreenSizeChanged(width, height);
@@ -350,10 +337,8 @@ public class Renderer {
 	
 		//textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！ ꦱꦸꦒꦼꦁ​​ꦲꦺꦚ꧀ꦗꦁ​꧈​​ꦢꦺꦴꦚ​" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
 
-		textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 49, 355, 55, "Toggle shadow\n AA", 0xFF1010FF);
-		Point2D res = new Point2D(screenResolution[0], screenResolution[1]);
-		button.draw(uiShader, res);
-		buttonShadow.draw(uiShader, res);
+		button.draw();
+		buttonShadow.draw();
 
 		gameTexture.deleteTextures();
 	}
@@ -362,13 +347,11 @@ public class Renderer {
 		if(textures[0]!=0) GL30.glDeleteTextures(textures[0]);
 		if(textures[1]!=0) GL30.glDeleteTextures(textures[1]);
 		if(textures[2]!=0) GL30.glDeleteTextures(textures[2]);
-		textShader.delete();
+		UIRenderer.destroy();
 		mainShader.delete();
 		modelQuad.deleteModel();
 		gameTexture.onDestroy();
 		audioSourceSelf.delete();
-		textView.dispose();
-		uiShader.delete();
 		button.destroy();
 		buttonShadow.destroy();
 	}

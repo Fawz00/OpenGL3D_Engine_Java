@@ -413,7 +413,7 @@ public class GameRenderer {
 
 		entityPlayer = new ObjectEntity(
 			modelAll.getModelData(modelAll.getModelId("sphere")),
-			textureAll.getTextureData(textureAll.getTextureId("red_light")),
+			textureAll.getTextureData(textureAll.getTextureId("metalic_silver")),
 			new float[] {200f,70f,100f},
 			new float[] {0f,0f,0f},
 			1f);
@@ -1075,7 +1075,7 @@ public class GameRenderer {
 		GL30.glDisable(GL30.GL_DEPTH_TEST);
 
 		modelQuad.drawModel();
-		textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, screenResolution[0]/2, 0, screenResolution[0]/2, screenResolution[1],
+		textView.drawText(textShader, screenResolution[0]/2, 0, screenResolution[0]/2, screenResolution[1],
 				"FPS: " + Main.fpsLimiter.getFps() +"\n"+
 				"XYZ: " + String.format("%.6f", entityPlayer.getPosition()[0]) + ", " + String.format("%.6f", entityPlayer.getPosition()[1]) + ", " + String.format("%.6f", entityPlayer.getPosition()[2]) +"\n"+
 				"View: " + String.format("%.6f", camera.getRotation()[0]*57.295779513082) + ", " + String.format("%.6f", camera.getRotation()[1]*57.295779513082) + ", " + String.format("%.6f", camera.getRotation()[2]*57.295779513082) +"\n"+

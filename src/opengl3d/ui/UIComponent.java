@@ -30,7 +30,10 @@ public class UIComponent {
 		this(id, new Point2D(x,y), new Point2D(sx, sy));
 	}
 	
-	public void draw(Shader shader, Point2D resolution) {
+	public void draw() {
+		Shader shader = UIRenderer.getUIShader();
+		Point2D resolution = UIRenderer.getScreenSize();
+
 		float[] rotationM = new float[16];
 		Matrix4f tr = new Matrix4f()
 			.rotate(new Quaternionf(new AxisAngle4f((float)Math.toRadians(-rotation), 0f,0f,1f)));

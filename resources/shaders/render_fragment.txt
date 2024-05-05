@@ -49,7 +49,7 @@ layout (location = 3) out vec4 FragNormal;
 
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 	const float minLayers = 8;
-	const float maxLayers = 32;
+	const float maxLayers = 24;
 	float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDir)));  
 
 	float layerDepth = 1.0 / numLayers;
@@ -61,7 +61,7 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 	float currentDepthMapValue = texture(TEXTURE_PARALLAX, currentTexCoords).r;
 
 	int a = 0;
-	while(currentLayerDepth < currentDepthMapValue && a<24) {
+	while(currentLayerDepth < currentDepthMapValue && a<16) {
 		currentTexCoords -= deltaTexCoords;
 		currentDepthMapValue = texture(TEXTURE_PARALLAX, currentTexCoords).r;  
 		currentLayerDepth += layerDepth;

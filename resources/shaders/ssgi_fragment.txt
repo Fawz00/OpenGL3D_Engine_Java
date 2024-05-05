@@ -33,7 +33,7 @@ const float absorbtion = 0.3;
 const float pi = 3.14159265f;
 
 //Sample directions controls noise
-const int sampleDirs = 6;
+const int sampleDirs = 4;
 
 //Sample density controls accuracy 
 const float sampleDensity = 0.75; //0.0-0.9
@@ -168,7 +168,7 @@ void main() {
             if(sampleAngle < maxAngle)
             {
                 //Get direct lighting (sampling in higher mip to greatly improve perf, could be dynamic)
-                vec3 directLight = clamp(textureLod(TEXTURE_LIGHT, sampleUV.xy, 3.0).rgb-0.1, 0.0, 1.0)*100.0;
+                vec3 directLight = clamp(textureLod(TEXTURE_LIGHT, sampleUV.xy, 3.0).rgb-0.1, 0.0, 1.0)*115.0;
 
                 
                 //Optionaly include indirect lighting from previous frame to approximate multiple bounces

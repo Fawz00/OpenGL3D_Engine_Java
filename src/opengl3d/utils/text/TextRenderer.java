@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
+import opengl3d.ui.Point2D;
 import opengl3d.utils.ModelReader;
 import opengl3d.utils.Shader;
 
@@ -46,7 +47,7 @@ public class TextRenderer {
 		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo);
 	}
 	
-	public void render(Shader shader, int texture, int[] res, int textureWidth, int textureHeight, float x, float y, float regX, float regY, float regWidth, float regHeight, int color){
+	public void render(Shader shader, int texture, Point2D res, int textureWidth, int textureHeight, float x, float y, float regX, float regY, float regWidth, float regHeight, int color){
 		shader.useShader();
 
 		GL30.glDisable(GL30.GL_CULL_FACE);
@@ -57,7 +58,7 @@ public class TextRenderer {
 		GL30.glActiveTexture(GL30.GL_TEXTURE0);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, texture);
 
-		shader.setVec2("RESOLUTION", new float[] {res[0], res[1]});
+		shader.setVec2("RESOLUTION", new float[] {res.x, res.y});
 		/* Texture coordinates */
 		float s1 = regX / textureWidth;
 		float t1 = regY / textureHeight;
@@ -80,7 +81,7 @@ public class TextRenderer {
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
 	}
 
-	public void renderText(Shader shader, int texture, int[] res, int textureWidth, int textureHeight, float x, float y, float regX, float regY, float regWidth, float regHeight, int color){
+	public void renderText(Shader shader, int texture, Point2D res, int textureWidth, int textureHeight, float x, float y, float regX, float regY, float regWidth, float regHeight, int color){
 		float x1 = x;
 		float y1 = y;
 		float x2 = x + regWidth;
@@ -139,7 +140,7 @@ public class TextRenderer {
 		GL30.glActiveTexture(GL30.GL_TEXTURE0);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, texture);
 
-		shader.setVec2("RESOLUTION", new float[] {res[0], res[1]});
+		shader.setVec2("RESOLUTION", new float[] {res.x, res.y});
 
 		GL30.glDrawArrays(GL30.GL_TRIANGLES, 0, faces);
 
