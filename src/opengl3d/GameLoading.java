@@ -2,7 +2,6 @@ package opengl3d;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.function.BiConsumer;
 
 import opengl3d.utils.LoadingProgress;
 

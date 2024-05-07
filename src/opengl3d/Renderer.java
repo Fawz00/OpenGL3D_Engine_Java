@@ -1,14 +1,9 @@
 package opengl3d;
 
-import java.awt.FontFormatException;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
@@ -22,13 +17,11 @@ import opengl3d.audio.AudioMaster;
 import opengl3d.audio.AudioSource;
 import opengl3d.engine.Input;
 import opengl3d.ui.Point2D;
-import opengl3d.ui.UIBox;
 import opengl3d.ui.UIButton;
 import opengl3d.ui.UIEvent;
 import opengl3d.ui.UIRenderer;
 import opengl3d.utils.ModelReader;
 import opengl3d.utils.Shader;
-import opengl3d.utils.text.Font;
 
 public class Renderer {
 	private static boolean isPaused = false;
@@ -61,7 +54,8 @@ public class Renderer {
 	private static float frameTimeStart;
 
 	UIButton button;
-	UIBox buttonShadow;
+	UIButton buttonShadow;
+	UIButton buttonSSGI;
 
 	public static int loadTexture(String filePath) {
 		int textureId = 0, width, height;
@@ -161,27 +155,44 @@ public class Renderer {
 	}
 
 	public void onCreate(int width, int height) {
+		screenResolution[0] = width;
+		screenResolution[1] = height;
+
 		UIRenderer.init();
-		button = new UIButton("button", 177, 22, 355, 45);
-		button.setText("Click me!");
+		button = new UIButton("button", 177, 22, 355, 90);
+		button.setText("Click me!\n\"Hello, world!\" will be appear if you click.");
 		button.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
-				System.out.println("こんにちは、世界！");
+				System.out.println("Hello, world!");
 				super.runOnClick();
 			}
 		});
 		Input.setOnClickEventListener(button);
 
-		buttonShadow = new UIBox("button", 177, 101, 355, 45);
+		buttonShadow = new UIButton("buttonShadow", screenResolution[0]-300, 22, 350, 45);
+		buttonShadow.setText("Toggle shadow");
 		buttonShadow.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
 				Settings.useShadow = Settings.useShadow==0? 1:0;
+				System.out.println("Use shadow: " + (Settings.useShadow==0 ? "off":"on"));
 				super.runOnClick();
 			}
 		});
 		Input.setOnClickEventListener(buttonShadow);
+
+		buttonSSGI = new UIButton("buttonSSGI", screenResolution[0]-300, 72, 350, 45);
+		buttonSSGI.setText("Toggle SSGI");
+		buttonSSGI.setEvent(new UIEvent(){
+			@Override
+			public void runOnClick() {
+				Settings.useShadow = Settings.useSSGI==0? 1:0;
+				System.out.println("Use SSGI: " + (Settings.useSSGI==0 ? "off":"on"));
+				super.runOnClick();
+			}
+		});
+		Input.setOnClickEventListener(buttonSSGI);
 
 		mainShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/quad_fragment.txt");
 
@@ -336,9 +347,14 @@ public class Renderer {
 		//textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
 	
 		//textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！ ꦱꦸꦒꦼꦁ​​ꦲꦺꦚ꧀ꦗꦁ​꧈​​ꦢꦺꦴꦚ​" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
-
+		button.setPosition(screenResolution[0]/2, screenResolution[1]/2);
+		button.setRotation((int)-(gameTime*300f));
 		button.draw();
+
+		buttonShadow.setPosition(screenResolution[0]-300, 22);
 		buttonShadow.draw();
+		buttonSSGI.setPosition(screenResolution[0]-300, 72);
+		buttonSSGI.draw();
 
 		gameTexture.deleteTextures();
 	}

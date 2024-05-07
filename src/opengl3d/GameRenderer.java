@@ -333,6 +333,10 @@ public class GameRenderer {
 				300f,75,100f,  0f,0f,0f,  1f,1f,1f);
 		renderModel(shader,
 				modelAll.getModelData(modelAll.getModelId("box")),
+				textureAll.getTextureData(textureAll.getTextureId("stone")),
+				300f,85,120f,  0f,0f,0f,  60f,40f,1f);
+		renderModel(shader,
+				modelAll.getModelData(modelAll.getModelId("box")),
 				textureAll.getTextureData(textureAll.getTextureId("red_light")),
 				300f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
 		renderModel(shader,
@@ -1075,7 +1079,7 @@ public class GameRenderer {
 		GL30.glDisable(GL30.GL_DEPTH_TEST);
 
 		modelQuad.drawModel();
-		textView.drawText(textShader, screenResolution[0]/2, 0, screenResolution[0]/2, screenResolution[1],
+		textView.drawText(textShader, screenResolution[0]/4, screenResolution[1]/4, screenResolution[0]/2, screenResolution[1]/2, 0,
 				"FPS: " + Main.fpsLimiter.getFps() +"\n"+
 				"XYZ: " + String.format("%.6f", entityPlayer.getPosition()[0]) + ", " + String.format("%.6f", entityPlayer.getPosition()[1]) + ", " + String.format("%.6f", entityPlayer.getPosition()[2]) +"\n"+
 				"View: " + String.format("%.6f", camera.getRotation()[0]*57.295779513082) + ", " + String.format("%.6f", camera.getRotation()[1]*57.295779513082) + ", " + String.format("%.6f", camera.getRotation()[2]*57.295779513082) +"\n"+

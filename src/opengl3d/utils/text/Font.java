@@ -27,7 +27,6 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
 import opengl3d.Settings;
-import opengl3d.ui.Point2D;
 import opengl3d.ui.UIRenderer;
 import opengl3d.utils.Shader;
 
@@ -365,13 +364,16 @@ public class Font {
 		(ch >= 0x3000 && ch <= 0x303F)); // CJK Symbols and Punctuation
 	}
 
-    public void drawWord(Shader shader, int x, int y, int width, int height, String text, int globalColor) {
+    public void drawWord(Shader shader, int ox, int oy, int width, int height, int rotation, String text, int globalColor) {
 		BreakIterator boundary = BreakIterator.getWordInstance();
 		boundary.setText(text);
 		int start = boundary.first();
 
 		Vector<String> words = new Vector<>();
 		Vector<Integer> pixelWidth = new Vector<>();
+
+		final int x = -width/2;
+		final int y = -height/2;
 
 		int wordStartX = x;
 		int wordDrawX = wordStartX;
@@ -455,19 +457,19 @@ public class Font {
 				if(drawY < -y - height) break;
 
 				// referensi render text dengan linebreak CJK support https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/text/BreakIterator.html
-				renderer.render(shader, texture, UIRenderer.getScreenSize(), textureWidth, textureHeight, drawX, drawY, gx, gy, gw, gh, currentColor);
+				renderer.render(shader, texture, UIRenderer.getScreenSize(), width, height, ox, oy, rotation, textureWidth, textureHeight, drawX, drawY, gx, gy, gw, gh, currentColor);
 				drawX += gw;
 			}
 			wordDrawX += wordWidth;
 		}
     }
 
-	public void drawText(Shader shader, int x, int y, int width, int height, CharSequence text, int globalColor) {
+	public void drawText(Shader shader, int x, int y, int width, int height, int rotation, CharSequence text, int globalColor) {
 		int currentColor = globalColor;
 //        int textHeight = getHeight(text);
 
-		int startX = x;
-		int startY = -y;
+		int startX = -width/2;
+		int startY = height/2;
 		int drawX = startX;
 		int drawY = startY;
 //        if (textHeight > fontHeight) {
@@ -574,15 +576,15 @@ public class Font {
 			}
 			if(drawY < startY - height) break;
 			// referensi render text dengan linebreak CJK support https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/text/BreakIterator.html
-			renderer.render(shader, texture, UIRenderer.getScreenSize(), textureWidth, textureHeight, drawX, drawY, gx, gy, gw, gh, currentColor);
+			renderer.render(shader, texture, UIRenderer.getScreenSize(), width, height, x, y, rotation, textureWidth, textureHeight, drawX, drawY, gx, gy, gw, gh, currentColor);
 //			renderer.drawTextureRegion(texture, drawX, drawY, g.x, g.y, g.width, g.height, color);
 			drawX += gw;
 		}
 //        renderer.end();
 	}
 
-    public void drawText(Shader shader, int x, int y, int w, int h, String text) {
-    	drawText(shader, x, y, w, h, text, 0xFFFFFFFF);
+    public void drawText(Shader shader, int x, int y, int w, int h, int rotation, String text) {
+    	drawText(shader, x, y, w, h, rotation, text, 0xFFFFFFFF);
     }
 
     public void dispose() {

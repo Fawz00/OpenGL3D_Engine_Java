@@ -45,7 +45,7 @@ layout (location = 3) out vec4 FragNormal;
 //define SHADOW_COLOR vec3(0.25098039215, 0.61176470588, 1.0)
 #define SHADOW_COLOR vec3(0.4, 0.701960784313, 1.0)/8.0
 //define SHADOW_COLOR vec3(0.4, 0.701960784313, 1.0)
-#define DISPLACEMENT_HEIGHT_SCALE 0.015
+#define DISPLACEMENT_HEIGHT_SCALE 0.025
 
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 	const float minLayers = 8;
@@ -61,7 +61,7 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 	float currentDepthMapValue = texture(TEXTURE_PARALLAX, currentTexCoords).r;
 
 	int a = 0;
-	while(currentLayerDepth < currentDepthMapValue && a<16) {
+	while(currentLayerDepth < currentDepthMapValue && a<24) {
 		currentTexCoords -= deltaTexCoords;
 		currentDepthMapValue = texture(TEXTURE_PARALLAX, currentTexCoords).r;  
 		currentLayerDepth += layerDepth;
@@ -272,6 +272,6 @@ void main() {
 	FragColor = diffuse;
 	FragDepth = vec4(gl_FragCoord.z, vPos.z, 0.0, 1.0);
 //	FragDepth.rgb = vec3(ParallaxDepth(texCoords, tangentLightDir));
-	FragMer = vec4(MetallicEmitnessRoughness, 1.0);
+	FragMer = vec4(MetallicEmitnessRoughness, diffuse.a);
 	FragNormal = vec4((normalize(normal)+1.)/2., 1.0);
 }

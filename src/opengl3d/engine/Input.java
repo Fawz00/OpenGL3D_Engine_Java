@@ -131,7 +131,7 @@ public class Input {
 	private static void handleEventListener(Vector<UIComponent> event, int run) {
 		if(Renderer.isPaused()) for(UIComponent ui: event) {
 			if(ui.isActive()) {
-				int rotation = ui.getRotation();
+				double rotation = Math.toRadians(ui.getRotation());
 				Point2D size = ui.getSize();
 				Point2D center = ui.getPosition();
 				Point2D cursor = new Point2D((int)mouseX, (int)mouseY);

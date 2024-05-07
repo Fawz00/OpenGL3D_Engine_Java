@@ -2,7 +2,9 @@ package opengl3d.utils.text;
 
 import java.nio.FloatBuffer;
 
-import org.lwjgl.opengl.GL11;
+import org.joml.AxisAngle4f;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
@@ -47,18 +49,26 @@ public class TextRenderer {
 		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo);
 	}
 	
-	public void render(Shader shader, int texture, Point2D res, int textureWidth, int textureHeight, float x, float y, float regX, float regY, float regWidth, float regHeight, int color){
+	public void render(Shader shader, int texture, Point2D res, int width, int height, int posX, int posY, int rotation, int textureWidth, int textureHeight, float x, float y, float regX, float regY, float regWidth, float regHeight, int color){
 		shader.useShader();
 
 		GL30.glDisable(GL30.GL_CULL_FACE);
 		GL30.glEnable(GL30.GL_BLEND);
 		GL30.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
 
+		float[] rotationM = new float[16];
+		Matrix4f tr = new Matrix4f()
+			.rotate(new Quaternionf(new AxisAngle4f((float)Math.toRadians(-rotation), 0f,0f,1f)))
+			;
+		tr.get(rotationM);
+		shader.setMat4("ROTATION_MATRIX", rotationM);
+
 		shader.setInt("TEXTURE", 0);
 		GL30.glActiveTexture(GL30.GL_TEXTURE0);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, texture);
 
 		shader.setVec2("RESOLUTION", new float[] {res.x, res.y});
+		shader.setVec2("OFFSET", new float[] {posX, posY});
 		/* Texture coordinates */
 		float s1 = regX / textureWidth;
 		float t1 = regY / textureHeight;

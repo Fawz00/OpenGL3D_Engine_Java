@@ -7,7 +7,7 @@ public class UIButton extends UIComponent {
 		super(id, pos, size);
 	}
 	public UIButton(String id, int x, int y, int sx, int sy) {
-		super(id, new Point2D(x,y), new Point2D(sx, sy));
+		super(id, x, y, sx, sy);
 	}
 
     public void setText(String text) {
@@ -18,7 +18,7 @@ public class UIButton extends UIComponent {
     public void draw() {
         Point2D position = super.getPosition();
         Point2D size = super.getSize();
-        UIRenderer.getFont().drawText(UIRenderer.getTextShader(), position.x-size.x/2, position.y-size.y/2, size.x, size.y, text, 0xFFFFFFFF);
+        UIRenderer.getFont().drawText(UIRenderer.getTextShader(), position.x, position.y, size.x, size.y, super.getRotation(), text, 0xFFFFFFFF);
         super.draw();
     }
 

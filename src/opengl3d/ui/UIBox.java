@@ -6,7 +6,7 @@ public class UIBox extends UIComponent {
 		super(id, pos, size);
 	}
 	public UIBox(String id, int x, int y, int sx, int sy) {
-		super(id, new Point2D(x,y), new Point2D(sx, sy));
+		super(id, x, y, sx, sy);
 	}
 
 }
