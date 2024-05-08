@@ -16,11 +16,11 @@ import org.joml.Matrix4f;
 import opengl3d.audio.AudioMaster;
 import opengl3d.audio.AudioSource;
 import opengl3d.engine.Input;
-import opengl3d.ui.Point2D;
 import opengl3d.ui.UIButton;
 import opengl3d.ui.UIEvent;
 import opengl3d.ui.UIRenderer;
 import opengl3d.utils.ModelReader;
+import opengl3d.utils.Point2D;
 import opengl3d.utils.Shader;
 
 public class Renderer {
@@ -168,7 +168,6 @@ public class Renderer {
 				super.runOnClick();
 			}
 		});
-		Input.setOnClickEventListener(button);
 
 		buttonShadow = new UIButton("buttonShadow", screenResolution[0]-300, 22, 350, 45);
 		buttonShadow.setText("Toggle shadow");
@@ -177,22 +176,20 @@ public class Renderer {
 			public void runOnClick() {
 				Settings.useShadow = Settings.useShadow==0? 1:0;
 				System.out.println("Use shadow: " + (Settings.useShadow==0 ? "off":"on"));
-				super.runOnClick();
+				gameTexture.onSettingsChanged();
 			}
 		});
-		Input.setOnClickEventListener(buttonShadow);
 
 		buttonSSGI = new UIButton("buttonSSGI", screenResolution[0]-300, 72, 350, 45);
 		buttonSSGI.setText("Toggle SSGI");
 		buttonSSGI.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
-				Settings.useShadow = Settings.useSSGI==0? 1:0;
+				Settings.useSSGI = Settings.useSSGI==0? 1:0;
 				System.out.println("Use SSGI: " + (Settings.useSSGI==0 ? "off":"on"));
-				super.runOnClick();
+				gameTexture.onSettingsChanged();
 			}
 		});
-		Input.setOnClickEventListener(buttonSSGI);
 
 		mainShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/quad_fragment.txt");
 

@@ -8,8 +8,8 @@ import org.joml.Quaternionf;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
-import opengl3d.ui.Point2D;
 import opengl3d.utils.ModelReader;
+import opengl3d.utils.Point2D;
 import opengl3d.utils.Shader;
 
 public class TextRenderer {

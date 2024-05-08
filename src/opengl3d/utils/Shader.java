@@ -10,23 +10,30 @@ import opengl3d.Settings;
 public class Shader {
 	private int attribute;
 	private int program;
+	private String fragmentShaderSource;
+	private String vertexShaderSource;
+	private String fragmentShaderCode;
+	private String vertexShaderCode;
 
-	public static String loadShader(String filePath) {
+	private static String applySettings(String data) {
+		data = data.replace("#define USE_SHADOW", "#define USE_SHADOW "+Settings.useShadow);
+		data = data.replace("#define USE_PENUMBRA_SHADOW", "#define USE_PENUMBRA_SHADOW "+Settings.usePenumbraShadow);
+		data = data.replace("#define USE_SKYBOX", "#define USE_SKYBOX "+Settings.useSkyBox);
+		data = data.replace("#define USE_CLOUD", "#define USE_CLOUD "+Settings.useCloud);
+		data = data.replace("#define USE_REFLECTION", "#define USE_REFLECTION "+Settings.useReflection);
+		data = data.replace("#define USE_NORMAL_MAP", "#define USE_NORMAL_MAP "+Settings.useNormalMapping);
+		data = data.replace("#define USE_PARALLAX", "#define USE_PARALLAX "+Settings.useParallaxMapping);
+		data = data.replace("#define USE_FXAA", "#define USE_FXAA "+Settings.FXAA);
+		data = data.replace("#define USE_HDR", "#define USE_HDR "+Settings.useHDR);
+		data = data.replace("#define USE_BLOOM", "#define USE_BLOOM "+Settings.useBloom);
+		data = data.replace("#define USE_SSGI", "#define USE_SSGI "+Settings.useSSGI);
+		data = data.replace("#define USE_LENSFLARE", "#define USE_LENSFLARE "+Settings.useLensFlare);
+		return data;
+	}
+	private static String loadShader(String filePath) {
 		try {
 			byte[] shaderBytes = Files.readAllBytes(Paths.get(filePath));
 			String shader = new String(shaderBytes, "UTF-8");
-			shader = shader.replace("#define USE_SHADOW", "#define USE_SHADOW "+Settings.useShadow);
-			shader = shader.replace("#define USE_PENUMBRA_SHADOW", "#define USE_PENUMBRA_SHADOW "+Settings.usePenumbraShadow);
-			shader = shader.replace("#define USE_SKYBOX", "#define USE_SKYBOX "+Settings.useSkyBox);
-			shader = shader.replace("#define USE_CLOUD", "#define USE_CLOUD "+Settings.useCloud);
-			shader = shader.replace("#define USE_REFLECTION", "#define USE_REFLECTION "+Settings.useReflection);
-			shader = shader.replace("#define USE_NORMAL_MAP", "#define USE_NORMAL_MAP "+Settings.useNormalMapping);
-			shader = shader.replace("#define USE_PARALLAX", "#define USE_PARALLAX "+Settings.useParallaxMapping);
-			shader = shader.replace("#define USE_FXAA", "#define USE_FXAA "+Settings.FXAA);
-			shader = shader.replace("#define USE_HDR", "#define USE_HDR "+Settings.useHDR);
-			shader = shader.replace("#define USE_BLOOM", "#define USE_BLOOM "+Settings.useBloom);
-			shader = shader.replace("#define USE_SSGI", "#define USE_SSGI "+Settings.useSSGI);
-			shader = shader.replace("#define USE_LENSFLARE", "#define USE_LENSFLARE "+Settings.useLensFlare);
 			return shader;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -35,15 +42,18 @@ public class Shader {
 	}
 
 	public Shader(String vertexDir, String fragmentDir){
-		String vertexShaderSource = loadShader(vertexDir);
-		String fragmentShaderSource = loadShader(fragmentDir);
+		vertexShaderSource = loadShader(vertexDir);
+		fragmentShaderSource = loadShader(fragmentDir);
+
+		vertexShaderCode = applySettings(vertexShaderSource);
+		fragmentShaderCode = applySettings(fragmentShaderSource);
 
 		int vertexShader = GL30.glCreateShader(GL30.GL_VERTEX_SHADER);
-		GL30.glShaderSource(vertexShader, vertexShaderSource);
+		GL30.glShaderSource(vertexShader, vertexShaderCode);
 		GL30.glCompileShader(vertexShader);
 
 		int fragmentShader = GL30.glCreateShader(GL30.GL_FRAGMENT_SHADER);
-		GL30.glShaderSource(fragmentShader, fragmentShaderSource);
+		GL30.glShaderSource(fragmentShader, fragmentShaderCode);
 		GL30.glCompileShader(fragmentShader);
 
 		program = GL30.glCreateProgram();
@@ -69,6 +79,26 @@ public class Shader {
 				"ERROR CODE: "+GL30.glGetProgramInfoLog(program)+"\n\n"
 			);
 		}
+
+		GL30.glDeleteShader(vertexShader);
+		GL30.glDeleteShader(fragmentShader);
+	}
+	public void refreshShader() {
+		vertexShaderCode = applySettings(vertexShaderSource);
+		fragmentShaderCode = applySettings(fragmentShaderSource);
+
+		int vertexShader = GL30.glCreateShader(GL30.GL_VERTEX_SHADER);
+		GL30.glShaderSource(vertexShader, vertexShaderCode);
+		GL30.glCompileShader(vertexShader);
+
+		int fragmentShader = GL30.glCreateShader(GL30.GL_FRAGMENT_SHADER);
+		GL30.glShaderSource(fragmentShader, fragmentShaderCode);
+		GL30.glCompileShader(fragmentShader);
+
+		program = GL30.glCreateProgram();
+		GL30.glAttachShader(program, vertexShader);
+		GL30.glAttachShader(program, fragmentShader);
+		GL30.glLinkProgram(program);
 
 		GL30.glDeleteShader(vertexShader);
 		GL30.glDeleteShader(fragmentShader);

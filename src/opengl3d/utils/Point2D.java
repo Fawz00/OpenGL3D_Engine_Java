@@ -1,4 +1,4 @@
-package opengl3d.ui;
+package opengl3d.utils;
 
 public class Point2D {
     public int x;

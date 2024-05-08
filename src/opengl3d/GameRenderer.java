@@ -504,7 +504,7 @@ public class GameRenderer {
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
 
-		if(Settings.useHDR==1 || Settings.useBloom==1 || Settings.useSSGI==1) {
+		// if(Settings.useHDR==1 || Settings.useBloom==1 || Settings.useSSGI==1) {
 			lightingShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/lighting_fragment.txt");
 
 			lightingFBO = GL30.glGenFramebuffers();
@@ -521,8 +521,8 @@ public class GameRenderer {
 
 			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
-		}
-		if(Settings.useSSGI==1) {
+		// }
+		// if(Settings.useSSGI==1) {
 			int[] ssgiResolution = new int[]{(int)Math.ceil((float)screenResolution[0]*Settings.SSGIQuality), (int)Math.ceil((float)screenResolution[1]*Settings.SSGIQuality)};
 			SSGIShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/ssgi_fragment.txt");
 
@@ -540,8 +540,8 @@ public class GameRenderer {
 
 			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
-		}
-		if(Settings.useShadow==1) {
+		// }
+		// if(Settings.useShadow==1) {
 			shadowMapShader = new Shader("resources/shaders/shadowMap_vertex.txt", "resources/shaders/shadowMap_fragment.txt");
 
 			shadowDepthFBO = GL30.glGenFramebuffers();
@@ -556,8 +556,8 @@ public class GameRenderer {
 
 			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
-		}
-		if(Settings.useReflection==1) {
+		// }
+		// if(Settings.useReflection==1) {
 			int[] reflectionResolution = new int[]{(int)Math.ceil((float)screenResolution[0]*Settings.reflectionQuality), (int)Math.ceil((float)screenResolution[1]*Settings.reflectionQuality)};
 			reflectionShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/reflection_fragment.txt");
 
@@ -588,7 +588,7 @@ public class GameRenderer {
 
 			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
-		}
+		// }
 
 		for(int i=0; i<treeCount; i++){
 			randTreePos
@@ -611,6 +611,17 @@ public class GameRenderer {
 	public void onScreenSizeChanged(int width, int height) {
 		screenResolution[0] = (int)Math.ceil((float)width * Settings.screenQuality);
 		screenResolution[1] = (int)Math.ceil((float)height * Settings.screenQuality);
+	}
+
+	public void onSettingsChanged() {
+		textShader.refreshShader();
+		renderShader.refreshShader();
+		skyBoxShader.refreshShader();
+		shadowMapShader.refreshShader();
+		reflectionShader.refreshShader();
+		lightingShader.refreshShader();
+		SSGIShader.refreshShader();
+		postProcessShader.refreshShader();
 	}
 
 	public void onLoop(Camera cam, float time, float frameTime, boolean isPaused) {
@@ -1118,34 +1129,34 @@ public class GameRenderer {
 
 		GL30.glDeleteFramebuffers(renderFBO); GL30.glDeleteRenderbuffers(renderRBO);
 		GL30.glDeleteFramebuffers(postProcessFBO);
-		if(Settings.useBloom==1 || Settings.useSSGI==1) {
+		// if(Settings.useBloom==1 || Settings.useSSGI==1) {
 			lightingShader.delete();
 			GL30.glDeleteFramebuffers(lightingFBO);
 			GL30.glDeleteTextures(lightingTexture);
-		}
-		if(Settings.useSSGI==1) {
+		// }
+		// if(Settings.useSSGI==1) {
 			SSGIShader.delete();
 			GL30.glDeleteFramebuffers(SSGIFBO);
 			GL30.glDeleteTextures(SSGITexture);
-		}
-		if(Settings.useReflection==1) {
+		// }
+		// if(Settings.useReflection==1) {
 			reflectionShader.delete();
 			GL30.glDeleteFramebuffers(reflectionFBO);
 			GL30.glDeleteTextures(reflectionColorTexture);
 			GL30.glDeleteTextures(reflectionMerTexture);
-		}
-		if(Settings.useShadow==1) {
+		// }
+		// if(Settings.useShadow==1) {
 			shadowMapShader.delete();
 			GL30.glDeleteFramebuffers(shadowDepthFBO);
 			GL30.glDeleteTextures(shadowDepthTexture);
-		}
+		// }
 
 		modelCubemap.deleteModel();
 		modelQuad.deleteModel();
 		modelAll.deleteModels();
 		treeInstance.deleteModel();
 
-		if(Settings.useSkyBox==1) GL30.glDeleteTextures(cubemapTexture);
+		// if(Settings.useSkyBox==1) GL30.glDeleteTextures(cubemapTexture);
 		GL30.glDeleteTextures(cloudNoiseTexture);
 		GL30.glDeleteTextures(tempcolorTexture);
 		textureAll.deleteTextures();

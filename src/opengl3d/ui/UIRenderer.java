@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import opengl3d.utils.Point2D;
 import opengl3d.utils.Shader;
 import opengl3d.utils.text.Font;
 

@@ -17,9 +17,9 @@ import org.lwjgl.glfw.GLFWScrollCallback;
 import opengl3d.Main;
 import opengl3d.Renderer;
 import opengl3d.Settings;
-import opengl3d.ui.Point2D;
 import opengl3d.ui.UIComponent;
 import opengl3d.ui.UIEvent;
+import opengl3d.utils.Point2D;
 
 public class Input {
 	private static boolean[] keysDown = new boolean[GLFW.GLFW_KEY_LAST];
@@ -39,8 +39,8 @@ public class Input {
 	private static GLFWScrollCallback mouseScroll;
 
 	private static Vector<UIComponent> UIEventOnClick = new Vector<>();
-	private static Vector<UIComponent> UIEventOnHold = new Vector<>();
 	private static Vector<UIComponent> UIEventOnRelease = new Vector<>();
+	private static Vector<UIComponent> UIEventOnHover = new Vector<>();
 	
 	public Input() {
 		isTyping = false;
@@ -102,6 +102,7 @@ public class Input {
 			public void invoke(long window, double xpos, double ypos) {
 				mouseX = xpos;
 				mouseY = ypos;
+				handleEventListener(UIEventOnHover, UIEvent.EVENT_ON_HOVER);
 			}
 		};
 		
@@ -110,8 +111,6 @@ public class Input {
 				if(button >= 0 && button <= GLFW.GLFW_MOUSE_BUTTON_LAST) {
 					if(button == Settings.buttonPrimary && action == GLFW.GLFW_PRESS) {
 						handleEventListener(UIEventOnClick, UIEvent.EVENT_ON_CLICK);
-					} else if(button == Settings.buttonPrimary && action == GLFW.GLFW_REPEAT) {
-						handleEventListener(UIEventOnHold, UIEvent.EVENT_ON_HOLD);
 					} else if(button == Settings.buttonPrimary && action == GLFW.GLFW_RELEASE) {
 						handleEventListener(UIEventOnRelease, UIEvent.EVENT_ON_RELEASE);
 					}
@@ -140,9 +139,11 @@ public class Input {
 
 				// Check collision with the local coordinates of the OBB
 				if(localX >= -size.x / 2 && localX <= size.x / 2 && localY >= -size.y / 2 && localY <= size.y / 2) {
-					if(run == UIEvent.EVENT_ON_CLICK) ui.getEvent().runOnClick();
-					else if(run == UIEvent.EVENT_ON_HOLD) ui.getEvent().runOnHold();
+					if(run == UIEvent.EVENT_ON_HOVER) ui.getEvent().runOnHover();
+					else if(run == UIEvent.EVENT_ON_CLICK) ui.getEvent().runOnClick();
 					else if(run == UIEvent.EVENT_ON_RELEASE) ui.getEvent().runOnRelease();
+				} else if(run == UIEvent.EVENT_ON_HOVER) {
+					ui.getEvent().runOnNotHover();
 				}
 			}
 		}
@@ -207,17 +208,17 @@ public class Input {
 	public static void removeOnClickEventkListener(UIComponent ui) {
 		UIEventOnClick.remove(ui);
 	}
-	public static void setOnHoldEventListener(UIComponent ui) {
-		UIEventOnHold.add(ui);
-	}
-	public static void removeOnHoldEventkListener(UIComponent ui) {
-		UIEventOnHold.remove(ui);
-	}
 	public static void setOnReleaseEventListener(UIComponent ui) {
 		UIEventOnRelease.add(ui);
 	}
 	public static void removeOnReleaseEventkListener(UIComponent ui) {
 		UIEventOnRelease.remove(ui);
+	}
+	public static void setOnHoverEventListener(UIComponent ui) {
+		UIEventOnHover.add(ui);
+	}
+	public static void removeOnHoverEventkListener(UIComponent ui) {
+		UIEventOnHover.remove(ui);
 	}
 
 	public static boolean isKeyDown(int key) {

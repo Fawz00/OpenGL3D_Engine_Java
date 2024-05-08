@@ -26,7 +26,7 @@ public class Settings {
 
 	//CONTROL MAPPING
 	public static float cameraSensitivity		= 1.0f;
-	public static boolean smoothCamera			= true;
+	public static boolean smoothCamera			= false;
 	public static int buttonPrimary				= GLFW.GLFW_MOUSE_BUTTON_LEFT;
 	public static int keyForward				= GLFW.GLFW_KEY_SPACE;
 	public static int keyToggleCamera			= GLFW.GLFW_KEY_C;

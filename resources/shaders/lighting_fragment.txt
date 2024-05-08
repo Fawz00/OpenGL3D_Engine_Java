@@ -30,7 +30,7 @@ void main() {
 			vec4 reflection = texture(TEXTURE_REFLECTION, uv);
 			vec3 reflectedLight = vec3(1.0) - exp(-reflection.rgb * (exposure-1.5));
 
-			color.rgb += mix(reflectedLight, reflection.rgb*1.5, texture(TEXTURE_REFLECTION_MER, uv).y);
+			color.rgb += mix(reflectedLight, reflection.rgb*3.0, texture(TEXTURE_REFLECTION_MER, uv).y);
 		}
 	#endif
 

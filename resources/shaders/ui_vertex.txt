@@ -8,14 +8,14 @@ layout (location = 4) in vec3 BITANGENT;
 
 uniform vec2 RESOLUTION;
 uniform vec2 LOCATION;
-uniform vec2 SCALE;
+uniform vec2 SIZE;
 uniform mat4 ROTATION_MATRIX;
 
 out vec2 uv;
 
 void main() {
 	uv = TEXCOORD;
-	vec4 gPos = ROTATION_MATRIX * vec4( POSITION.xy*SCALE, POSITION.z, 1.0 );
+	vec4 gPos = ROTATION_MATRIX * vec4( POSITION.xy*SIZE, POSITION.z, 1.0 );
     gPos.xy = ( (gPos.xy+LOCATION*2.0) / RESOLUTION ) + vec2(-1.0, 1.0);
 
 	gl_Position = vec4(gPos.xy, -0.01, 1.0);
