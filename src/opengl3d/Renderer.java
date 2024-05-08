@@ -56,6 +56,8 @@ public class Renderer {
 	UIButton button;
 	UIButton buttonShadow;
 	UIButton buttonSSGI;
+	UIButton buttonSSGIDenoise;
+	UIButton buttonReflection;
 
 	public static int loadTexture(String filePath) {
 		int textureId = 0, width, height;
@@ -191,6 +193,28 @@ public class Renderer {
 			}
 		});
 
+		buttonSSGIDenoise = new UIButton("buttonSSGIDenoise", screenResolution[0]-300, 122, 350, 45);
+		buttonSSGIDenoise.setText("Toggle SSGI denoise");
+		buttonSSGIDenoise.setEvent(new UIEvent(){
+			@Override
+			public void runOnClick() {
+				Settings.SSGIDenoise = Settings.SSGIDenoise==0? 1:0;
+				System.out.println("Use SSGI denoiser: " + (Settings.SSGIDenoise==0 ? "off":"on"));
+				gameTexture.onSettingsChanged();
+			}
+		});
+
+		buttonReflection = new UIButton("buttonReflection", screenResolution[0]-300, 172, 350, 45);
+		buttonReflection.setText("Toggle Reflection");
+		buttonReflection.setEvent(new UIEvent(){
+			@Override
+			public void runOnClick() {
+				Settings.useReflection = Settings.useReflection==0? 1:0;
+				System.out.println("Use Reflection: " + (Settings.useReflection==0 ? "off":"on"));
+				gameTexture.onSettingsChanged();
+			}
+		});
+
 		mainShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/quad_fragment.txt");
 
 		modelQuad = new ModelReader("resources/models/quad.obj");
@@ -210,6 +234,10 @@ public class Renderer {
 		float ratio = (float) width / (float) height;
 		screenResolution[0] = width;
 		screenResolution[1] = height;
+		buttonShadow.setPosition(screenResolution[0]-300, 22);
+		buttonSSGI.setPosition(screenResolution[0]-300, 72);
+		buttonSSGIDenoise.setPosition(screenResolution[0]-300, 122);
+		buttonReflection.setPosition(screenResolution[0]-300, 172);
 		UIRenderer.setScreenResolution(new Point2D(width, height));
 
 		projectionMatrix.setOrtho(-ratio, ratio, -1f, 1f, -1f, 1f, false);
@@ -344,14 +372,14 @@ public class Renderer {
 		//textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
 	
 		//textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！ ꦱꦸꦒꦼꦁ​​ꦲꦺꦚ꧀ꦗꦁ​꧈​​ꦢꦺꦴꦚ​" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
-		button.setPosition(screenResolution[0]/2, screenResolution[1]/2);
+		button.setPosition((int)(screenResolution[0]*0.85), (int)(screenResolution[1]*0.85));
 		button.setRotation((int)-(gameTime*300f));
 		button.draw();
 
-		buttonShadow.setPosition(screenResolution[0]-300, 22);
 		buttonShadow.draw();
-		buttonSSGI.setPosition(screenResolution[0]-300, 72);
 		buttonSSGI.draw();
+		buttonSSGIDenoise.draw();
+		buttonReflection.draw();
 
 		gameTexture.deleteTextures();
 	}

@@ -24,6 +24,7 @@ out vec4 FragColor;
 #define USE_HDR
 #define USE_BLOOM
 #define USE_SSGI
+#define USE_GI_DENOISE
 #define USE_REFLECTION
 #define USE_FXAA
 #define USE_LENSFLARE
@@ -187,7 +188,7 @@ vec3 sirBirdDenoise(sampler2D imageTexture, in vec2 uv, in vec2 imageResolution)
 		denoisedColor += thisDenoisedColor*pixelInfluence;
 	}
 
-	return denoisedColor/influenceSum;
+	return clamp(denoisedColor/influenceSum, 0.0, 1.0);
 }
 
 vec3 ApplyThreshold(in vec3 _rgb, in float _threshold) {
@@ -209,11 +210,11 @@ void main() {
 
 	// SSGI
 	#if USE_SSGI
-		color.rgb += texture(TEXTURE_SSGI, uv).rgb*2.0;
+		color.rgb += fxaa(TEXTURE_SSGI, MAIN_RESOLUTION, uv)*1.85;
 	#endif
 
 	// SCREEN SPACE REFLECTION
-	#if USE_REFLECTION == 1
+	#if USE_REFLECTION
 		if(texture(TEXTURE_MER,uv).r > 0.125){
 	//		vec4 reflection = reflectionBlur(roughness, depth, uv);
 	//		vec4 reflection = reflectionBlur(roughness, depth, rand(uv, roughness*0.05/depth));
@@ -252,7 +253,7 @@ void main() {
 						1.66*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/128.0)), 7).rgb+
 						2.0*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/256.0)), 8).rgb);
 		}
-		bloom /= 7.5*8.0;
+		bloom /= 6.5*8.0;
 		color.rgb += clamp(bloom, 0.0, 1.0);
 	#endif
 

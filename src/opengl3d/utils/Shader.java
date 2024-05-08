@@ -27,6 +27,7 @@ public class Shader {
 		data = data.replace("#define USE_HDR", "#define USE_HDR "+Settings.useHDR);
 		data = data.replace("#define USE_BLOOM", "#define USE_BLOOM "+Settings.useBloom);
 		data = data.replace("#define USE_SSGI", "#define USE_SSGI "+Settings.useSSGI);
+		data = data.replace("#define USE_GI_DENOISE", "#define USE_GI_DENOISE "+Settings.SSGIDenoise);
 		data = data.replace("#define USE_LENSFLARE", "#define USE_LENSFLARE "+Settings.useLensFlare);
 		return data;
 	}
