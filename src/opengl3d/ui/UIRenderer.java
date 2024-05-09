@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import opengl3d.utils.ModelReader;
 import opengl3d.utils.Point2D;
 import opengl3d.utils.Shader;
 import opengl3d.utils.text.Font;
@@ -15,6 +16,7 @@ public class UIRenderer {
     private static Font defaultFont;
 	private static Shader textShader;
 	private static Shader uiShader;
+    private static ModelReader modelQuad;
     private static Point2D screenResolution;
 
     private UIRenderer() {}
@@ -31,6 +33,8 @@ public class UIRenderer {
 		}
         //defaultFont = new Font(38, true);
 
+        modelQuad = new ModelReader("resources/models/quad.obj");
+
         textShader = new Shader("resources/shaders/text_vertex.txt", "resources/shaders/text_fragment.txt");
 		uiShader = new Shader("resources/shaders/ui_vertex.txt", "resources/shaders/ui_fragment.txt");
     }
@@ -40,6 +44,7 @@ public class UIRenderer {
     }
 
     public static void destroy() {
+        modelQuad.deleteModel();
         textShader.delete();
 		uiShader.delete();
         defaultFont.dispose();
@@ -53,6 +58,9 @@ public class UIRenderer {
     }
     public static Font getFont() {
         return defaultFont;
+    }
+    public static ModelReader getQuadModel() {
+        return modelQuad;
     }
     public static Point2D getScreenSize() {
         return screenResolution;

@@ -10,9 +10,6 @@ import opengl3d.utils.Point2D;
 import opengl3d.utils.Shader;
 
 public class UIComponent {
-	private ModelReader modelQuad;
-	private int backgroundTexture;
-
 	private String id;
 	private Point2D position;
 	private Point2D size;
@@ -30,7 +27,6 @@ public class UIComponent {
 		this.position = pos;
 		this.size = size;
 		active = true;
-		modelQuad = new ModelReader("resources/models/quad.obj");
 		this.style = style;
 		this.drawStyle = style;
 		this.styleOnHover = style;
@@ -39,28 +35,45 @@ public class UIComponent {
 		this.defEvent = new UIEvent(){
 			@Override
 			public void runOnHover() {
-				drawStyle = styleOnHover;
+				setDrawStyle(styleOnHover);
 				event.runOnHover();
 			}
 			@Override
 			public void runOnNotHover() {
-				drawStyle = style;
+				setDrawStyle(style);
 				event.runOnNotHover();
 			}
 			@Override
 			public void runOnClick() {
-				drawStyle = styleOnClick;
+				setDrawStyle(styleOnClick);
 				event.runOnClick();
 			}
 			@Override
 			public void runOnRelease() {
-				drawStyle = styleOnHover;
+				setDrawStyle(styleOnHover);
 				event.runOnRelease();
 			}
 		};
 	}
 	public UIComponent(String id, UIStyle style, int x, int y, int sx, int sy) {
 		this(id, style, new Point2D(x,y), new Point2D(sx, sy));
+	}
+
+	private void setDrawStyle(UIStyle s) {
+		if(s.backgroundColor != null)
+			this.drawStyle.backgroundColor = s.backgroundColor;
+		if(s.backgroundTexture != 0)
+			this.drawStyle.backgroundTexture = s.backgroundTexture;
+		if(s.borderColor != null)
+			this.drawStyle.borderColor = s.borderColor;
+		if(s.borderRadius != -1)
+			this.drawStyle.borderRadius = s.borderRadius;
+		if(s.borderWidth != -1)
+			this.drawStyle.borderWidth = s.borderWidth;
+		if(s.textColor != null)
+			this.drawStyle.textColor = s.textColor;
+		if(s.textOutlineColor != null)
+			this.drawStyle.textOutlineColor = s.textOutlineColor;
 	}
 	
 	public void draw() {
@@ -78,7 +91,7 @@ public class UIComponent {
 		GL30.glEnable(GL30.GL_BLEND);
 		GL30.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
 
-		modelQuad.getModel();
+		UIRenderer.getQuadModel().getModel();
 		shader.setMat4("ROTATION_MATRIX", rotationM);
 		shader.setVec2("LOCATION", new float[] {(float)position.x, (float)-position.y});
 		shader.setVec2("SIZE", new float[] {(float)size.x, (float)size.y});
@@ -92,15 +105,14 @@ public class UIComponent {
 
 		shader.setInt("TEXTURE", 0);
 		GL30.glActiveTexture(GL30.GL_TEXTURE0);
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D, backgroundTexture);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, drawStyle.backgroundTexture);
 
-		modelQuad.drawModel();
+		UIRenderer.getQuadModel().drawModel();
 		//ModelReader.resetModel();
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
 	}
 	public void destroy() {
 		active = false;
-		modelQuad.deleteModel();
 	}
 
 	public void setPosition(int x, int y) {
@@ -115,7 +127,7 @@ public class UIComponent {
 		this.rotation = rotation;
 	}
 	public void setBackgroundTexture(int id) {
-		this.backgroundTexture = id;
+		this.style.backgroundTexture = id;
 	}
 	public void setEvent(UIEvent e) {
 		this.event = e;

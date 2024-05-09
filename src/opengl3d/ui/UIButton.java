@@ -3,9 +3,11 @@ package opengl3d.ui;
 import opengl3d.engine.Input;
 import opengl3d.utils.Color4;
 import opengl3d.utils.Point2D;
+import opengl3d.utils.text.Font;
 
 public class UIButton extends UIComponent {
     private String text;
+    private Font font;
 
 	public UIButton(String id, Point2D pos, Point2D size) {
 		super(id, normalStyle(), pos, size);
@@ -16,6 +18,9 @@ public class UIButton extends UIComponent {
         init();
 	}
     private void init() {
+        font = UIRenderer.getFont();
+        text = "";
+
         super.setStyleOnHover(onHoverStyle());
         super.setStyleOnClick(onClickStyle());
         Input.setOnHoverEventListener(this);
@@ -50,12 +55,15 @@ public class UIButton extends UIComponent {
     public void setText(String text) {
         this.text = text;
     }
+    public void setFont(Font font) {
+        this.font = font;
+    }
 
     @Override
     public void draw() {
         Point2D position = super.getPosition();
         Point2D size = super.getSize();
-        UIRenderer.getFont().drawText(UIRenderer.getTextShader(), position.x, position.y, size.x, size.y, super.getRotation(), text, 0xFFFFFFFF);
+        font.drawText(UIRenderer.getTextShader(), position.x, position.y, size.x, size.y, super.getRotation(), text, 0xFFFFFFFF);
         super.draw();
     }
 
