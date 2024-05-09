@@ -75,12 +75,13 @@ public class Settings {
 	public static int useReflection				= 1;
 	public static float reflectionQuality		= 0.5f; // Percent of screenQuality
 
-	public static int useBloom					= 1; // 1=FAST; 2=QUALITY
+	public static int useBloom					= 1;
 	public static int useLensFlare				= 0;
 
 	public static int useSSAO					= 0; // next update!
 
 	public static int useSSGI					= 1;
+	public static float SSGIDensity				= 0.75f; // Sample density controls accuracy; 0.0 - 0.9; Default = 0.75
 	public static float SSGIQuality				= 0.75f; // Percent of screenQuality
 	public static int SSGIDenoise				= 0; // in development
 

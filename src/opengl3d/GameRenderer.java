@@ -105,6 +105,7 @@ public class GameRenderer {
 
 	private float[] sunRotation = new float[3];
 	private int[] screenResolution = new int[2];
+	private int maxMipmapLevel;
 
 
 
@@ -436,6 +437,7 @@ public class GameRenderer {
 
 		screenResolution[0] = (int)Math.ceil((float)width * Settings.screenQuality);
 		screenResolution[1] = (int)Math.ceil((float)height * Settings.screenQuality);
+		maxMipmapLevel = (int) (Math.log(Math.max(screenResolution[0], screenResolution[1])) / Math.log(2));
 
 		renderFBO = GL30.glGenFramebuffers();
 		renderRBO = GL30.glGenRenderbuffers();
@@ -634,6 +636,7 @@ public class GameRenderer {
 	public void onScreenSizeChanged(int width, int height) {
 		screenResolution[0] = (int)Math.ceil((float)width * Settings.screenQuality);
 		screenResolution[1] = (int)Math.ceil((float)height * Settings.screenQuality);
+		maxMipmapLevel = (int) (Math.log(Math.max(screenResolution[0], screenResolution[1])) / Math.log(2));
 	}
 
 	public void onSettingsChanged() {
@@ -1026,6 +1029,7 @@ public class GameRenderer {
 			SSGIShader.setInt("FRAME", frame);
 			SSGIShader.setFloat("FOV", cam.getFovY());
 			SSGIShader.setFloat("DRAW_DISTANCE", Settings.drawDistance);
+			SSGIShader.setFloat("SSGI_DENSITY", Settings.SSGIDensity);
 			SSGIShader.setVec4("VIEW_POSITION", cameraPosition);
 			SSGIShader.setMat4("MVP_MATRIX", MVPMatrixF);
 
@@ -1147,7 +1151,7 @@ public class GameRenderer {
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, lightingTexture);
 		if(Settings.useHDR == 1) {
 			float[] luminescence = new float[3];
-			GL30.glGetTexImage(GL30.GL_TEXTURE_2D, 10, GL30.GL_RGB, GL30.GL_FLOAT, luminescence);
+			GL30.glGetTexImage(GL30.GL_TEXTURE_2D, maxMipmapLevel, GL30.GL_RGB, GL30.GL_FLOAT, luminescence);
 			float lum = 0.2126f * luminescence[0] + 0.7152f * luminescence[1] + 0.0722f * luminescence[2];
 
 			sceneExposure = MatMat.lerp(sceneExposure, 0.5f / lum * Settings.sceneExposureMultiplier, Settings.HDRSpeed);

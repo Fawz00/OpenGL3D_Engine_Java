@@ -13,6 +13,7 @@ uniform float TIME;
 uniform int FRAME;
 uniform float FOV;
 uniform float DRAW_DISTANCE;
+uniform float SSGI_DENSITY;
 
 in vec2 uv;
 out vec4 FragColor;
@@ -35,9 +36,6 @@ const float pi = 3.14159265f;
 
 //Sample directions controls noise
 const int sampleDirs = 6;
-
-//Sample density controls accuracy 
-const float sampleDensity = 0.75; //0.0-0.9
 
 const float ambientLightAmount = 0.001;
 const float edgeFadeWidth = 0.1;
@@ -107,7 +105,7 @@ void main() {
     float angleOffset = hash(uv+seed) * pi * 2.0;
     float linearOffset = hash(uv+angleOffset);
 
-    float exponentialDensity = 1.0 / sampleDensity;
+    float exponentialDensity = 1.0 / SSGI_DENSITY;
     float maxPixelDist = max(RESOLUTION.x, RESOLUTION.y);
 
     vec3 indirectLight = vec3(0);
@@ -182,7 +180,7 @@ void main() {
                 maxAngle = sampleAngle;
                 
                 //Add to indirect lighting and subtract from ambient
-                dirLight += directLight * sampleContribution * getColor() * (1.0-min(distance(sampleDepth, fragDepth)/48, 1.0));
+                dirLight += directLight * sampleContribution * getColor() * (1.0-min(distance(sampleDepth, fragDepth)/48.0, 1.0));
                 dirAmbient -= ambientLightAmount * sampleContribution;
             }
         }

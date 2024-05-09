@@ -58,6 +58,7 @@ public class Renderer {
 	UIButton buttonSSGI;
 	UIButton buttonSSGIDenoise;
 	UIButton buttonReflection;
+	UIButton buttonBloom;
 
 	public static int loadTexture(String filePath) {
 		int textureId = 0, width, height;
@@ -162,7 +163,7 @@ public class Renderer {
 
 		UIRenderer.init();
 		button = new UIButton("button", 177, 22, 355, 90);
-		button.setText("Click me!\n\"Hello, world!\" will be appear if you click.");
+		button.setText("※本当に\nきれいです！！！");
 		button.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
@@ -215,6 +216,17 @@ public class Renderer {
 			}
 		});
 
+		buttonBloom = new UIButton("buttonBloom", screenResolution[0]-300, 222, 350, 45);
+		buttonBloom.setText("Toggle Bloom");
+		buttonBloom.setEvent(new UIEvent(){
+			@Override
+			public void runOnClick() {
+				Settings.useBloom = Settings.useBloom==0? 1:0;
+				System.out.println("Use Reflection: " + (Settings.useBloom==0 ? "off":"on"));
+				gameTexture.onSettingsChanged();
+			}
+		});
+
 		mainShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/quad_fragment.txt");
 
 		modelQuad = new ModelReader("resources/models/quad.obj");
@@ -238,6 +250,7 @@ public class Renderer {
 		buttonSSGI.setPosition(screenResolution[0]-300, 72);
 		buttonSSGIDenoise.setPosition(screenResolution[0]-300, 122);
 		buttonReflection.setPosition(screenResolution[0]-300, 172);
+		buttonBloom.setPosition(screenResolution[0]-300, 222);
 		UIRenderer.setScreenResolution(new Point2D(width, height));
 
 		projectionMatrix.setOrtho(-ratio, ratio, -1f, 1f, -1f, 1f, false);
@@ -380,6 +393,7 @@ public class Renderer {
 		buttonSSGI.draw();
 		buttonSSGIDenoise.draw();
 		buttonReflection.draw();
+		buttonBloom.draw();
 
 		gameTexture.deleteTextures();
 	}

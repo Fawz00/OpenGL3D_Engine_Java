@@ -260,7 +260,7 @@ void main() {
 						1.66*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/128.0)), 7).rgb+
 						2.0*textureLod(TEXTURE_LIGHTING, uv+((offset+vec2(0.025, 0.0)) / (MAIN_RESOLUTION/256.0)), 8).rgb);
 		}
-		bloom /= 6.5*8.0;
+		bloom /= 4.5*8.0;
 		color.rgb += clamp(bloom, 0.0, 1.0);
 	#endif
 
