@@ -8,6 +8,7 @@ uniform sampler2D TEXTURE_DEPTH;
 uniform sampler2D TEXTURE_REFLECTION;
 uniform sampler2D TEXTURE_LIGHTING;
 uniform sampler2D TEXTURE_SSGI;
+uniform sampler2D TEXTURE_SSGI_DENOISE;
 
 uniform mat4 MVP_MATRIX;
 uniform vec2 MAIN_RESOLUTION;
@@ -126,6 +127,8 @@ vec3 fxaa(sampler2D texImage, vec2 resolution, vec2 texCoords) {
 
 
 
+// Source https://www.shadertoy.com/view/7d2SDD
+
 /*
 FAST APPROXIMATION OF https://www.shadertoy.com/view/3dd3Wr
 
@@ -210,7 +213,11 @@ void main() {
 
 	// SSGI
 	#if USE_SSGI
-		color.rgb += fxaa(TEXTURE_SSGI, MAIN_RESOLUTION, uv)*1.85;
+		#if USE_GI_DENOISE
+			color.rgb += fxaa(TEXTURE_SSGI_DENOISE, SSGI_RESOLUTION, uv)*1.2;
+		#else
+			color.rgb += fxaa(TEXTURE_SSGI, SSGI_RESOLUTION, uv)*1.2;
+		#endif
 	#endif
 
 	// SCREEN SPACE REFLECTION
@@ -290,7 +297,7 @@ void main() {
 		color.rgb += ret;
 	#endif
 
-// color.rgb = texture(TEXTURE_SSGI, uv).rgb;
+// color.rgb = texture(TEXTURE_SSGI, uv).rgb*4.0;
 //	vec2 ap = uv - 0.5;
 //	if(ap.x>0.0 && ap.y>0.0) color.rgb += 0.1;
 

@@ -29,6 +29,7 @@ import opengl3d.utils.text.Font;
 public class GameRenderer {
 	//private static boolean firstFrame;
 	public static boolean isRunning = false;
+	private int frame;
 	private Camera camera;
 
 	private ObjectEntity entityPlayer;
@@ -389,6 +390,7 @@ public class GameRenderer {
 	//=====================================//
 
 	public GameRenderer(int width, int height) {
+		frame = 0;
 		onCreate(width, height);
 	}
 
@@ -420,7 +422,7 @@ public class GameRenderer {
 
 		entityPlayer = new ObjectEntity(
 			modelAll.getModelData(modelAll.getModelId("sphere")),
-			textureAll.getTextureData(textureAll.getTextureId("metalic_silver")),
+			textureAll.getTextureData(textureAll.getTextureId("stone")),
 			new float[] {200f,70f,100f},
 			new float[] {0f,0f,0f},
 			1f);
@@ -647,6 +649,7 @@ public class GameRenderer {
 	}
 
 	public void onLoop(Camera cam, float time, float frameTime, boolean isPaused) {
+		frame++;
 		time = time * 6.0f;
 		isRunning = true;
 		camera = cam;
@@ -1011,9 +1014,8 @@ public class GameRenderer {
 			if(GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER) != GL30.GL_FRAMEBUFFER_COMPLETE) System.out.println("FrameBuffer error");
 
 			GL30.glViewport(0, 0, ssgiResolution[0], ssgiResolution[1]);
-			GL30.glClearColor(0f, 0f, 0f, 1f);
 			GL30.glClearDepth(1.0f);
-			GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
+			GL30.glClear(GL30.GL_DEPTH_BUFFER_BIT);
 
 			SSGIShader.useShader();
 
@@ -1021,8 +1023,9 @@ public class GameRenderer {
 			SSGIShader.setMat4("PROJ", Matriks.IdentityM4());
 			SSGIShader.setVec2("RESOLUTION", new float[]{(float)ssgiResolution[0], (float)ssgiResolution[1]});
 			SSGIShader.setFloat("TIME", time);
-			SSGIShader.setFloat("RANDOM", (float)Math.random());
+			SSGIShader.setInt("FRAME", frame);
 			SSGIShader.setFloat("FOV", cam.getFovY());
+			SSGIShader.setFloat("DRAW_DISTANCE", Settings.drawDistance);
 			SSGIShader.setVec4("VIEW_POSITION", cameraPosition);
 			SSGIShader.setMat4("MVP_MATRIX", MVPMatrixF);
 
@@ -1064,9 +1067,8 @@ public class GameRenderer {
 			if(GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER) != GL30.GL_FRAMEBUFFER_COMPLETE) System.out.println("FrameBuffer error");
 
 			GL30.glViewport(0, 0, ssgiResolution[0], ssgiResolution[1]);
-			GL30.glClearColor(0f, 0f, 0f, 1f);
 			GL30.glClearDepth(1.0f);
-			GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
+			GL30.glClear(GL30.GL_DEPTH_BUFFER_BIT);
 
 			SSGIDenoiseShader.useShader();
 
@@ -1155,8 +1157,11 @@ public class GameRenderer {
 		}
 		postProcessShader.setInt("TEXTURE_LIGHTING", 4);
 		GL30.glActiveTexture(GL30.GL_TEXTURE5);
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D, Settings.SSGIDenoise==1 ? SSGIDenoiseTexture : SSGITexture);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSGITexture);
 		postProcessShader.setInt("TEXTURE_SSGI", 5);
+		GL30.glActiveTexture(GL30.GL_TEXTURE6);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSGIDenoiseTexture);
+		postProcessShader.setInt("TEXTURE_SSGI_DENOISE", 6);
 
 		GL30.glDisable(GL30.GL_CULL_FACE);
 		GL30.glDisable(GL30.GL_DEPTH_TEST);

@@ -38,7 +38,7 @@ public class Settings {
 
 	//RENDER CONFIG
 	public static boolean limitFps				= false;
-	public static int fpsLimit					= 160;
+	public static int fpsLimit					= 60;
 	public static boolean vsync					= true;
 
 	public static boolean ASCIICharOnly			= true; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
@@ -81,7 +81,7 @@ public class Settings {
 	public static int useSSAO					= 0; // next update!
 
 	public static int useSSGI					= 1;
-	public static float SSGIQuality				= 0.5f; // Percent of screenQuality
-	public static int SSGIDenoise				= 1; // in development
+	public static float SSGIQuality				= 0.75f; // Percent of screenQuality
+	public static int SSGIDenoise				= 0; // in development
 
 }
