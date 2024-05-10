@@ -56,7 +56,7 @@ public class Settings {
 
 	public static float gamma					= 2.2f;
 	public static int useHDR					= 1;
-	public static float HDRSpeed				= 0.0125f;
+	public static float HDRSpeed				= 0.025f;
 	public static float sceneExposureMultiplier	= 0.125f;
 	public static float sceneExposureRangeMax	= 2.2f;
 	public static float sceneExposureRangeMin	= -2.2f;

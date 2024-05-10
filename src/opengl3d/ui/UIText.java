@@ -9,15 +9,16 @@ public class UIText extends UIComponent {
     private Font font;
 
     public UIText(String id, Point2D pos, Point2D size) {
-		super(id, initStyle(), pos, size);
+		super(id, normalStyle(), pos, size);
         init();
 	}
 	public UIText(String id, int x, int y, int sx, int sy) {
-		super(id, initStyle(), x, y, sx, sy);
+		super(id, normalStyle(), x, y, sx, sy);
         init();
 	}
-    public static UIStyle initStyle() {
+    public static UIStyle normalStyle() {
         UIStyle s = new UIStyle();
+        s.textColor = new Color4(0xFFFFFFFF);
         return s;
     }
     private void init() {

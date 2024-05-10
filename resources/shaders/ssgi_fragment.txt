@@ -180,7 +180,7 @@ void main() {
                 maxAngle = sampleAngle;
                 
                 //Add to indirect lighting and subtract from ambient
-                dirLight += directLight * sampleContribution * getColor() * (1.0-min(distance(sampleDepth, fragDepth)/48.0, 1.0));
+                dirLight += directLight * sampleContribution * getColor() * (1.0-min(distance(sampleDepth, fragDepth)/100.0, 1.0));
                 dirAmbient -= ambientLightAmount * sampleContribution;
             }
         }

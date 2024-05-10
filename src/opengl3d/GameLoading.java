@@ -33,7 +33,7 @@ public class GameLoading {
 		progressMap.get(id).current = count;
 	}
 
-	private static void getTotalProgress() {
+	public static void getTotalProgress() {
 		Collection<LoadingProgress> data = progressMap.values();
 		for(LoadingProgress curr: data) {
 			allProgress.total += curr.total;

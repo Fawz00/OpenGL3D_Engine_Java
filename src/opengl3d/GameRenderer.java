@@ -17,7 +17,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import opengl3d.engine.Input;
 import opengl3d.render.ModelLoader;
-import opengl3d.render.ObjectEntity;
+import opengl3d.render.Entity;
 import opengl3d.render.TextureLoader;
 import opengl3d.utils.MatMat;
 import opengl3d.utils.Matriks;
@@ -32,8 +32,9 @@ public class GameRenderer {
 	private int frame;
 	private Camera camera;
 
-	private ObjectEntity entityPlayer;
-	private ObjectEntity entityThing;
+	private Entity entityPlayer;
+	private Entity entityThing;
+	public Entity entityCenter;
 
 	private ModelLoader modelAll;
 	private ModelReader modelCubemap;
@@ -307,11 +308,12 @@ public class GameRenderer {
 
 		entityPlayer.render(shader, camera);
 		entityThing.render(shader, camera);
+		entityCenter.render(shader, camera);
 
 		renderModel(shader,
 				modelAll.getModelData(modelAll.getModelId("simple")),
 				textureAll.getTextureData(textureAll.getTextureId("white")),
-				300f,67.5f,200f,  0f,0f,0f,  1f,1f,1f);
+				300f,67f,200f,  0f,0f,0f,  1f,1f,1f);
 		renderModel(shader,
 				modelAll.getModelData(modelAll.getModelId("terrain")),
 				textureAll.getTextureData(textureAll.getTextureId("terrain")),
@@ -354,10 +356,10 @@ public class GameRenderer {
 				320f,72,150f,  0f,0f,0f,  0.5f,0.5f,0.5f);
 
 		GL30.glDisable(GL30.GL_CULL_FACE);
-			renderModel(shader,
-					modelAll.getModelData(modelAll.getModelId("box")),
-					textureAll.getTextureData(textureAll.getTextureId("blending")),
-					300f,200f,200f,  0f,0f,0f,  100f,100f,100f);
+			// renderModel(shader,
+			// 		modelAll.getModelData(modelAll.getModelId("box")),
+			// 		textureAll.getTextureData(textureAll.getTextureId("blending")),
+			// 		300f,200f,200f,  0f,0f,0f,  100f,100f,100f);
 
 			renderModel(shader,
 					modelAll.getModelData(modelAll.getModelId("pine_tree")),
@@ -421,19 +423,26 @@ public class GameRenderer {
 		skyBoxShader = new Shader("resources/shaders/skybox_vertex.txt", "resources/shaders/skybox_fragment.txt");
 		postProcessShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/postprocess_fragment.txt");
 
-		entityPlayer = new ObjectEntity(
+		entityPlayer = new Entity(
 			modelAll.getModelData(modelAll.getModelId("sphere")),
 			textureAll.getTextureData(textureAll.getTextureId("stone")),
 			new float[] {200f,70f,100f},
 			new float[] {0f,0f,0f},
 			1f);
 		entityPlayer.setCameraOffset(new float[] {0f,0f,0.1f});
-		entityThing = new ObjectEntity(
+		entityThing = new Entity(
 			modelAll.getModelData(modelAll.getModelId("wolf")),
 			textureAll.getTextureData(textureAll.getTextureId("wood")),
 			new float[] {200f,100f,100f},
 			new float[] {0f,0f,0f},
 			1f);
+		entityCenter = new Entity(
+			modelAll.getModelData(modelAll.getModelId("box")),
+			textureAll.getTextureData(textureAll.getTextureId("red_light")),
+			new float[] {300f, 67.5f, 200f},
+			new float[] {0f,0f,0f},
+			1f);
+		entityCenter.setDrawDistance(Settings.drawDistance);
 
 		screenResolution[0] = (int)Math.ceil((float)width * Settings.screenQuality);
 		screenResolution[1] = (int)Math.ceil((float)height * Settings.screenQuality);
@@ -656,8 +665,7 @@ public class GameRenderer {
 		time = time * 6.0f;
 		isRunning = true;
 		camera = cam;
-		entityPlayer.isPaused(isPaused);
-		entityThing.isPaused(isPaused);
+		Entity.setPaused(isPaused);
 
 		entityPlayer.setRotation(new float[] {0f,180f+(float)Math.toDegrees(camera.getRotation()[0]),0f});
 		if(time<5f) entityThing.setAcceleration(new float[] {0f,frameTime*10f,0f},frameTime);

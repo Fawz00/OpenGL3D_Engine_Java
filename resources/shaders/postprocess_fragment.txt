@@ -214,9 +214,9 @@ void main() {
 	// SSGI
 	#if USE_SSGI
 		#if USE_GI_DENOISE
-			color.rgb += fxaa(TEXTURE_SSGI_DENOISE, SSGI_RESOLUTION, uv)*1.2;
+			color.rgb += fxaa(TEXTURE_SSGI_DENOISE, SSGI_RESOLUTION, uv)*1.12;
 		#else
-			color.rgb += fxaa(TEXTURE_SSGI, SSGI_RESOLUTION, uv)*1.2;
+			color.rgb += fxaa(TEXTURE_SSGI, SSGI_RESOLUTION, uv)*1.12;
 		#endif
 	#endif
 

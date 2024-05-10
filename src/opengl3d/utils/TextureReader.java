@@ -29,6 +29,9 @@ public class TextureReader {
 
 		GL30.glGenTextures(textures);
 	}
+	public TextureReader(){
+		GL30.glGenTextures(textures);
+	}
 	public void setTextureColor(String dir){
 		if(hasColor == true){
 			textures[0] = loadTexture(0, dir, blur, filter);

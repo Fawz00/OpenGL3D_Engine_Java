@@ -1,11 +1,13 @@
 package opengl3d;
 
+import java.awt.FileDialog;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 
 import org.lwjgl.openal.AL10;
 import org.lwjgl.opengl.GL11;
@@ -15,13 +17,13 @@ import org.joml.Matrix4f;
 
 import opengl3d.audio.AudioMaster;
 import opengl3d.audio.AudioSource;
-import opengl3d.engine.Input;
 import opengl3d.ui.UIButton;
 import opengl3d.ui.UIEvent;
 import opengl3d.ui.UIRenderer;
 import opengl3d.utils.ModelReader;
 import opengl3d.utils.Point2D;
 import opengl3d.utils.Shader;
+import opengl3d.utils.TextureReader;
 
 public class Renderer {
 	private static boolean isPaused = false;
@@ -54,6 +56,8 @@ public class Renderer {
 	private static float frameTimeStart;
 
 	UIButton button;
+	UIButton buttonModel;
+	UIButton buttonTexture;
 	UIButton buttonShadow;
 	UIButton buttonSSGI;
 	UIButton buttonSSGIDenoise;
@@ -164,10 +168,77 @@ public class Renderer {
 		UIRenderer.init();
 		button = new UIButton("button", 177, 22, 355, 90);
 		button.setText("※本当に\nきれいです！！！");
+		button.setStyle(button.getStyle());
 		button.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
 				System.out.println("Hello, world!");
+				super.runOnClick();
+			}
+		});
+
+		buttonModel = new UIButton("buttonModel", 0, 0, 350, 45);
+		buttonModel.setText("Change model");
+		buttonModel.setEvent(new UIEvent(){
+			@Override
+			public void runOnClick() {
+				JFrame frame = new JFrame("Pilih File");
+				frame.toFront();
+				frame.setFocusable(true);
+				frame.setAlwaysOnTop(true);
+				frame.requestFocusInWindow();
+				FileDialog fileDialog = new FileDialog(frame, "Pilih File");
+
+				fileDialog.setMode(FileDialog.LOAD);
+				fileDialog.setFile("*.obj");
+				fileDialog.setVisible(true);
+
+				String directory = fileDialog.getDirectory();
+				String file = fileDialog.getFile();
+		
+				if (file != null) {
+					ModelReader model = new ModelReader(directory + file);
+					gameTexture.entityCenter.setModel(model);
+				}
+				frame.removeAll();
+				frame.dispose();
+
+				super.runOnClick();
+			}
+		});
+
+		buttonTexture = new UIButton("buttonTexture", 0, 0, 350, 45);
+		buttonTexture.setText("Change texture");
+		buttonTexture.setEvent(new UIEvent(){
+			@Override
+			public void runOnClick() {
+				JFrame frame = new JFrame("Pilih File");
+				frame.toFront();
+				frame.setFocusable(true);
+				frame.setAlwaysOnTop(true);
+				frame.requestFocusInWindow();
+				FileDialog fileDialog = new FileDialog(frame, "Pilih File");
+
+				fileDialog.setMode(FileDialog.LOAD);
+				fileDialog.setFilenameFilter((dir, name) -> {
+					String lcName = name.toLowerCase();
+					return lcName.endsWith(".jpg") || lcName.endsWith(".jpeg") ||
+						   lcName.endsWith(".png") || lcName.endsWith(".gif") ||
+						   lcName.endsWith(".bmp");
+				});
+				fileDialog.setVisible(true);
+
+				String directory = fileDialog.getDirectory();
+				String file = fileDialog.getFile();
+		
+				if (file != null) {
+					TextureReader tex = new TextureReader();
+					tex.setTextureColor(directory + file);
+					gameTexture.entityCenter.setTexture(tex);
+				}
+				frame.removeAll();
+				frame.dispose();
+
 				super.runOnClick();
 			}
 		});
@@ -246,6 +317,8 @@ public class Renderer {
 		float ratio = (float) width / (float) height;
 		screenResolution[0] = width;
 		screenResolution[1] = height;
+		buttonModel.setPosition(300, screenResolution[1]-22);
+		buttonTexture.setPosition(300, screenResolution[1]-72);
 		buttonShadow.setPosition(screenResolution[0]-300, 22);
 		buttonSSGI.setPosition(screenResolution[0]-300, 72);
 		buttonSSGIDenoise.setPosition(screenResolution[0]-300, 122);
@@ -368,26 +441,27 @@ public class Renderer {
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
 		// ModelReader.resetModel();
 
-		String text = "しばらくお待ちください。\n第二次世界大戦では、1942年初頭に大日本帝国がBelandaオランダ植民地軍を破り東インドのほぼ全域を占領し、その後日本軍政当局がバタヴィアをジャカルタと改称した。以後、その名称は現在に至っている[7]。なお日本軍は市政からオランダ人を放逐した。日本軍の占領は1945年8月まで続いた。";
-		String halo = "游戏剧情于虚构世界的提瓦特大陆上展开，该世界分成七个国家，每个国家分别以一种元素为主题，并由对应元素的神明所分管。\n"
-				+ "游戏剧情的主角为“旅行者”，是一对在无数个世界中旅行的兄妹，因遭遇陌生神明阻拦在提瓦特被迫分離。玩家将扮演旅行者，为了寻找自己失散的唯一血亲，並與派蒙一同游历七国。\n"
-				+ "\n"
-				+ "괜찮아요.";
-		String lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet rutrum nulla, vel fermentum justo. Donec dictum enim massa, at sagittis urna consequat in. Proin tempus vitae lorem et hendrerit. Curabitur viverra in ipsum eu pulvinar. Praesent semper mi nunc, ac auctor leo ullamcorper eu. In tincidunt commodo sapien, sit amet euismod lorem ultrices id. Fusce vehicula leo id enim lobortis, vel vestibulum lectus pulvinar. Phasellus in dolor libero. Nunc rutrum cursus lectus in tristique. Vivamus eu nulla et diam tincidunt dignissim ut eu enim. Fusce eu eros ultricies, tempus nibh ut, blandit ante. Suspendisse sit amet sagittis est. Aenean rutrum convallis urna posuere mattis. Aenean et massa vehicula, aliquam dui faucibus, tempus nisl. Suspendisse nulla lectus, sagittis nec imperdiet at, commodo a tellus.";
-		Input.isTyping(isPaused());
-		String chat = "";
-		for(int i=10; i>0; i--) {
-			int index = Input.getLineCount()-i;
-			chat += Input.getLine( index ) + "\n";
-			// if(!Input.getLine( Input.getLineCount()-11 ).equals("")) Input.resetLines();
-		}
-		chat += Input.getRawLine() + "_";
+		// String text = "しばらくお待ちください。\n第二次世界大戦では、1942年初頭に大日本帝国がBelandaオランダ植民地軍を破り東インドのほぼ全域を占領し、その後日本軍政当局がバタヴィアをジャカルタと改称した。以後、その名称は現在に至っている[7]。なお日本軍は市政からオランダ人を放逐した。日本軍の占領は1945年8月まで続いた。";
+		// String halo = "游戏剧情于虚构世界的提瓦特大陆上展开，该世界分成七个国家，每个国家分别以一种元素为主题，并由对应元素的神明所分管。\n"
+		// 		+ "游戏剧情的主角为“旅行者”，是一对在无数个世界中旅行的兄妹，因遭遇陌生神明阻拦在提瓦特被迫分離。玩家将扮演旅行者，为了寻找自己失散的唯一血亲，並與派蒙一同游历七国。\n"
+		// 		+ "\n"
+		// 		+ "괜찮아요.";
+		// String lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet rutrum nulla, vel fermentum justo. Donec dictum enim massa, at sagittis urna consequat in. Proin tempus vitae lorem et hendrerit. Curabitur viverra in ipsum eu pulvinar. Praesent semper mi nunc, ac auctor leo ullamcorper eu. In tincidunt commodo sapien, sit amet euismod lorem ultrices id. Fusce vehicula leo id enim lobortis, vel vestibulum lectus pulvinar. Phasellus in dolor libero. Nunc rutrum cursus lectus in tristique. Vivamus eu nulla et diam tincidunt dignissim ut eu enim. Fusce eu eros ultricies, tempus nibh ut, blandit ante. Suspendisse sit amet sagittis est. Aenean rutrum convallis urna posuere mattis. Aenean et massa vehicula, aliquam dui faucibus, tempus nisl. Suspendisse nulla lectus, sagittis nec imperdiet at, commodo a tellus.";
+		// Input.isTyping(isPaused());
+		// String chat = "";
+		// for(int i=10; i>0; i--) {
+		// 	int index = Input.getLineCount()-i;
+		// 	chat += Input.getLine( index ) + "\n";
+		// 	// if(!Input.getLine( Input.getLineCount()-11 ).equals("")) Input.resetLines();
+		// }
+		// chat += Input.getRawLine() + "_";
 		//textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
-	
 		//textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！ ꦱꦸꦒꦼꦁ​​ꦲꦺꦚ꧀ꦗꦁ​꧈​​ꦢꦺꦴꦚ​" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
 		button.setPosition((int)(screenResolution[0]*0.85), (int)(screenResolution[1]*0.85));
 		button.setRotation((int)-(gameTime*300f));
 		button.draw();
+		buttonModel.draw();
+		buttonTexture.draw();
 
 		buttonShadow.draw();
 		buttonSSGI.draw();
@@ -408,7 +482,13 @@ public class Renderer {
 		gameTexture.onDestroy();
 		audioSourceSelf.delete();
 		button.destroy();
+		buttonModel.destroy();
+		buttonTexture.draw();
 		buttonShadow.destroy();
+		buttonSSGI.destroy();
+		buttonSSGIDenoise.destroy();
+		buttonReflection.destroy();
+		buttonBloom.destroy();
 	}
 
 }
