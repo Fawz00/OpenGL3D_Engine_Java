@@ -2,93 +2,112 @@ package opengl3d.utils.model;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Vector;
 
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL33;
+
+import opengl3d.utils.Point2;
+import opengl3d.utils.Point3;
+import opengl3d.utils.Shader;
 
 public class Mesh {
-    private int vao;
-	private int vbo;
-	private int ebo;
-    private int instanceVbo;
-    private IntBuffer indices;
+	public static int MAX_BONE_INFLUENCE = 4;
 
-    public Mesh(FloatBuffer vertices, IntBuffer indices) {
+    private Vector<Vertex> vertices;
+    private Vector<Integer> indices;
+    private Vector<Texture> textures;
+    private int VAO;
+
+	private int VBO, EBO;
+
+    public Mesh(Vector<Vertex> vertices, Vector<Integer> indices, Vector<Texture> textures) {
+        this.vertices = vertices;
         this.indices = indices;
+        this.textures = textures;
 
-		vao = GL30.glGenVertexArrays();
-		vbo = GL30.glGenBuffers();
-		ebo = GL30.glGenBuffers();
-
-		getModel();
-		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, vertices, GL30.GL_STATIC_DRAW);
-		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, ebo);
-        GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, indices, GL30.GL_STATIC_DRAW);
-
-		setAttributes();
-
-		resetModel();
+        // now that we have all the required data, set the vertex buffers and its attribute pointers.
+        setupMesh();
 	}
 
-    public void setInstanceData(FloatBuffer data){
-		instanceVbo = GL30.glGenBuffers();
-		bindInstanceData();
-		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, data, GL30.GL_STATIC_DRAW);
-		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
-	}
-	public void setInstanceData(float[] data){
-		instanceVbo = GL30.glGenBuffers();
-		bindInstanceData();
-		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, data, GL30.GL_STATIC_DRAW);
-		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
-	}
-	public void bindInstanceData() {
-		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, instanceVbo);
-	}
-	public void setAttrAsInstance(int id) {
-		GL33.glVertexAttribDivisor(id, 1);
-	}
+    public void draw(Shader shader) 
+    {
+        // bind appropriate textures
+        int diffuseNr  = 1;
+        int specularNr = 1;
+        int normalNr   = 1;
+        int heightNr   = 1;
+        for(int i = 0; i < textures.size(); i++)
+        {
+            GL30.glActiveTexture(GL30.GL_TEXTURE0 + i); // active proper texture unit before binding
+            // retrieve texture number (the N in diffuse_textureN)
+            String number;
+            String name = textures.get(i).type;
+            if(name == "texture_diffuse")
+                number = Integer.toString(diffuseNr++);
+            else if(name == "texture_specular")
+                number = Integer.toString(specularNr++); // transfer unsigned int to string
+            else if(name == "texture_normal")
+                number = Integer.toString(normalNr++); // transfer unsigned int to string
+             else if(name == "texture_height")
+                number = Integer.toString(heightNr++); // transfer unsigned int to string
 
-	public void getModel(){
-		GL30.glBindVertexArray(vao);
-		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo);
-	}
+            // now set the sampler to the correct texture unit
+//            GL30.glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
+            // and finally bind the texture
+            GL30.glBindTexture(GL30.GL_TEXTURE_2D, textures.get(i).id);
+        }
+        
+        // draw mesh
+        GL30.glBindVertexArray(VAO);
+//        GL30.glDrawElements(GL30.GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL30.GL_UNSIGNED_INT, 0);
+        GL30.glBindVertexArray(0);
 
-    public void setAttributes(){
-        int stride = (Float.BYTES*15) + Integer.BYTES;
-		setAttrF(0, 3, stride, 0);
-		setAttrF(1, 3, stride, 3);
-		setAttrF(2, 2, stride, 6);
-		setAttrF(3, 3, stride, 8);
-		setAttrF(4, 3, stride, 11);
-            setAttrI(5, 1, stride, 14);
-            setAttrF(6, 1, stride, 15);
-	}
+        // always good practice to set everything back to defaults once configured.
+        GL30.glActiveTexture(GL30.GL_TEXTURE0);
+    }
 
-    public void setAttrF(int id, int dataLength, int stride, int offset) {
-		GL30.glVertexAttribPointer(id, dataLength, GL30.GL_FLOAT, false, Float.BYTES*stride, Float.BYTES*offset);
-		GL30.glEnableVertexAttribArray(id);
-	}
-    public void setAttrI(int id, int dataLength, int stride, int offset) {
-		GL30.glVertexAttribPointer(id, dataLength, GL30.GL_INT, false, Integer.BYTES*stride, Integer.BYTES*offset);
-		GL30.glEnableVertexAttribArray(id);
-	}
+	private void setupMesh()
+    {
+        // create buffers/arrays
+        VAO = GL30.glGenVertexArrays();
+        VBO = GL30.glGenBuffers();
+        EBO = GL30.glGenBuffers();
 
-	public void drawModel(){
-		GL30.glDrawElements(GL30.GL_TRIANGLES, indices);
-	}
-	public void drawModelInstanced(int size){
-		GL33.glDrawElementsInstanced(GL30.GL_TRIANGLES, indices, size);
-	}
+        GL30.glBindVertexArray(VAO);
+        // load data into vertex buffers
+        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, VBO);
+        // A great thing about structs is that their memory layout is sequential for all its items.
+        // The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
+        // again translates to 3/2 floats which translates to a byte array.
+/*        GL30.glBufferData(GL30.GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL30.GL_STATIC_DRAW);  
 
-	public static void resetModel(){
-		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
-		GL30.glBindVertexArray(0);
-	}
+        GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, EBO);
+        GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL30.GL_STATIC_DRAW);
 
-	public void deleteModel(){
-		if(vao != 0) GL30.glDeleteVertexArrays(vao);
-		if(vbo != 0) GL30.glDeleteBuffers(vbo);
-		if(instanceVbo != 0) GL30.glDeleteBuffers(instanceVbo);
-	}
+        // set the vertex attribute pointers
+        // vertex Positions
+        GL30.glEnableVertexAttribArray(0);	
+        GL30.glVertexAttribPointer(0, 3, GL30.GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+        // vertex normals
+        GL30.glEnableVertexAttribArray(1);	
+        GL30.glVertexAttribPointer(1, 3, GL30.GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+        // vertex texture coords
+        GL30.glEnableVertexAttribArray(2);	
+        GL30.glVertexAttribPointer(2, 2, GL30.GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+        // vertex tangent
+        GL30.glEnableVertexAttribArray(3);
+        GL30.glVertexAttribPointer(3, 3, GL30.GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+        // vertex bitangent
+        GL30.glEnableVertexAttribArray(4);
+        GL30.glVertexAttribPointer(4, 3, GL30.GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+		// ids
+		GL30.glEnableVertexAttribArray(5);
+		GL30.glVertexAttribIPointer(5, 4, GL30.GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, m_BoneIDs));
+
+		// weights
+		GL30.glEnableVertexAttribArray(6);
+		GL30.glVertexAttribPointer(6, 4, GL30.GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_Weights));
+        GL30.glBindVertexArray(0);
+		*/
+    }
 }

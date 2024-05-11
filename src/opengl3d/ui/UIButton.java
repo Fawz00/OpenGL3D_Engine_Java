@@ -2,14 +2,14 @@ package opengl3d.ui;
 
 import opengl3d.engine.Input;
 import opengl3d.utils.Color4;
-import opengl3d.utils.Point2D;
+import opengl3d.utils.Point2;
 import opengl3d.utils.text.Font;
 
 public class UIButton extends UIComponent {
     private String text;
     private Font font;
 
-	public UIButton(String id, Point2D pos, Point2D size) {
+	public UIButton(String id, Point2 pos, Point2 size) {
 		super(id, normalStyle(), pos, size);
         init();
 	}
@@ -61,8 +61,8 @@ public class UIButton extends UIComponent {
 
     @Override
     public void draw() {
-        Point2D position = super.getPosition();
-        Point2D size = super.getSize();
+        Point2 position = super.getPosition();
+        Point2 size = super.getSize();
         font.drawText(UIRenderer.getTextShader(), position.x, position.y, size.x, size.y, super.getRotation(), text, 0xFFFFFFFF);
         super.draw();
     }

@@ -14,7 +14,7 @@ import opengl3d.Renderer;
 import opengl3d.Settings;
 import opengl3d.ui.UIComponent;
 import opengl3d.ui.UIEvent;
-import opengl3d.utils.Point2D;
+import opengl3d.utils.Point2;
 
 public class Input {
 	private static boolean[] keysDown = new boolean[GLFW.GLFW_KEY_LAST];
@@ -112,9 +112,9 @@ public class Input {
 		if(Renderer.isPaused()) for(UIComponent ui: event) {
 			if(ui.isActive()) {
 				double rotation = Math.toRadians(ui.getRotation());
-				Point2D size = ui.getSize();
-				Point2D center = ui.getPosition();
-				Point2D cursor = new Point2D((int)mouseX, (int)mouseY);
+				Point2 size = ui.getSize();
+				Point2 center = ui.getPosition();
+				Point2 cursor = new Point2((int)mouseX, (int)mouseY);
 				float localX = (float)(Math.cos(-rotation) * (cursor.x - center.x) - Math.sin(-rotation) * (cursor.y - center.y));
 				float localY = (float)(Math.sin(-rotation) * (cursor.x - center.x) + Math.cos(-rotation) * (cursor.y - center.y));
 

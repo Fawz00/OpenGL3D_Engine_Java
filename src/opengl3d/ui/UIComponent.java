@@ -5,13 +5,13 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.lwjgl.opengl.GL30;
 
-import opengl3d.utils.Point2D;
+import opengl3d.utils.Point2;
 import opengl3d.utils.Shader;
 
 public class UIComponent {
 	private String id;
-	private Point2D position;
-	private Point2D size;
+	private Point2 position;
+	private Point2 size;
 	private int rotation = 0;
 	private boolean active;
 	private boolean visible;
@@ -22,7 +22,7 @@ public class UIComponent {
 	private UIStyle styleOnHover;
 	private UIStyle styleOnClick;
 	
-	public UIComponent(String id, UIStyle istyle, Point2D pos, Point2D size) {
+	public UIComponent(String id, UIStyle istyle, Point2 pos, Point2 size) {
 		this.id = id;
 		this.position = pos;
 		this.size = size;
@@ -57,7 +57,7 @@ public class UIComponent {
 		};
 	}
 	public UIComponent(String id, UIStyle style, int x, int y, int sx, int sy) {
-		this(id, style, new Point2D(x,y), new Point2D(sx, sy));
+		this(id, style, new Point2(x,y), new Point2(sx, sy));
 	}
 
 	private void setDrawStyle(UIStyle s) {
@@ -71,7 +71,7 @@ public class UIComponent {
 	public void draw() {
 		if(visible) {
 			Shader shader = UIRenderer.getUIShader();
-			Point2D resolution = UIRenderer.getScreenSize();
+			Point2 resolution = UIRenderer.getScreenSize();
 
 			float[] rotationM = new float[16];
 			Matrix4f tr = new Matrix4f()
@@ -160,10 +160,10 @@ public class UIComponent {
 	public int getRotation() {
 		return rotation;
 	}
-	public Point2D getPosition() {
+	public Point2 getPosition() {
 		return position;
 	}
-	public Point2D getSize() {
+	public Point2 getSize() {
 		return size;
 	}
 	public UIEvent getEvent() {

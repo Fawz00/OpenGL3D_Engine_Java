@@ -21,7 +21,7 @@ import opengl3d.ui.UIButton;
 import opengl3d.ui.UIEvent;
 import opengl3d.ui.UIRenderer;
 import opengl3d.utils.ModelReader;
-import opengl3d.utils.Point2D;
+import opengl3d.utils.Point2;
 import opengl3d.utils.Shader;
 import opengl3d.utils.TextureReader;
 
@@ -324,7 +324,7 @@ public class Renderer {
 		buttonSSGIDenoise.setPosition(screenResolution[0]-300, 122);
 		buttonReflection.setPosition(screenResolution[0]-300, 172);
 		buttonBloom.setPosition(screenResolution[0]-300, 222);
-		UIRenderer.setScreenResolution(new Point2D(width, height));
+		UIRenderer.setScreenResolution(new Point2(width, height));
 
 		projectionMatrix.setOrtho(-ratio, ratio, -1f, 1f, -1f, 1f, false);
 		gameTexture.onScreenSizeChanged(width, height);
