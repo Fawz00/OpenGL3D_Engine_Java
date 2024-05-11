@@ -56,4 +56,7 @@ proyek ini bisa dibuka dengan IDE Eclipse atau Visual Studio Code dengan Java Ex
   <li><a href="https://vrm.dev/">
       VRM file documentation </a>
   </li>
+  <li><a href="https://lwjglgamedev.gitbooks.io/3d-game-development-with-lwjgl/content/chapter27/chapter27.html">
+      Assimp (LWJGL tutorial) </a>
+  </li>
 </ul>
