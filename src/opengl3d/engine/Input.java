@@ -109,11 +109,11 @@ public class Input {
 	}
 
 	private static void handleEventListener(Vector<UIComponent> event, int run) {
-		if(Renderer.isPaused()) for(UIComponent ui: event) {
-			if(ui.isActive()) {
+		if(Renderer.isPaused()) for(UIComponent ui: UIEventOnClick) {
+			Point2 center = ui.getPosition();
+			if(ui.isActive() && ui.isDrawVisible() && ui.isVisible() && center != null) {
 				double rotation = Math.toRadians(ui.getRotation());
 				Point2 size = ui.getSize();
-				Point2 center = ui.getPosition();
 				Point2 cursor = new Point2((int)mouseX, (int)mouseY);
 				float localX = (float)(Math.cos(-rotation) * (cursor.x - center.x) - Math.sin(-rotation) * (cursor.y - center.y));
 				float localY = (float)(Math.sin(-rotation) * (cursor.x - center.x) + Math.cos(-rotation) * (cursor.y - center.y));

@@ -5,6 +5,12 @@ import opengl3d.utils.Point2;
 
 public class UIBox extends UIComponent {
 
+	public UIBox(String id, int sx, int sy) {
+		super(id, normalStyle(), null, new Point2(sx, sy));
+	}
+	public UIBox(String id, Point2 size) {
+		super(id, normalStyle(), null, size);
+	}
 	public UIBox(String id, Point2 pos, Point2 size) {
 		super(id, normalStyle(), pos, size);
 	}

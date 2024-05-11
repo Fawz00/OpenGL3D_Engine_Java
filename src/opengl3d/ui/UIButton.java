@@ -9,6 +9,34 @@ public class UIButton extends UIComponent {
     private String text;
     private Font font;
 
+    public UIButton(String id, int sx, int sy) {
+		super(id, normalStyle(), null, new Point2(sx, sy));
+        init();
+	}
+    public UIButton(String id, Point2 size) {
+		super(id, normalStyle(), null, size);
+        init();
+	}
+    public UIButton(String id, String text, int sx, int sy) {
+		super(id, normalStyle(), null, new Point2(sx, sy));
+        init();
+        this.text = text;
+	}
+    public UIButton(String id, String text, Point2 size) {
+		super(id, normalStyle(), null, size);
+        init();
+        this.text = text;
+	}
+    public UIButton(String id, String text, Point2 pos, Point2 size) {
+		super(id, normalStyle(), pos, size);
+        init();
+        this.text = text;
+	}
+	public UIButton(String id, String text, int x, int y, int sx, int sy) {
+		super(id, normalStyle(), x, y, sx, sy);
+        init();
+        this.text = text;
+	}
 	public UIButton(String id, Point2 pos, Point2 size) {
 		super(id, normalStyle(), pos, size);
         init();
@@ -61,9 +89,9 @@ public class UIButton extends UIComponent {
 
     @Override
     public void draw() {
-        Point2 position = super.getPosition();
-        Point2 size = super.getSize();
-        font.drawText(UIRenderer.getTextShader(), position.x, position.y, size.x, size.y, super.getRotation(), text, 0xFFFFFFFF);
+        Point2 position = this.getPosition();
+        Point2 size = this.getSize();
+        font.drawText(UIRenderer.getTextShader(), position.x, position.y, size.x, size.y, this.getRotation(), text, 0xFFFFFFFF);
         super.draw();
     }
 

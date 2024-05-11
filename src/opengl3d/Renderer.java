@@ -19,7 +19,9 @@ import opengl3d.audio.AudioMaster;
 import opengl3d.audio.AudioSource;
 import opengl3d.ui.UIButton;
 import opengl3d.ui.UIEvent;
+import opengl3d.ui.UIPanel;
 import opengl3d.ui.UIRenderer;
+import opengl3d.ui.UIStyle;
 import opengl3d.utils.ModelReader;
 import opengl3d.utils.Point2;
 import opengl3d.utils.Shader;
@@ -54,6 +56,8 @@ public class Renderer {
 	private static float timeOffsetStart = 0f;
 	private static float frameTime;
 	private static float frameTimeStart;
+
+	UIPanel panelSettings;
 
 	UIButton button;
 	UIButton buttonModel;
@@ -164,11 +168,16 @@ public class Renderer {
 	public void onCreate(int width, int height) {
 		screenResolution[0] = width;
 		screenResolution[1] = height;
-
 		UIRenderer.init();
+
+		panelSettings = new UIPanel("panel_settings", 0, 0, width/2, height/2);
+		UIStyle panelStyle = new UIStyle();
+		panelStyle.backgroundColor.a = 128;
+		panelSettings.setStyle(panelStyle);
+
 		button = new UIButton("button", 177, 22, 355, 90);
 		button.setText("※本当に\nきれいです！！！");
-		button.setStyle(button.getStyle());
+		button.setActive(false);
 		button.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
@@ -243,8 +252,7 @@ public class Renderer {
 			}
 		});
 
-		buttonShadow = new UIButton("buttonShadow", screenResolution[0]-300, 22, 350, 45);
-		buttonShadow.setText("Toggle shadow");
+		buttonShadow = new UIButton("buttonShadow", "Toggle shadow", 350, 45);
 		buttonShadow.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
@@ -254,8 +262,7 @@ public class Renderer {
 			}
 		});
 
-		buttonSSGI = new UIButton("buttonSSGI", screenResolution[0]-300, 72, 350, 45);
-		buttonSSGI.setText("Toggle SSGI");
+		buttonSSGI = new UIButton("buttonSSGI", "Toggle SSGI", 350, 45);
 		buttonSSGI.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
@@ -265,8 +272,7 @@ public class Renderer {
 			}
 		});
 
-		buttonSSGIDenoise = new UIButton("buttonSSGIDenoise", screenResolution[0]-300, 122, 350, 45);
-		buttonSSGIDenoise.setText("Toggle SSGI denoise");
+		buttonSSGIDenoise = new UIButton("buttonSSGIDenoise", "Toggle SSGI denoise", 350, 45);
 		buttonSSGIDenoise.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
@@ -276,8 +282,7 @@ public class Renderer {
 			}
 		});
 
-		buttonReflection = new UIButton("buttonReflection", screenResolution[0]-300, 172, 350, 45);
-		buttonReflection.setText("Toggle Reflection");
+		buttonReflection = new UIButton("buttonReflection", "Toggle Reflection", 350, 45);
 		buttonReflection.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
@@ -287,16 +292,21 @@ public class Renderer {
 			}
 		});
 
-		buttonBloom = new UIButton("buttonBloom", screenResolution[0]-300, 222, 350, 45);
-		buttonBloom.setText("Toggle Bloom");
+		buttonBloom = new UIButton("buttonBloom", "Toggle Bloom", 350, 45);
 		buttonBloom.setEvent(new UIEvent(){
 			@Override
 			public void runOnClick() {
 				Settings.useBloom = Settings.useBloom==0? 1:0;
-				System.out.println("Use Reflection: " + (Settings.useBloom==0 ? "off":"on"));
+				System.out.println("Use Bloom: " + (Settings.useBloom==0 ? "off":"on"));
 				gameTexture.onSettingsChanged();
 			}
 		});
+
+		panelSettings.put(buttonBloom);
+		panelSettings.put(buttonReflection);
+		panelSettings.put(buttonSSGI);
+		panelSettings.put(buttonSSGIDenoise);
+		panelSettings.put(buttonShadow);
 
 		mainShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/quad_fragment.txt");
 
@@ -317,13 +327,10 @@ public class Renderer {
 		float ratio = (float) width / (float) height;
 		screenResolution[0] = width;
 		screenResolution[1] = height;
+		panelSettings.setSize(width/2, height/2);
+		panelSettings.setPosition((int)(screenResolution[0]*0.75f), (int)(screenResolution[1]*0.25f));
 		buttonModel.setPosition(300, screenResolution[1]-22);
 		buttonTexture.setPosition(300, screenResolution[1]-72);
-		buttonShadow.setPosition(screenResolution[0]-300, 22);
-		buttonSSGI.setPosition(screenResolution[0]-300, 72);
-		buttonSSGIDenoise.setPosition(screenResolution[0]-300, 122);
-		buttonReflection.setPosition(screenResolution[0]-300, 172);
-		buttonBloom.setPosition(screenResolution[0]-300, 222);
 		UIRenderer.setScreenResolution(new Point2(width, height));
 
 		projectionMatrix.setOrtho(-ratio, ratio, -1f, 1f, -1f, 1f, false);
@@ -463,11 +470,8 @@ public class Renderer {
 		buttonModel.draw();
 		buttonTexture.draw();
 
-		buttonShadow.draw();
-		buttonSSGI.draw();
-		buttonSSGIDenoise.draw();
-		buttonReflection.draw();
-		buttonBloom.draw();
+		//panelSettings.setRotation((int)(gameTime*300f));
+		panelSettings.draw();
 
 		gameTexture.deleteTextures();
 	}
@@ -484,11 +488,7 @@ public class Renderer {
 		button.destroy();
 		buttonModel.destroy();
 		buttonTexture.draw();
-		buttonShadow.destroy();
-		buttonSSGI.destroy();
-		buttonSSGIDenoise.destroy();
-		buttonReflection.destroy();
-		buttonBloom.destroy();
+		panelSettings.destroy();
 	}
 
 }

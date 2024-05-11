@@ -15,20 +15,23 @@ public class UIComponent {
 	private int rotation = 0;
 	private boolean active;
 	private boolean visible;
+	private boolean drawVisible;
 	private UIEvent event;
 	private UIEvent defEvent;
 	private UIStyle drawStyle;
-	private UIStyle style;
+	private UIStyle styleNormal;
 	private UIStyle styleOnHover;
 	private UIStyle styleOnClick;
-	
+	private UIComponent parent;
+
 	public UIComponent(String id, UIStyle istyle, Point2 pos, Point2 size) {
 		this.id = id;
 		this.position = pos;
 		this.size = size;
 		visible = true;
+		drawVisible = true;
 		active = true;
-		this.style = istyle;
+		this.styleNormal = istyle;
 		this.drawStyle = istyle;
 		this.styleOnHover = istyle;
 		this.styleOnClick = istyle;
@@ -41,7 +44,7 @@ public class UIComponent {
 			}
 			@Override
 			public void runOnNotHover() {
-				setDrawStyle(style);
+				setDrawStyle(styleNormal);
 				event.runOnNotHover();
 			}
 			@Override
@@ -64,12 +67,14 @@ public class UIComponent {
 		if(s != null) {
 			this.drawStyle = s;
 		} else {
-			this.drawStyle = this.style;
+			this.drawStyle = this.styleNormal;
 		}
 	}
 	
 	public void draw() {
-		if(visible) {
+		if(position == null || size == null) {
+			System.out.println("UI DRAW() ERROR: position & size is null. UI Id: " + id);
+		} if(visible && drawVisible) {
 			Shader shader = UIRenderer.getUIShader();
 			Point2 resolution = UIRenderer.getScreenSize();
 
@@ -83,6 +88,8 @@ public class UIComponent {
 			GL30.glDisable(GL30.GL_CULL_FACE);
 			GL30.glEnable(GL30.GL_BLEND);
 			GL30.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+			GL30.glEnable(GL30.GL_DEPTH_TEST);
+			GL30.glDepthFunc(GL30.GL_LEQUAL);
 
 			UIRenderer.getQuadModel().getModel();
 			shader.setMat4("ROTATION_MATRIX", rotationM);
@@ -107,6 +114,7 @@ public class UIComponent {
 	}
 	public void destroy() {
 		visible = false;
+		drawVisible = false;
 		active = false;
 	}
 
@@ -114,15 +122,22 @@ public class UIComponent {
 		this.position.x = x;
 		this.position.y = y;
 	}
+	public void setPosition(Point2 pos) {
+		this.position = pos;
+	}
 	public void setSize(int x, int y) {
 		this.size.x = x;
 		this.size.y = y;
+	}
+	public void setSize(Point2 size) {
+		this.size.x = size.x;
+		this.size.y = size.y;
 	}
 	public void setRotation(int rotation) {
 		this.rotation = rotation;
 	}
 	public void setBackgroundTexture(int id) {
-		this.style.backgroundTexture = id;
+		this.styleNormal.backgroundTexture = id;
 	}
 	public void setEvent(UIEvent e) {
 		this.event = e;
@@ -133,9 +148,12 @@ public class UIComponent {
 	public void setVisible(boolean b) {
 		this.visible = b;
 	}
+	public void setDrawVisible(boolean b) {
+		this.drawVisible = b;
+	}
 	public void setStyle(UIStyle style) {
 		if(style != null) {
-			this.style = style;
+			this.styleNormal = style;
 			this.styleOnHover = style;
 			this.styleOnClick = style;
 			this.drawStyle = style;
@@ -143,11 +161,14 @@ public class UIComponent {
 	}
 	public void setStyleOnHover(UIStyle style) {
 		if(style != null) this.styleOnHover = style;
-		else this.styleOnHover = this.style;
+		else this.styleOnHover = this.styleNormal;
 	}
 	public void setStyleOnClick(UIStyle style) {
 		if(style != null) this.styleOnClick = style;
-		else this.styleOnClick = this.style;
+		else this.styleOnClick = this.styleNormal;
+	}
+	public void setParent(UIComponent ui) {
+		parent = ui;
 	}
 
 	public boolean isActive() {
@@ -155,6 +176,9 @@ public class UIComponent {
 	}
 	public boolean isVisible() {
 		return visible;
+	}
+	public boolean isDrawVisible() {
+		return drawVisible;
 	}
 
 	public int getRotation() {
@@ -173,12 +197,15 @@ public class UIComponent {
 		return id;
 	}
 	public UIStyle getStyle() {
-		return style;
+		return styleNormal;
 	}
 	public UIStyle getStyleOnHover() {
 		return styleOnHover;
 	}
 	public UIStyle getStyleOnClick() {
 		return styleOnClick;
+	}
+	public UIComponent parent() {
+		return parent;
 	}
 }
