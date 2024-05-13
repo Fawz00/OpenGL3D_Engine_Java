@@ -25,6 +25,11 @@ bool rayIsOutofScreen(vec2 ray){
 	return (ray.x > 1 || ray.y > 1 || ray.x < 0 || ray.y < 0) ? true : false;
 }
 
+float linstep(float a, float b, float x){
+    return clamp((x - a)/(b - a), 0., 1.); 
+}
+
+const float edgeFadeWidth = 0.075;
 reflectedSurface TraceRay(vec3 rayPos, vec3 dir, int iterationCount){
 	float sampleDepth;
 	reflectedSurface hitColor;
@@ -43,8 +48,13 @@ reflectedSurface TraceRay(vec3 rayPos, vec3 dir, int iterationCount){
 		float depthDif = rayPos.z - sampleDepth;
 		if(depthDif >= 0.0 && depthDif < 0.0001 && rayDistance > 0.0001){ //we have a hit
 			hit = true;
-			hitColor.color = texture(TEXTURE_0, rayPos.xy);//*pow(texture(TEXTURE_MER, rayPos.xy).g+1.0, 3.0);
-			hitColor.color.a = 1.0;
+
+			vec2 d = abs(rayPos.xy - 0.5);
+            float mult = max(d.x, d.y);
+            float edgeFade = linstep(0.5, 0.5 - max(edgeFadeWidth,0.01), mult);
+
+			hitColor.color.rgb = texture(TEXTURE_0, rayPos.xy).rgb;//*pow(texture(TEXTURE_MER, rayPos.xy).g+1.0, 3.0);
+			hitColor.color.a = edgeFade;
 			hitColor.mer = texture(TEXTURE_MER, rayPos.xy).rgb;
 			break;
 		}

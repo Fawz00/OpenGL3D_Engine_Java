@@ -70,6 +70,19 @@ public class UIComponent {
 			this.drawStyle = this.styleNormal;
 		}
 	}
+
+	// private void getParentTransform(Matrix4f m, UIComponent p) {
+	// 	if(p != null) {
+	// 		Point2 pos = p.getPosition();
+	// 		int rot = p.getRotation();
+	// 		m
+	// 			.translate(pos.x*2f, -pos.y*2f, 0f)
+	// 			.rotate(new Quaternionf(new AxisAngle4f((float)Math.toRadians(rot), 0f,0f,1f)))
+	// 			;
+
+	// 		getParentTransform(m, p.parent);
+	// 	}
+	// }
 	
 	public void draw() {
 		if(position == null || size == null) {
@@ -80,7 +93,11 @@ public class UIComponent {
 
 			float[] rotationM = new float[16];
 			Matrix4f tr = new Matrix4f()
-				.rotate(new Quaternionf(new AxisAngle4f((float)Math.toRadians(-rotation), 0f,0f,1f)));
+				.translate(position.x*2f, -position.y*2f, 0f)
+				.rotate(new Quaternionf(new AxisAngle4f((float)Math.toRadians(-rotation), 0f,0f,1f)))
+				.scale(size.x, size.y, 1f)
+				;
+			//getParentTransform(tr, parent);
 			tr.get(rotationM);
 
 			shader.useShader();
@@ -92,7 +109,7 @@ public class UIComponent {
 			GL30.glDepthFunc(GL30.GL_LEQUAL);
 
 			UIRenderer.getQuadModel().getModel();
-			shader.setMat4("ROTATION_MATRIX", rotationM);
+			shader.setMat4("MODEL_MATRIX", rotationM);
 			shader.setVec2("LOCATION", new float[] {(float)position.x, (float)-position.y});
 			shader.setVec2("SIZE", new float[] {(float)size.x, (float)size.y});
 			shader.setVec2("RESOLUTION", new float[] {(float)resolution.x, (float)resolution.y});

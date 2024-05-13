@@ -1,16 +1,10 @@
 package opengl3d.ui;
 
-import java.awt.FontFormatException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import opengl3d.utils.ModelReader;
 import opengl3d.utils.Point2;
 import opengl3d.utils.Shader;
 import opengl3d.utils.text.Font;
+import opengl3d.utils.text.Typeface;
 
 public class UIRenderer {
     private static Font defaultFont;
@@ -22,16 +16,8 @@ public class UIRenderer {
     private UIRenderer() {}
 
     public static void init() {
-        try {
-			InputStream fontData = new ByteArrayInputStream(Files.readAllBytes(Paths.get("resources/fonts/Kosugi_Maru/KosugiMaru-Regular.ttf")));
-			defaultFont = new Font(fontData, 38, true);
-		} catch (FontFormatException e) {
-			System.out.println("Error loading font, default value is used.");
-			defaultFont = new Font(38, false);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        //defaultFont = new Font(38, true);
+        Typeface.loadFont("resources/fonts/Kosugi_Maru/KosugiMaru-Regular.ttf");
+        defaultFont = Typeface.getFont("Kosugi Maru Regular");
 
         modelQuad = new ModelReader("resources/models/quad.obj");
 

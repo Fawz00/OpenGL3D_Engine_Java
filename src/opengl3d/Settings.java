@@ -26,7 +26,7 @@ public class Settings {
 
 	//CONTROL MAPPING
 	public static float cameraSensitivity		= 1.0f;
-	public static boolean smoothCamera			= false;
+	public static boolean smoothCamera			= true;
 	public static int buttonPrimary				= GLFW.GLFW_MOUSE_BUTTON_LEFT;
 	public static int keyForward				= GLFW.GLFW_KEY_SPACE;
 	public static int keyToggleCamera			= GLFW.GLFW_KEY_C;
@@ -34,11 +34,11 @@ public class Settings {
 	public static int keyTogglePhysics			= GLFW.GLFW_KEY_P;
 
 	//AUDIO CONFIG
-	public static float volumeMusic				= 1.00f;
+	public static float volumeMusic				= 0.00f;
 
 	//RENDER CONFIG
 	public static boolean limitFps				= false;
-	public static int fpsLimit					= 60;
+	public static int fpsLimit					= 144;
 	public static boolean vsync					= true;
 
 	public static boolean ASCIICharOnly			= true; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
@@ -76,7 +76,7 @@ public class Settings {
 	public static float reflectionQuality		= 0.5f; // Percent of screenQuality
 
 	public static int useBloom					= 1;
-	public static int useLensFlare				= 0;
+	public static int useLensFlare				= 0; // next update!
 
 	public static int useSSAO					= 0; // next update!
 

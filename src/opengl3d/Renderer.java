@@ -26,6 +26,7 @@ import opengl3d.utils.ModelReader;
 import opengl3d.utils.Point2;
 import opengl3d.utils.Shader;
 import opengl3d.utils.TextureReader;
+import opengl3d.utils.text.Typeface;
 
 public class Renderer {
 	private static boolean isPaused = false;
@@ -168,9 +169,10 @@ public class Renderer {
 	public void onCreate(int width, int height) {
 		screenResolution[0] = width;
 		screenResolution[1] = height;
+		Typeface.init();
 		UIRenderer.init();
 
-		panelSettings = new UIPanel("panel_settings", 0, 0, width/2, height/2);
+		panelSettings = new UIPanel("panel_settings", 0, 0, 0, 0);
 		UIStyle panelStyle = new UIStyle();
 		panelStyle.backgroundColor.a = 128;
 		panelSettings.setStyle(panelStyle);
@@ -327,8 +329,8 @@ public class Renderer {
 		float ratio = (float) width / (float) height;
 		screenResolution[0] = width;
 		screenResolution[1] = height;
-		panelSettings.setSize(width/2, height/2);
-		panelSettings.setPosition((int)(screenResolution[0]*0.75f), (int)(screenResolution[1]*0.25f));
+		panelSettings.setSize(width/4, height/2);
+		panelSettings.setPosition((int)(screenResolution[0]*0.875f), (int)(screenResolution[1]*0.25f));
 		buttonModel.setPosition(300, screenResolution[1]-22);
 		buttonTexture.setPosition(300, screenResolution[1]-72);
 		UIRenderer.setScreenResolution(new Point2(width, height));
@@ -485,6 +487,7 @@ public class Renderer {
 		modelQuad.deleteModel();
 		gameTexture.onDestroy();
 		audioSourceSelf.delete();
+		Typeface.clearAll();
 		button.destroy();
 		buttonModel.destroy();
 		buttonTexture.draw();

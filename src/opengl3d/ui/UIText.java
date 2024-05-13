@@ -65,8 +65,8 @@ public class UIText extends UIComponent {
     public void draw() {
         Point2 position = this.getPosition();
         Point2 size = this.getSize();
-        font.drawText(UIRenderer.getTextShader(), position.x, position.y, size.x, size.y, this.getRotation(), text, 0xFFFFFFFF);
         super.draw();
+        font.drawText(UIRenderer.getTextShader(), position.x, position.y, size.x, size.y, this.getRotation(), text, 0xFFFFFFFF);
     }
 
 }

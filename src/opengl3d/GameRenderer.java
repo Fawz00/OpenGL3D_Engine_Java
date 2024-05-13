@@ -25,6 +25,7 @@ import opengl3d.utils.ModelReader;
 import opengl3d.utils.Shader;
 import opengl3d.utils.TextureReader;
 import opengl3d.utils.text.Font;
+import opengl3d.utils.text.Typeface;
 
 public class GameRenderer {
 	//private static boolean firstFrame;
@@ -318,10 +319,10 @@ public class GameRenderer {
 				modelAll.getModelData(modelAll.getModelId("terrain")),
 				textureAll.getTextureData(textureAll.getTextureId("terrain")),
 				-2560f,-5f,2560f,  0f,0f,0f,  5f,4f,5f);
-		renderModel(shader,
-				modelAll.getModelData(modelAll.getModelId("lighting")),
-				textureAll.getTextureData(textureAll.getTextureId("colors")),
-				100f,90f,50f,  0f,90f,0f,  5f,5f,5f);
+		// renderModel(shader,
+		// 		modelAll.getModelData(modelAll.getModelId("lighting")),
+		// 		textureAll.getTextureData(textureAll.getTextureId("colors")),
+		// 		100f,90f,50f,  0f,90f,0f,  5f,5f,5f);
 		renderModel(shader,
 				modelAll.getModelData(modelAll.getModelId("slum")),
 				textureAll.getTextureData(textureAll.getTextureId("slum")),
@@ -361,19 +362,10 @@ public class GameRenderer {
 			// 		textureAll.getTextureData(textureAll.getTextureId("blending")),
 			// 		300f,200f,200f,  0f,0f,0f,  100f,100f,100f);
 
-			renderModel(shader,
-					modelAll.getModelData(modelAll.getModelId("pine_tree")),
-					textureAll.getTextureData(textureAll.getTextureId("pine_tree")),
-					0f,180f,0f,  0f,0f,0f,  1f,1f,1f);
-			renderModel(shader,
-					modelAll.getModelData(modelAll.getModelId("banana_tree")),
-					textureAll.getTextureData(textureAll.getTextureId("banana_tree")),
-					0f,100f,37f,  0f,0f,0f,  1.5f,1.5f,1.5f);
-
 			renderModelInstanced(
 						shader,
 						treeInstance,
-						textureAll.getTextureData(textureAll.getTextureId("banana_tree")),
+						textureAll.getTextureData(textureAll.getTextureId("pine_tree")),
 						treeCount);
 
 		renderModel(shader,
@@ -399,7 +391,7 @@ public class GameRenderer {
 
 	public void onCreate(int width, int height) {
 		//firstFrame=true;
-		textView = new Font(38, true);
+		textView = Typeface.getFont("Kosugi Maru Regular");
 
 		modelAll = new ModelLoader();
 		modelCubemap = new ModelReader("resources/models/box.obj");
@@ -627,7 +619,7 @@ public class GameRenderer {
 		for(int i=0; i<treeCount; i++){
 			randTreePos
 				.put(100f*(2f*(float)Math.random()-1f)+300f)
-				.put(0.5f*(float)Math.random()+70.5f)
+				.put(0.5f*(float)Math.random()+67f)
 				.put(100f*(2f*(float)Math.random()-1f)+200f)
 				.put(0.0f)
 				.put(180f*(2f*(float)Math.random()-1f))
@@ -637,7 +629,7 @@ public class GameRenderer {
 				.put(1.0f);
 		}
 		randTreePos.flip();
-		treeInstance = new ModelReader("resources/models/terrain/banana_tree.obj", randTreePos);
+		treeInstance = new ModelReader("resources/models/terrain/pines.obj", randTreePos);
 		int error = (error = GL30.glGetError()) != GL30.GL_NO_ERROR ? error : 0; if (error != 0) System.out.println("Kesalahan OpenGL terdeteksi: " + error);
 		MemoryUtil.memFree(randTreePos);
 	}
@@ -1140,6 +1132,7 @@ public class GameRenderer {
 		postProcessShader.setVec2("MAIN_RESOLUTION", new float[]{(float)screenResolution[0], (float)screenResolution[1]});
 		postProcessShader.setVec2("REFLECTION_RESOLUTION", new float[]{(float)reflectionResolution[0], (float)reflectionResolution[1]});
 		postProcessShader.setVec2("SSGI_RESOLUTION", new float[]{(float)ssgiResolution[0], (float)ssgiResolution[1]});
+		postProcessShader.setVec4("VIEW_POSITION", cameraPosition);
 		postProcessShader.setFloat("TIME", time);
 		postProcessShader.setFloat("gamma", Settings.gamma);
 
@@ -1147,15 +1140,18 @@ public class GameRenderer {
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderColorTexture);
 		postProcessShader.setInt("TEXTURE_0", 0);
 		GL30.glActiveTexture(GL30.GL_TEXTURE1);
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderMerTexture);
-		postProcessShader.setInt("TEXTURE_MER", 1);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderNormalTexture);
+		postProcessShader.setInt("TEXTURE_NORMAL", 1);
 		GL30.glActiveTexture(GL30.GL_TEXTURE2);
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderDepthTexture);
-		postProcessShader.setInt("TEXTURE_DEPTH", 2);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderMerTexture);
+		postProcessShader.setInt("TEXTURE_MER", 2);
 		GL30.glActiveTexture(GL30.GL_TEXTURE3);
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D, reflectionColorTexture);
-		postProcessShader.setInt("TEXTURE_REFLECTION", 3);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderDepthTexture);
+		postProcessShader.setInt("TEXTURE_DEPTH", 3);
 		GL30.glActiveTexture(GL30.GL_TEXTURE4);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, reflectionColorTexture);
+		postProcessShader.setInt("TEXTURE_REFLECTION", 4);
+		GL30.glActiveTexture(GL30.GL_TEXTURE5);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, lightingTexture);
 		if(Settings.useHDR == 1) {
 			float[] luminescence = new float[3];
@@ -1167,13 +1163,17 @@ public class GameRenderer {
 
 			postProcessShader.setFloat("exposure", sceneExposure);
 		}
-		postProcessShader.setInt("TEXTURE_LIGHTING", 4);
-		GL30.glActiveTexture(GL30.GL_TEXTURE5);
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSGITexture);
-		postProcessShader.setInt("TEXTURE_SSGI", 5);
+		postProcessShader.setInt("TEXTURE_LIGHTING", 5);
 		GL30.glActiveTexture(GL30.GL_TEXTURE6);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSGITexture);
+		postProcessShader.setInt("TEXTURE_SSGI", 6);
+		GL30.glActiveTexture(GL30.GL_TEXTURE7);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSGIDenoiseTexture);
-		postProcessShader.setInt("TEXTURE_SSGI_DENOISE", 6);
+		postProcessShader.setInt("TEXTURE_SSGI_DENOISE", 7);
+
+		GL30.glActiveTexture(GL30.GL_TEXTURE8);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, tempcolorTexture);
+		postProcessShader.setInt("TEXTURE_TEMPCOLOR", 8);
 
 		GL30.glDisable(GL30.GL_CULL_FACE);
 		GL30.glDisable(GL30.GL_DEPTH_TEST);

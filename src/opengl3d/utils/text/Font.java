@@ -43,7 +43,6 @@ public class Font {
 	private final Map<Character, Glyph> glyphs;
 	private final int texture;
 
-
 	private int fontHeight;
 
 	private int textureWidth, textureHeight;
@@ -54,6 +53,8 @@ public class Font {
 
 	private boolean isReady = false;
 	private boolean debugMode = false;
+
+	private String fontName;
 
     public Font() {
         this(new java.awt.Font(MONOSPACED, PLAIN, 24), true);
@@ -84,6 +85,7 @@ public class Font {
     }
 
 	public Font(java.awt.Font font, boolean antiAlias) {
+		fontName = font.getName();
 		debugMode = Settings.fontDebug;
 		glyphs = new HashMap<>();
 		texture = createFontTexture(font, antiAlias);
@@ -590,5 +592,12 @@ public class Font {
     public void dispose() {
     	GL30.glDeleteTextures(texture);
     }
+
+	public int getFontHeight() {
+		return fontHeight;
+	}
+	public String getFontName() {
+		return fontName;
+	}
 
 }

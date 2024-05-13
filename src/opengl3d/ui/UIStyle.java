@@ -14,6 +14,14 @@ public class UIStyle {
     public Color4 borderColor;
     public int borderRadius;
     public int borderWidth;
+    public int paddingLeft;
+    public int paddingRight;
+    public int paddingTop;
+    public int paddingBottom;
+    public int marginLeft;
+    public int marginRight;
+    public int marginTop;
+    public int marginBottom;
     public int align;
     public int textAlign;
 
@@ -27,6 +35,21 @@ public class UIStyle {
         borderWidth = 0;
         align = ALIGN_BEGIN;
         textAlign = ALIGN_BEGIN;
+        setMargin(0);
+        setPadding(0);
+    }
+
+    public void setMargin(int margin) {
+        this.marginBottom = margin;
+        this.marginLeft = margin;
+        this.marginRight = margin;
+        this.marginTop = margin;
+    }
+    public void setPadding(int padding) {
+        this.paddingBottom = padding;
+        this.paddingLeft = padding;
+        this.paddingRight = padding;
+        this.paddingTop = padding;
     }
 
 }

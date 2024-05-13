@@ -2,6 +2,8 @@ package opengl3d.ui;
 
 import java.util.Vector;
 
+import org.lwjgl.opengl.GL30;
+
 import opengl3d.utils.Point2;
 
 public class UIPanel extends UIComponent {
@@ -50,7 +52,12 @@ public class UIPanel extends UIComponent {
 				childPos.x += ui.getSize().x;
 			}
 
+			GL30.glEnable(GL30.GL_SCISSOR_TEST);
+			Point2 pos = this.getPosition();
+			Point2 size = this.getSize();
+			GL30.glScissor((int)(pos.x-(size.x/2f)), (int)(pos.y+(size.y/2f)), (int)size.x, (int)size.y);
 			ui.draw();
+			GL30.glDisable(GL30.GL_SCISSOR_TEST);
 		}
 	}
 

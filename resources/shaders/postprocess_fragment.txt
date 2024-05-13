@@ -4,13 +4,17 @@ precision highp float;
 
 uniform sampler2D TEXTURE_0;
 uniform sampler2D TEXTURE_MER;
+uniform sampler2D TEXTURE_NORMAL;
 uniform sampler2D TEXTURE_DEPTH;
 uniform sampler2D TEXTURE_REFLECTION;
 uniform sampler2D TEXTURE_LIGHTING;
 uniform sampler2D TEXTURE_SSGI;
 uniform sampler2D TEXTURE_SSGI_DENOISE;
 
+uniform sampler2D TEXTURE_TEMPCOLOR;
+
 uniform mat4 MVP_MATRIX;
+uniform vec4 VIEW_POSITION;
 uniform vec2 MAIN_RESOLUTION;
 uniform vec2 REFLECTION_RESOLUTION;
 uniform vec2 SSGI_RESOLUTION;
@@ -221,15 +225,25 @@ void main() {
 	#endif
 
 	// SCREEN SPACE REFLECTION
+	vec4 reflection = vec4(0.0);
 	#if USE_REFLECTION
 		if(texture(TEXTURE_MER,uv).r > 0.125){
 	//		vec4 reflection = reflectionBlur(roughness, depth, uv);
 	//		vec4 reflection = reflectionBlur(roughness, depth, rand(uv, roughness*0.05/depth));
-			vec4 reflection = texture(TEXTURE_REFLECTION, uv);
-
-			color.rgb = mix(color.rgb, reflection.rgb, texture(TEXTURE_MER,uv).r*((reflection.r+reflection.g+reflection.b)/3.)*reflection.a);
+			vec4 reflectionTex = texture(TEXTURE_REFLECTION, uv);
+	//		color.rgb = mix(color.rgb, reflectionTex.rgb, texture(TEXTURE_MER,uv).r*length(reflectionTex.rgb)*reflection.a);
+			reflection.rgb = reflectionTex.rgb;
+			reflection.a = reflectionTex.a;
 		}
 	#endif
+
+	// vec3 I = normalize(position.xyz - VIEW_POSITION.xyz);
+	// vec3 R = reflect(I, normalize(texture(TEXTURE_NORMAL, uv).rgb*2.0-1.0));
+	reflection.a *= texture(TEXTURE_MER,uv).r*length(reflection.rgb);
+	//reflection.rgb = mix( texture(TEXTURE_TEMPCOLOR, vec2((-R.y+1.0)/2.0, 0.5)).rgb, reflection.rgb, reflection.a);
+	//reflection.a = max(0.025, reflection.a);
+
+	color.rgb = mix(color.rgb, reflection.rgb, reflection.a);
 
 	// HDR & GAMMA
 	#if USE_HDR
@@ -297,7 +311,8 @@ void main() {
 		color.rgb += ret;
 	#endif
 
-// color.rgb = texture(TEXTURE_SSGI, uv).rgb*4.0;
+// color.rgb = reflection.aaa;
+// color.rgb = texture(TEXTURE_REFLECTION, uv).aaa;
 //	vec2 ap = uv - 0.5;
 //	if(ap.x>0.0 && ap.y>0.0) color.rgb += 0.1;
 
