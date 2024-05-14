@@ -222,7 +222,7 @@ public class UIComponent {
 	public UIStyle getStyleOnClick() {
 		return styleOnClick;
 	}
-	public UIComponent parent() {
+	public UIComponent getParent() {
 		return parent;
 	}
 }

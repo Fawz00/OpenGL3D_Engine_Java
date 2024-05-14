@@ -108,6 +108,16 @@ public class Input {
 		};
 	}
 
+	private static boolean collisionTest(UIComponent ui) {
+		Point2 center = ui.getPosition();
+		double rotation = Math.toRadians(ui.getRotation());
+		Point2 size = ui.getSize();
+		Point2 cursor = new Point2((int)mouseX, (int)mouseY);
+		float localX = (float)(Math.cos(-rotation) * (cursor.x - center.x) - Math.sin(-rotation) * (cursor.y - center.y));
+		float localY = (float)(Math.sin(-rotation) * (cursor.x - center.x) + Math.cos(-rotation) * (cursor.y - center.y));
+		return localX >= -size.x / 2 && localX <= size.x / 2 && localY >= -size.y / 2 && localY <= size.y / 2;
+	}
+
 	private static void handleEventListener(Vector<UIComponent> event, int run) {
 		if(Renderer.isPaused()) for(UIComponent ui: UIEventOnClick) {
 			Point2 center = ui.getPosition();
@@ -119,7 +129,10 @@ public class Input {
 				float localY = (float)(Math.sin(-rotation) * (cursor.x - center.x) + Math.cos(-rotation) * (cursor.y - center.y));
 
 				// Check collision with the local coordinates of the OBB
-				if(localX >= -size.x / 2 && localX <= size.x / 2 && localY >= -size.y / 2 && localY <= size.y / 2) {
+				UIComponent parent = ui.getParent();
+				boolean insideParent = true;
+				if(parent != null) insideParent = collisionTest(parent);
+				if(insideParent && localX >= -size.x / 2 && localX <= size.x / 2 && localY >= -size.y / 2 && localY <= size.y / 2) {
 					if(run == UIEvent.EVENT_ON_HOVER) ui.getEvent().runOnHover();
 					else if(run == UIEvent.EVENT_ON_CLICK) ui.getEvent().runOnClick();
 					else if(run == UIEvent.EVENT_ON_RELEASE) ui.getEvent().runOnRelease();

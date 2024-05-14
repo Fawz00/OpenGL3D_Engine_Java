@@ -22,6 +22,7 @@ import opengl3d.render.TextureLoader;
 import opengl3d.utils.MatMat;
 import opengl3d.utils.Matriks;
 import opengl3d.utils.ModelReader;
+import opengl3d.utils.Point3;
 import opengl3d.utils.Shader;
 import opengl3d.utils.TextureReader;
 import opengl3d.utils.text.Font;
@@ -47,12 +48,14 @@ public class GameRenderer {
 	private Shader shadowMapShader;
 	private Shader reflectionShader;
 	private Shader lightingShader;
+	private Shader SSAOShader;
 	private Shader SSGIShader;
 	private Shader SSGIDenoiseShader;
 	private Shader postProcessShader;
 
 	private int cubemapTexture;
 	private int cloudNoiseTexture;
+	private int smallNoiseTexture;
 	private int tempcolorTexture;
 	private TextureLoader textureAll;
 
@@ -64,6 +67,7 @@ public class GameRenderer {
 	private int reflectionColorTexture;
 	private int reflectionMerTexture;
 	private int lightingTexture;
+	private int SSAOTexture;
 	private int SSGITexture;
 	private int SSGIDenoiseTexture;
 	private int finalTextureId;
@@ -72,6 +76,7 @@ public class GameRenderer {
 	private int shadowDepthFBO;
 	private int reflectionFBO;
 	private int lightingFBO;
+	private int SSAOFBO;
 	private int SSGIFBO;
 	private int SSGIDenoiseFBO;
 	private int postProcessFBO;
@@ -108,6 +113,8 @@ public class GameRenderer {
 	private float[] sunRotation = new float[3];
 	private int[] screenResolution = new int[2];
 	private int maxMipmapLevel;
+
+	private Point3[] SSAOKernel = new Point3[64];
 
 
 
@@ -378,11 +385,11 @@ public class GameRenderer {
 
 	}
 
-	//=====================================//
-	//                                     //
-	//     I N I T I A L I Z A T I O N     //
-	//                                     //
-	//=====================================//
+	//===============================================//
+	//                                               //
+	//          I N I T I A L I Z A T I O N          //
+	//                                               //
+	//===============================================//
 
 	public GameRenderer(int width, int height) {
 		frame = 0;
@@ -406,6 +413,7 @@ public class GameRenderer {
 				"resources/shaders/sample/cubemap/stars/cubemap_1.png"
 		};
 		if(Settings.useSkyBox == 1) cubemapTexture = loadCubemapTexture(skyBoxSource);
+		smallNoiseTexture = loadTexture("resources/shaders/sample/small_rgb_noise.png");
 		cloudNoiseTexture = loadTexture("resources/shaders/sample/cloud_noise.png");
 		tempcolorTexture = loadTexture("resources/shaders/sample/atmosphere_gradient.png");
 		textureAll = new TextureLoader();
@@ -418,7 +426,7 @@ public class GameRenderer {
 		entityPlayer = new Entity(
 			modelAll.getModelData(modelAll.getModelId("sphere")),
 			textureAll.getTextureData(textureAll.getTextureId("stone")),
-			new float[] {200f,70f,100f},
+			new float[] {300f, 67.5f, 200f},
 			new float[] {0f,0f,0f},
 			1f);
 		entityPlayer.setCameraOffset(new float[] {0f,0f,0.1f});
@@ -529,6 +537,38 @@ public class GameRenderer {
 
 			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 			GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
+		// }
+		// if(Settings.useSSAO==1) {
+			int[] ssaoResolution = new int[]{(int)Math.ceil((float)screenResolution[0]*Settings.SSAOQuality), (int)Math.ceil((float)screenResolution[1]*Settings.SSAOQuality)};
+			SSAOShader = new Shader("resources/shaders/quad_vertex.txt", "resources/shaders/ssao_fragment.txt");
+
+			SSAOFBO = GL30.glGenFramebuffers();
+			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, SSAOFBO);
+			
+			SSAOTexture = GL30.glGenTextures();
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSAOTexture);
+			GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGB, ssaoResolution[0], ssaoResolution[1], 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
+			GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
+			GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_TEXTURE_2D, SSAOTexture, 0);
+
+			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
+
+			for(int i=0; i<64; i++) {
+				Point3 sample = new Point3(Math.random()*2.0-1.0, Math.random()*2.0-1.0, Math.random()*2.0-1.0);
+				sample.x *= Math.random();
+				sample.y *= Math.random();
+				sample.z *= Math.random();
+				float scale = (float)i / 64.0f;
+				scale = MatMat.lerp(0.1f, 1.0f, scale * scale);
+				sample.x *= scale;
+				sample.y *= scale;
+				sample.z *= scale;
+				SSAOKernel[i] = sample;
+			}
 		// }
 		// if(Settings.useSSGI==1) {
 			int[] ssgiResolution = new int[]{(int)Math.ceil((float)screenResolution[0]*Settings.SSGIQuality), (int)Math.ceil((float)screenResolution[1]*Settings.SSGIQuality)};
@@ -647,6 +687,7 @@ public class GameRenderer {
 		shadowMapShader.refreshShader();
 		reflectionShader.refreshShader();
 		lightingShader.refreshShader();
+		SSAOShader.refreshShader();
 		SSGIShader.refreshShader();
 		SSGIDenoiseShader.refreshShader();
 		postProcessShader.refreshShader();
@@ -1003,6 +1044,61 @@ public class GameRenderer {
 
 
 
+		//=====================================================================//
+		//     S C R E E N   S P A C E   A M B I E N T   O C C L U S I O N     //
+		//=====================================================================//
+		int[] ssaoResolution = new int[]{(int)Math.ceil((float)screenResolution[0]*Settings.SSAOQuality), (int)Math.ceil((float)screenResolution[1]*Settings.SSAOQuality)};
+		if(Settings.useSSAO==1) {
+			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, SSAOFBO);
+
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSAOTexture);
+			GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGB, ssaoResolution[0], ssaoResolution[1], 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+			GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D);
+
+			if(GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER) != GL30.GL_FRAMEBUFFER_COMPLETE) System.out.println("FrameBuffer error");
+
+			GL30.glViewport(0, 0, ssaoResolution[0], ssaoResolution[1]);
+			GL30.glClearDepth(1.0f);
+			GL30.glClear(GL30.GL_DEPTH_BUFFER_BIT);
+
+			SSAOShader.useShader();
+
+			modelQuad.getModel();
+			SSAOShader.setMat4("PROJ", Matriks.IdentityM4());
+			SSAOShader.setMat4("PROJECTION_MATRIX", projectionMatrixF);
+			SSAOShader.setVec2("RESOLUTION", new float[]{(float)ssaoResolution[0], (float)ssaoResolution[1]});
+			SSAOShader.setMat4("MVP_MATRIX", MVPMatrixF);
+			SSAOShader.setInt("sampleCount", Settings.SSAOSample);
+			for(int i=0; i<Settings.SSAOSample; i++)
+				SSAOShader.setVec3("samples[" + i + "]", SSAOKernel[i].toFloatArray());
+
+			GL30.glActiveTexture(GL30.GL_TEXTURE0);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSAOTexture);
+			SSAOShader.setInt("TEXTURE_0", 0);
+			GL30.glActiveTexture(GL30.GL_TEXTURE1);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, smallNoiseTexture);
+			SSAOShader.setInt("TEXTURE_NOISE", 1);
+			GL30.glActiveTexture(GL30.GL_TEXTURE2);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderDepthTexture);
+			SSAOShader.setInt("TEXTURE_DEPTH", 2);
+			GL30.glActiveTexture(GL30.GL_TEXTURE3);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, renderNormalTexture);
+			SSAOShader.setInt("TEXTURE_NORMAL", 3);
+			GL30.glActiveTexture(GL30.GL_TEXTURE4);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, lightingTexture);
+			SSAOShader.setInt("TEXTURE_LIGHT", 4);
+
+			GL30.glDisable(GL30.GL_CULL_FACE);
+			GL30.glDisable(GL30.GL_DEPTH_TEST);
+
+			modelQuad.drawModel();
+			GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, 0);
+			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+			GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
+		}
+
+
+
 		//=========================================================================//
 		//     S C R E E N   S P A C E   G L O B A L   I L L U M I N A T I O N     //
 		//=========================================================================//
@@ -1132,6 +1228,7 @@ public class GameRenderer {
 		postProcessShader.setVec2("MAIN_RESOLUTION", new float[]{(float)screenResolution[0], (float)screenResolution[1]});
 		postProcessShader.setVec2("REFLECTION_RESOLUTION", new float[]{(float)reflectionResolution[0], (float)reflectionResolution[1]});
 		postProcessShader.setVec2("SSGI_RESOLUTION", new float[]{(float)ssgiResolution[0], (float)ssgiResolution[1]});
+		postProcessShader.setVec2("SSAO_RESOLUTION", new float[]{(float)ssaoResolution[0], (float)ssaoResolution[1]});
 		postProcessShader.setVec4("VIEW_POSITION", cameraPosition);
 		postProcessShader.setFloat("TIME", time);
 		postProcessShader.setFloat("gamma", Settings.gamma);
@@ -1170,10 +1267,13 @@ public class GameRenderer {
 		GL30.glActiveTexture(GL30.GL_TEXTURE7);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSGIDenoiseTexture);
 		postProcessShader.setInt("TEXTURE_SSGI_DENOISE", 7);
-
 		GL30.glActiveTexture(GL30.GL_TEXTURE8);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D, SSAOTexture);
+		postProcessShader.setInt("TEXTURE_SSAO", 8);
+
+		GL30.glActiveTexture(GL30.GL_TEXTURE9);
 		GL30.glBindTexture(GL30.GL_TEXTURE_2D, tempcolorTexture);
-		postProcessShader.setInt("TEXTURE_TEMPCOLOR", 8);
+		postProcessShader.setInt("TEXTURE_TEMPCOLOR", 9);
 
 		GL30.glDisable(GL30.GL_CULL_FACE);
 		GL30.glDisable(GL30.GL_DEPTH_TEST);
@@ -1223,6 +1323,11 @@ public class GameRenderer {
 			GL30.glDeleteFramebuffers(lightingFBO);
 			GL30.glDeleteTextures(lightingTexture);
 		// }
+		// if(Settings.useSSAO==1) {
+			SSAOShader.delete();
+			GL30.glDeleteFramebuffers(SSAOFBO);
+			GL30.glDeleteTextures(SSAOTexture);
+		// }
 		// if(Settings.useSSGI==1) {
 			SSGIShader.delete();
 			GL30.glDeleteFramebuffers(SSGIFBO);
@@ -1250,7 +1355,8 @@ public class GameRenderer {
 		modelAll.deleteModels();
 		treeInstance.deleteModel();
 
-		// if(Settings.useSkyBox==1) GL30.glDeleteTextures(cubemapTexture);
+		if(Settings.useSkyBox==1 || cubemapTexture != 0) GL30.glDeleteTextures(cubemapTexture);
+		GL30.glDeleteTextures(smallNoiseTexture);
 		GL30.glDeleteTextures(cloudNoiseTexture);
 		GL30.glDeleteTextures(tempcolorTexture);
 		textureAll.deleteTextures();

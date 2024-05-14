@@ -62,10 +62,10 @@ public class Settings {
 	public static float sceneExposureRangeMin	= -2.2f;
 
 	public static int useSkyBox					= 1;
-	public static int useCloud					= 1; // 0=LOW 1=MEDIUM 2=ULTRA
+	public static int useCloud					= 1; // 0=OFF 1=FAST
 
 	public static int useNormalMapping			= 1;
-	public static int useParallaxMapping		= 1;
+	public static int useParallaxMapping		= 0;
 
 	public static int useShadow					= 1;
 	public static int shadowResolution			= 2024;
@@ -78,7 +78,9 @@ public class Settings {
 	public static int useBloom					= 1;
 	public static int useLensFlare				= 0; // next update!
 
-	public static int useSSAO					= 0; // next update!
+	public static int useSSAO					= 1;
+	public static int SSAOSample				= 24;
+	public static float SSAOQuality				= 0.5f; // note: lower better
 
 	public static int useSSGI					= 1;
 	public static float SSGIDensity				= 0.75f; // Sample density controls accuracy; 0.0 - 0.9; Default = 0.75

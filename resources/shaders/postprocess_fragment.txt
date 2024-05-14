@@ -10,6 +10,7 @@ uniform sampler2D TEXTURE_REFLECTION;
 uniform sampler2D TEXTURE_LIGHTING;
 uniform sampler2D TEXTURE_SSGI;
 uniform sampler2D TEXTURE_SSGI_DENOISE;
+uniform sampler2D TEXTURE_SSAO;
 
 uniform sampler2D TEXTURE_TEMPCOLOR;
 
@@ -18,6 +19,7 @@ uniform vec4 VIEW_POSITION;
 uniform vec2 MAIN_RESOLUTION;
 uniform vec2 REFLECTION_RESOLUTION;
 uniform vec2 SSGI_RESOLUTION;
+uniform vec2 SSAO_RESOLUTION;
 uniform float TIME;
 uniform float gamma;
 uniform float exposure;
@@ -28,6 +30,7 @@ out vec4 FragColor;
 
 #define USE_HDR
 #define USE_BLOOM
+#define USE_SSAO
 #define USE_SSGI
 #define USE_GI_DENOISE
 #define USE_REFLECTION
@@ -215,6 +218,15 @@ void main() {
 	float depth = 10.0; // view.z;
 	float roughness = texture(TEXTURE_MER,uv).b*5.0;
 
+	#if USE_SSAO
+		float ssao = 0.0;
+		for(float y=-2.0; y<2.0; y++) for(float x=-2.0; x<2.0; x++){
+			ssao += texture(TEXTURE_SSAO, uv+vec2(x/SSAO_RESOLUTION.x, y/SSAO_RESOLUTION.y)).r;
+		}
+		ssao /= 16.0;
+		color.rgb *= mix(vec3(0.4, 0.701960784313, 1.0)/8.0, vec3(1.0), ssao);
+	#endif
+
 	// SSGI
 	#if USE_SSGI
 		#if USE_GI_DENOISE
@@ -237,11 +249,12 @@ void main() {
 		}
 	#endif
 
-	// vec3 I = normalize(position.xyz - VIEW_POSITION.xyz);
-	// vec3 R = reflect(I, normalize(texture(TEXTURE_NORMAL, uv).rgb*2.0-1.0));
+	vec3 I = normalize(position.xyz - VIEW_POSITION.xyz);
+	vec3 R = reflect(I, normalize(texture(TEXTURE_NORMAL, uv).rgb*2.0-1.0));
+
 	reflection.a *= texture(TEXTURE_MER,uv).r*length(reflection.rgb);
-	//reflection.rgb = mix( texture(TEXTURE_TEMPCOLOR, vec2((-R.y+1.0)/2.0, 0.5)).rgb, reflection.rgb, reflection.a);
-	//reflection.a = max(0.025, reflection.a);
+	// reflection.rgb = mix( texture(TEXTURE_TEMPCOLOR, vec2((-R.y+1.0)/2.0, 0.5)).rgb, reflection.rgb, reflection.a);
+	// reflection.a = max(0.0125, reflection.a);
 
 	color.rgb = mix(color.rgb, reflection.rgb, reflection.a);
 
@@ -312,7 +325,7 @@ void main() {
 	#endif
 
 // color.rgb = reflection.aaa;
-// color.rgb = texture(TEXTURE_REFLECTION, uv).aaa;
+// color.rgb = texture(TEXTURE_SSAO, uv).rgb;
 //	vec2 ap = uv - 0.5;
 //	if(ap.x>0.0 && ap.y>0.0) color.rgb += 0.1;
 
