@@ -196,7 +196,7 @@ void main() {
     //Accumulate a few past frames
     //This should probably use temporal reprojection but not enough buffers
     
-    color.rgb = mix(texture(TEXTURE_0,uv).rgb, indirectLight, 0.5);
+    color.rgb = mix(texture(TEXTURE_0,uv).rgb, indirectLight, 0.3);
 
 //test.r = vec4(MVP_MATRIX*vec4(fragWorldPos,1.0)).z/50.0;
 //test.g = textureLod(TEXTURE_DEPTH, uv.xy, 1.0).g/100.0;
