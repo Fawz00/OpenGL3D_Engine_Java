@@ -65,10 +65,10 @@ public class Settings {
 	public static int useCloud					= 1; // 0=OFF 1=FAST
 
 	public static int useNormalMapping			= 1;
-	public static int useParallaxMapping		= 0;
+	public static int useParallaxMapping		= 1;
 
 	public static int useShadow					= 1;
-	public static int shadowResolution			= 2024;
+	public static int shadowResolution			= 3024;
 	public static float shadowDistance			= 250;
 	public static int usePenumbraShadow			= 1;
 

@@ -324,7 +324,7 @@ void main() {
 		color.rgb += ret;
 	#endif
 
-// color.rgb = reflection.aaa;
+// color.rgb = vec3(1.0,0.0,0.0);
 // color.rgb = texture(TEXTURE_SSAO, uv).rgb;
 //	vec2 ap = uv - 0.5;
 //	if(ap.x>0.0 && ap.y>0.0) color.rgb += 0.1;
