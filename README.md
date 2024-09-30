@@ -1,7 +1,6 @@
-# OpenGL3D_Java
+# OpenGL3D_Engine_Java
 
-Proyek ini menggunakan bahasa pemrograman Java, jadi wajib install Java sebelum menjalankan kode. Rekomendasi JDK 17.
-proyek ini bisa dibuka dengan IDE Eclipse atau Visual Studio Code dengan Java Extension.
+Proyek ini menggunakan bahasa pemrograman Java, jadi wajib install Java sebelum menjalankan kode. Rekomendasi versi Java JDK terbaru (versi saat ini: JDK 17).
 
 <h2>references</h2>
 <ul>
