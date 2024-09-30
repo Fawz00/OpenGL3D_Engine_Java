@@ -23,6 +23,7 @@ public class ModelReader {
 
 		vao = GL30.glGenVertexArrays();
 		vbo = GL30.glGenBuffers();
+
 		getModel();
 		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, modelOBJ.out, GL30.GL_STATIC_DRAW);
 		modelOBJ.deleteBuffer();

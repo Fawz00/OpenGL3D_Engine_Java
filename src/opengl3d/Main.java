@@ -15,7 +15,7 @@ public class Main {
 	private static Renderer renderer;
 
 	public static void main(String[] args) {
-		window = new Window(Settings.windowSize[0], Settings.windowSize[1], "OpenGL 3D Game");
+		window = new Window(Settings.windowSize[0], Settings.windowSize[1], "OpenGL 3D Viewer");
 		window.create();
 
 		System.out.println(GL30.glGetString(GL30.GL_VENDOR));

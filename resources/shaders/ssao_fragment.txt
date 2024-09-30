@@ -32,7 +32,7 @@ vec4 worldPos(vec2 texcoord, float depth){
 }
 
 int kernelSize = sampleCount;
-float radius = 2.0;
+float radius = 4.0;
 float bias = 0.05;
 
 
@@ -68,7 +68,7 @@ void main() {
         offset.xyz = offset.xyz * 0.5 + 0.5; // transform to range 0.0 - 1.0
 
         // get sample depth
-        float sampleDepth = -texture(TEXTURE_DEPTH, offset.xy).g; // get depth value of kernel sample
+        float sampleDepth = -texture(TEXTURE_DEPTH, offset.xy).g-0.5; // get depth value of kernel sample
 
         // range check & accumulate
         float rangeCheck = smoothstep(0.0, 1.0, radius / abs(fragPos.z - sampleDepth));

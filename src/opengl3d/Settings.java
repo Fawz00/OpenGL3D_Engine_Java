@@ -52,7 +52,7 @@ public class Settings {
 
 	//GRAPHICS
 	public static float screenQuality			= 1.00f; // Percent of display resolution
-	public static int FXAA						= 1; // 0: OFF; 1: ON
+	public static int FXAA						= 0; // 0: OFF; 1: ON
 
 	public static float gamma					= 2.2f;
 	public static int useHDR					= 1;
@@ -67,8 +67,8 @@ public class Settings {
 	public static int useNormalMapping			= 1;
 	public static int useParallaxMapping		= 1;
 
-	public static int useShadow					= 1;
-	public static int shadowResolution			= 3024;
+	public static int useShadow					= 0;
+	public static int shadowResolution			= 1024;
 	public static float shadowDistance			= 250;
 	public static int usePenumbraShadow			= 1;
 
@@ -76,7 +76,7 @@ public class Settings {
 	public static float reflectionQuality		= 0.5f; // Percent of screenQuality
 
 	public static int useBloom					= 1;
-	public static int useLensFlare				= 0; // next update!
+	public static int useLensFlare				= 1; // next update!
 
 	public static int useSSAO					= 1;
 	public static int SSAOSample				= 24;

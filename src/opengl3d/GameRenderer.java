@@ -81,7 +81,7 @@ public class GameRenderer {
 	private int SSGIDenoiseFBO;
 	private int postProcessFBO;
 
-	private int treeCount = 250;
+	private int treeCount = 1024;
 	private ModelReader treeInstance;
 	private FloatBuffer randTreePos = MemoryUtil.memAllocFloat(treeCount*9);
 	private float toRad = 0.0174532925199f;
@@ -695,7 +695,7 @@ public class GameRenderer {
 
 	public void onLoop(Camera cam, float time, float frameTime, boolean isPaused) {
 		frame++;
-		time = time * 6.0f;
+		time = time * 2.0f;
 		isRunning = true;
 		camera = cam;
 		Entity.setPaused(isPaused);

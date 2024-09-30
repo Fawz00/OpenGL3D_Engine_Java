@@ -224,7 +224,7 @@ void main() {
 			ssao += texture(TEXTURE_SSAO, uv+vec2(x/SSAO_RESOLUTION.x, y/SSAO_RESOLUTION.y)).r;
 		}
 		ssao /= 16.0;
-		color.rgb *= mix(vec3(0.4, 0.701960784313, 1.0)/8.0, vec3(1.0), ssao);
+		color.rgb *= mix(vec3(0.4, 0.701960784313, 1.0)/12.0, vec3(1.0), ssao);
 	#endif
 
 	// SSGI

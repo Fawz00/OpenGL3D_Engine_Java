@@ -468,7 +468,7 @@ public class Renderer {
 		//textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！ ꦱꦸꦒꦼꦁ​​ꦲꦺꦚ꧀ꦗꦁ​꧈​​ꦢꦺꦴꦚ​" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
 		button.setPosition((int)(screenResolution[0]*0.85), (int)(screenResolution[1]*0.85));
 		button.setRotation((int)-(gameTime*300f));
-		button.draw();
+		//button.draw();
 		buttonModel.draw();
 		buttonTexture.draw();
 
