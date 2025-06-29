@@ -2,11 +2,12 @@ package opengl3d;
 
 import java.io.File;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 import opengl3d.audio.AudioMaster;
-import opengl3d.engine.Window;
+import opengl3d.engine.system.Window;
 import opengl3d.utils.FpsTool;
 
 public class Main {
@@ -20,6 +21,7 @@ public class Main {
 
 		System.out.println(GL30.glGetString(GL30.GL_VENDOR));
 		System.out.println(GL30.glGetString(GL30.GL_RENDERER));
+		System.out.println(GLFW.glfwGetVersionString());
 		System.out.print("\n");
 
 		String userDirectory = System.getProperty("user.home");
@@ -29,8 +31,11 @@ public class Main {
 		//=============================//
 		//     G A M E   L O G I C     //
 		//=============================//
+
+		// Start the audio system
 		AudioMaster.init();
 		AudioMaster.setListenerData();
+
 		boolean firstFrame = true;
 		renderer = new Renderer();
 		renderer.onCreate(window.getWidth(), window.getHeight());

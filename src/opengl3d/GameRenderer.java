@@ -15,8 +15,8 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
-import opengl3d.engine.Input;
 import opengl3d.render.ModelLoader;
+import opengl3d.engine.system.Input;
 import opengl3d.render.Entity;
 import opengl3d.render.TextureLoader;
 import opengl3d.utils.MatMat;
@@ -81,7 +81,7 @@ public class GameRenderer {
 	private int SSGIDenoiseFBO;
 	private int postProcessFBO;
 
-	private int treeCount = 1024;
+	private int treeCount = 256;
 	private ModelReader treeInstance;
 	private FloatBuffer randTreePos = MemoryUtil.memAllocFloat(treeCount*9);
 	private float toRad = 0.0174532925199f;

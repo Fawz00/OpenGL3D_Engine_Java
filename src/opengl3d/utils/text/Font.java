@@ -366,7 +366,7 @@ public class Font {
 		(ch >= 0x3000 && ch <= 0x303F)); // CJK Symbols and Punctuation
 	}
 
-    public void drawWord(Shader shader, float ox, float oy, float width, float height, int rotation, String text, int globalColor) {
+    public void drawWord(Shader shader, float ox, float oy, float width, float height, float rotation, String text, int globalColor) {
 		BreakIterator boundary = BreakIterator.getWordInstance();
 		boundary.setText(text);
 		int start = boundary.first();
@@ -466,7 +466,7 @@ public class Font {
 		}
     }
 
-	public void drawText(Shader shader, float x, float y, float width, float height, int rotation, CharSequence text, int globalColor) {
+	public void drawText(Shader shader, float x, float y, float width, float height, float rotation, CharSequence text, int globalColor) {
 		int currentColor = globalColor;
 //        int textHeight = getHeight(text);
 
@@ -585,7 +585,7 @@ public class Font {
 //        renderer.end();
 	}
 
-    public void drawText(Shader shader, float x, float y, float w, float h, int rotation, String text) {
+    public void drawText(Shader shader, float x, float y, float w, float h, float rotation, String text) {
     	drawText(shader, x, y, w, h, rotation, text, 0xFFFFFFFF);
     }
 

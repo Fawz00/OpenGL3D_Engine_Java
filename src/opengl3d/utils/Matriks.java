@@ -179,4 +179,4 @@ public class Matriks {
 		return Mat3ToMat4(Mat4ToMat3(a));
 	}
 
-}
+}   

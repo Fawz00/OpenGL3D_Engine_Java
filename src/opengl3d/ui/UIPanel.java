@@ -16,7 +16,7 @@ public class UIPanel extends UIComponent {
 	public UIPanel(String id, int x, int y, int sx, int sy) {
 		super(id, normalStyle(), x, y, sx, sy);
 	}
-	public static UIStyle normalStyle() {
+	private static UIStyle normalStyle() {
         UIStyle s = new UIStyle();
         return s;
     }

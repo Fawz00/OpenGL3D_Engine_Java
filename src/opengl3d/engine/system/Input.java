@@ -1,4 +1,4 @@
-package opengl3d.engine;
+package opengl3d.engine.system;
 
 import java.util.Vector;
 
@@ -60,7 +60,7 @@ public class Input {
 					if(isTyping) {
 						if(action != GLFW.GLFW_RELEASE) handleTyping(key, false, scancode);
 					} else {
-						keysDown[key] = (action != GLFW.GLFW_RELEASE);
+						keysDown[key] = (action != GLFW.GLFW_PRESS);
 						if(key == Settings.keyToggleCamera && action == GLFW.GLFW_PRESS) Renderer.camera.toggleCameraMode();
 						if(key == Settings.keyTogglePhysics && action == GLFW.GLFW_PRESS) {
 							Settings.physics=!Settings.physics;
@@ -118,7 +118,7 @@ public class Input {
 		return localX >= -size.x / 2 && localX <= size.x / 2 && localY >= -size.y / 2 && localY <= size.y / 2;
 	}
 
-	private static void handleEventListener(Vector<UIComponent> event, int run) {
+	private static void handleEventListener(Vector<UIComponent> event, int eventType) {
 		if(Renderer.isPaused()) for(UIComponent ui: UIEventOnClick) {
 			Point2 center = ui.getPosition();
 			if(ui.isActive() && ui.isDrawVisible() && ui.isVisible() && center != null) {
@@ -133,11 +133,11 @@ public class Input {
 				boolean insideParent = true;
 				if(parent != null) insideParent = collisionTest(parent);
 				if(insideParent && localX >= -size.x / 2 && localX <= size.x / 2 && localY >= -size.y / 2 && localY <= size.y / 2) {
-					if(run == UIEvent.EVENT_ON_HOVER) ui.getEvent().runOnHover();
-					else if(run == UIEvent.EVENT_ON_CLICK) ui.getEvent().runOnClick();
-					else if(run == UIEvent.EVENT_ON_RELEASE) ui.getEvent().runOnRelease();
-				} else if(run == UIEvent.EVENT_ON_HOVER) {
-					ui.getEvent().runOnNotHover();
+					if(eventType == UIEvent.EVENT_ON_HOVER) ui.getEvent().eventOnHover();
+					else if(eventType == UIEvent.EVENT_ON_CLICK) ui.getEvent().eventOnClick();
+					else if(eventType == UIEvent.EVENT_ON_RELEASE) ui.getEvent().eventOnRelease();
+				} else if(eventType == UIEvent.EVENT_ON_HOVER) {
+					ui.getEvent().eventOnNotHover();
 				}
 			}
 		}

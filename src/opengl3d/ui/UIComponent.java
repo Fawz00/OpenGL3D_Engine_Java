@@ -12,7 +12,7 @@ public class UIComponent {
 	private String id;
 	private Point2 position;
 	private Point2 size;
-	private int rotation = 0;
+	private float rotation = 0;
 	private boolean active;
 	private boolean visible;
 	private boolean drawVisible;
@@ -38,24 +38,24 @@ public class UIComponent {
 		this.event = new UIEvent();
 		this.defEvent = new UIEvent(){
 			@Override
-			public void runOnHover() {
+			public void eventOnHover() {
 				setDrawStyle(styleOnHover);
-				event.runOnHover();
+				event.eventOnHover();
 			}
 			@Override
-			public void runOnNotHover() {
+			public void eventOnNotHover() {
 				setDrawStyle(styleNormal);
-				event.runOnNotHover();
+				event.eventOnNotHover();
 			}
 			@Override
-			public void runOnClick() {
+			public void eventOnClick() {
 				setDrawStyle(styleOnClick);
-				event.runOnClick();
+				event.eventOnClick();
 			}
 			@Override
-			public void runOnRelease() {
+			public void eventOnRelease() {
 				setDrawStyle(styleOnHover);
-				event.runOnRelease();
+				event.eventOnRelease();
 			}
 		};
 	}
@@ -150,7 +150,7 @@ public class UIComponent {
 		this.size.x = size.x;
 		this.size.y = size.y;
 	}
-	public void setRotation(int rotation) {
+	public void setRotation(float rotation) {
 		this.rotation = rotation;
 	}
 	public void setBackgroundTexture(int id) {
@@ -198,7 +198,7 @@ public class UIComponent {
 		return drawVisible;
 	}
 
-	public int getRotation() {
+	public float getRotation() {
 		return rotation;
 	}
 	public Point2 getPosition() {

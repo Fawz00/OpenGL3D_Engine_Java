@@ -9,8 +9,8 @@ public class UIEvent {
 
   public UIEvent() {}
 
-  public void runOnClick() {}
-  public void runOnRelease() {}
-  public void runOnHover() {}
-  public void runOnNotHover() {}
+  public void eventOnClick() {}
+  public void eventOnRelease() {}
+  public void eventOnHover() {}
+  public void eventOnNotHover() {}
 }

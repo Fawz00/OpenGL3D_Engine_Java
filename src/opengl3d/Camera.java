@@ -3,7 +3,7 @@ package opengl3d;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
-import opengl3d.engine.Input;
+import opengl3d.engine.system.Input;
 import opengl3d.utils.MatMat;
 
 public class Camera {

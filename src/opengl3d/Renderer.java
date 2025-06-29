@@ -17,6 +17,7 @@ import org.joml.Matrix4f;
 
 import opengl3d.audio.AudioMaster;
 import opengl3d.audio.AudioSource;
+import opengl3d.engine.system.Input;
 import opengl3d.ui.UIButton;
 import opengl3d.ui.UIEvent;
 import opengl3d.ui.UIPanel;
@@ -26,6 +27,7 @@ import opengl3d.utils.ModelReader;
 import opengl3d.utils.Point2;
 import opengl3d.utils.Shader;
 import opengl3d.utils.TextureReader;
+import opengl3d.utils.text.Font;
 import opengl3d.utils.text.Typeface;
 
 public class Renderer {
@@ -57,6 +59,8 @@ public class Renderer {
 	private static float timeOffsetStart = 0f;
 	private static float frameTime;
 	private static float frameTimeStart;
+
+	private Font defaulFont;
 
 	UIPanel panelSettings;
 
@@ -171,6 +175,7 @@ public class Renderer {
 		screenResolution[1] = height;
 		Typeface.init();
 		UIRenderer.init();
+		defaulFont = UIRenderer.getFont();
 
 		panelSettings = new UIPanel("panel_settings", 0, 0, 0, 0);
 		UIStyle panelStyle = new UIStyle();
@@ -178,13 +183,13 @@ public class Renderer {
 		panelSettings.setStyle(panelStyle);
 
 		button = new UIButton("button", 177, 22, 355, 90);
-		button.setText("※本当に\nきれいです！！！");
-		button.setActive(false);
+		button.setText("※ほんまに\nヤバイ綺麗でしょ！！！");
+		button.setActive(true);
 		button.setEvent(new UIEvent(){
 			@Override
-			public void runOnClick() {
+			public void eventOnClick() {
 				System.out.println("Hello, world!");
-				super.runOnClick();
+				super.eventOnClick();
 			}
 		});
 
@@ -192,7 +197,7 @@ public class Renderer {
 		buttonModel.setText("Change model");
 		buttonModel.setEvent(new UIEvent(){
 			@Override
-			public void runOnClick() {
+			public void eventOnClick() {
 				JFrame frame = new JFrame("Pilih File");
 				frame.toFront();
 				frame.setFocusable(true);
@@ -214,7 +219,7 @@ public class Renderer {
 				frame.removeAll();
 				frame.dispose();
 
-				super.runOnClick();
+				super.eventOnClick();
 			}
 		});
 
@@ -222,7 +227,7 @@ public class Renderer {
 		buttonTexture.setText("Change texture");
 		buttonTexture.setEvent(new UIEvent(){
 			@Override
-			public void runOnClick() {
+			public void eventOnClick() {
 				JFrame frame = new JFrame("Pilih File");
 				frame.toFront();
 				frame.setFocusable(true);
@@ -250,15 +255,15 @@ public class Renderer {
 				frame.removeAll();
 				frame.dispose();
 
-				super.runOnClick();
+				super.eventOnClick();
 			}
 		});
 
 		buttonShadow = new UIButton("buttonShadow", "Toggle shadow", 350, 45);
 		buttonShadow.setEvent(new UIEvent(){
 			@Override
-			public void runOnClick() {
-				Settings.useShadow = Settings.useShadow==0? 1:0;
+			public void eventOnClick() {
+				Settings.useShadow = (byte) (Settings.useShadow==0? 1:0);
 				System.out.println("Use shadow: " + (Settings.useShadow==0 ? "off":"on"));
 				gameTexture.onSettingsChanged();
 			}
@@ -267,8 +272,8 @@ public class Renderer {
 		buttonSSGI = new UIButton("buttonSSGI", "Toggle SSGI", 350, 45);
 		buttonSSGI.setEvent(new UIEvent(){
 			@Override
-			public void runOnClick() {
-				Settings.useSSGI = Settings.useSSGI==0? 1:0;
+			public void eventOnClick() {
+				Settings.useSSGI = (byte) (Settings.useSSGI==0? 1:0);
 				System.out.println("Use SSGI: " + (Settings.useSSGI==0 ? "off":"on"));
 				gameTexture.onSettingsChanged();
 			}
@@ -277,7 +282,7 @@ public class Renderer {
 		buttonSSGIDenoise = new UIButton("buttonSSGIDenoise", "Toggle SSGI denoise", 350, 45);
 		buttonSSGIDenoise.setEvent(new UIEvent(){
 			@Override
-			public void runOnClick() {
+			public void eventOnClick() {
 				Settings.SSGIDenoise = Settings.SSGIDenoise==0? 1:0;
 				System.out.println("Use SSGI denoiser: " + (Settings.SSGIDenoise==0 ? "off":"on"));
 				gameTexture.onSettingsChanged();
@@ -287,18 +292,19 @@ public class Renderer {
 		buttonReflection = new UIButton("buttonReflection", "Toggle Reflection", 350, 45);
 		buttonReflection.setEvent(new UIEvent(){
 			@Override
-			public void runOnClick() {
-				Settings.useReflection = Settings.useReflection==0? 1:0;
+			public void eventOnClick() {
+				Settings.useReflection = (byte) (Settings.useReflection==0? 1:0);
 				System.out.println("Use Reflection: " + (Settings.useReflection==0 ? "off":"on"));
 				gameTexture.onSettingsChanged();
 			}
 		});
 
 		buttonBloom = new UIButton("buttonBloom", "Toggle Bloom", 350, 45);
+		buttonBloom.setRotation(45);
 		buttonBloom.setEvent(new UIEvent(){
 			@Override
-			public void runOnClick() {
-				Settings.useBloom = Settings.useBloom==0? 1:0;
+			public void eventOnClick() {
+				Settings.useBloom = (byte) (Settings.useBloom==0? 1:0);
 				System.out.println("Use Bloom: " + (Settings.useBloom==0 ? "off":"on"));
 				gameTexture.onSettingsChanged();
 			}
@@ -456,19 +462,20 @@ public class Renderer {
 		// 		+ "\n"
 		// 		+ "괜찮아요.";
 		// String lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet rutrum nulla, vel fermentum justo. Donec dictum enim massa, at sagittis urna consequat in. Proin tempus vitae lorem et hendrerit. Curabitur viverra in ipsum eu pulvinar. Praesent semper mi nunc, ac auctor leo ullamcorper eu. In tincidunt commodo sapien, sit amet euismod lorem ultrices id. Fusce vehicula leo id enim lobortis, vel vestibulum lectus pulvinar. Phasellus in dolor libero. Nunc rutrum cursus lectus in tristique. Vivamus eu nulla et diam tincidunt dignissim ut eu enim. Fusce eu eros ultricies, tempus nibh ut, blandit ante. Suspendisse sit amet sagittis est. Aenean rutrum convallis urna posuere mattis. Aenean et massa vehicula, aliquam dui faucibus, tempus nisl. Suspendisse nulla lectus, sagittis nec imperdiet at, commodo a tellus.";
-		// Input.isTyping(isPaused());
-		// String chat = "";
-		// for(int i=10; i>0; i--) {
-		// 	int index = Input.getLineCount()-i;
-		// 	chat += Input.getLine( index ) + "\n";
-		// 	// if(!Input.getLine( Input.getLineCount()-11 ).equals("")) Input.resetLines();
-		// }
-		// chat += Input.getRawLine() + "_";
-		//textView.drawText(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
-		//textView.drawWord(textShader, new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], "こんにちは、世界！ ꦱꦸꦒꦼꦁ​​ꦲꦺꦚ꧀ꦗꦁ​꧈​​ꦢꦺꦴꦚ​" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat, 0xFFFFFFFF);
+		Input.isTyping(isPaused());
+		String chat = "";
+		for(int i=3; i>0; i--) {
+			int index = Input.getLineCount()-i;
+			chat += Input.getLine( index ) + "\n";
+			// if(!Input.getLine( Input.getLineCount()-11 ).equals("")) Input.resetLines();
+		}
+		chat += Input.getRawLine() + "_";
+		//defaulFont.drawText(UIRenderer.getTextShader(), new int[] {screenResolution[0], screenResolution[1]}, 0, 0, screenResolution[0]/2, screenResolution[1], text +halo+ "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n$c00eeffff========== C H A T ==========$cffffffff\n" + chat, 0xFF8800FF);
+		defaulFont.drawText(UIRenderer.getTextShader(), screenResolution[0]/4, screenResolution[1]/4, screenResolution[0]/2, screenResolution[1]/2, 0, "こんにちは、世界！ ꦱꦸꦒꦼꦁ​​ꦲꦺꦚ꧀ꦗꦁ​꧈​​ꦢꦺꦴꦚ​" + "\nFPS: "+Main.fpsLimiter.getFps() + "\n\n__________ C H A T __________\n" + chat);
+
 		button.setPosition((int)(screenResolution[0]*0.85), (int)(screenResolution[1]*0.85));
 		button.setRotation((int)-(gameTime*300f));
-		//button.draw();
+		button.draw();
 		buttonModel.draw();
 		buttonTexture.draw();
 
@@ -486,6 +493,7 @@ public class Renderer {
 		mainShader.delete();
 		modelQuad.deleteModel();
 		gameTexture.onDestroy();
+		defaulFont.dispose();
 		audioSourceSelf.delete();
 		Typeface.clearAll();
 		button.destroy();

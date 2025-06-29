@@ -49,7 +49,7 @@ public class TextRenderer {
 		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo);
 	}
 	
-	public void render(Shader shader, int texture, Point2 res, int width, int height, int posX, int posY, int rotation, int textureWidth, int textureHeight, float x, float y, float regX, float regY, float regWidth, float regHeight, int color){
+	public void render(Shader shader, int texture, Point2 res, int width, int height, int posX, int posY, float rotation, int textureWidth, int textureHeight, float x, float y, float regX, float regY, float regWidth, float regHeight, int color){
 		shader.useShader();
 
 		GL30.glDisable(GL30.GL_CULL_FACE);

@@ -34,14 +34,14 @@ public class Settings {
 	public static int keyTogglePhysics			= GLFW.GLFW_KEY_P;
 
 	//AUDIO CONFIG
-	public static float volumeMusic				= 0.00f;
+	public static float volumeMusic				= 1.00f;
 
 	//RENDER CONFIG
 	public static boolean limitFps				= false;
-	public static int fpsLimit					= 144;
+	public static int fpsLimit					= 60;
 	public static boolean vsync					= true;
 
-	public static boolean ASCIICharOnly			= true; // 0xFF=8bits; 0xFFFF=16bits; 0x10FFFF=21bits;
+	public static boolean ASCIICharOnly			= false; // 0xFF=8bits; 0xFFFF=16bits; 0x0010FFFF=21bits;
 
 	public static float fov						= 70f;
 	public static float fovZoom					= 20f;
@@ -51,38 +51,38 @@ public class Settings {
 	public static float entityRenderDistance	= 120f;
 
 	//GRAPHICS
-	public static float screenQuality			= 1.00f; // Percent of display resolution
-	public static int FXAA						= 0; // 0: OFF; 1: ON
+	public static float screenQuality			= 0.5f; // Percent of display resolution
+	public static byte FXAA						= 1; // 0: OFF; 1: ON
 
 	public static float gamma					= 2.2f;
-	public static int useHDR					= 1;
+	public static byte useHDR					= 1;
 	public static float HDRSpeed				= 0.025f;
 	public static float sceneExposureMultiplier	= 0.125f;
 	public static float sceneExposureRangeMax	= 2.2f;
 	public static float sceneExposureRangeMin	= -2.2f;
 
-	public static int useSkyBox					= 1;
-	public static int useCloud					= 1; // 0=OFF 1=FAST
+	public static byte useSkyBox				= 1;
+	public static byte useCloud					= 1; // 0=OFF 1=FAST
 
-	public static int useNormalMapping			= 1;
-	public static int useParallaxMapping		= 1;
+	public static byte useNormalMapping			= 1;
+	public static byte useParallaxMapping		= 1;
 
-	public static int useShadow					= 0;
-	public static int shadowResolution			= 1024;
+	public static byte useShadow				= 1;
+	public static int shadowResolution			= 4096;
 	public static float shadowDistance			= 250;
-	public static int usePenumbraShadow			= 1;
+	public static byte usePenumbraShadow		= 1;
 
-	public static int useReflection				= 1;
+	public static byte useReflection			= 1;
 	public static float reflectionQuality		= 0.5f; // Percent of screenQuality
 
-	public static int useBloom					= 1;
-	public static int useLensFlare				= 1; // next update!
+	public static byte useBloom					= 1;
+	public static byte useLensFlare				= 0; // next update!
 
-	public static int useSSAO					= 1;
+	public static byte useSSAO					= 1;
 	public static int SSAOSample				= 24;
 	public static float SSAOQuality				= 0.5f; // note: lower better
 
-	public static int useSSGI					= 1;
+	public static byte useSSGI					= 1;
 	public static float SSGIDensity				= 0.75f; // Sample density controls accuracy; 0.0 - 0.9; Default = 0.75
 	public static float SSGIQuality				= 0.75f; // Percent of screenQuality
 	public static int SSGIDenoise				= 0; // in development

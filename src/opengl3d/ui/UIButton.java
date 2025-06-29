@@ -1,6 +1,6 @@
 package opengl3d.ui;
 
-import opengl3d.engine.Input;
+import opengl3d.engine.system.Input;
 import opengl3d.utils.Color4;
 import opengl3d.utils.Point2;
 import opengl3d.utils.text.Font;

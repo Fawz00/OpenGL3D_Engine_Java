@@ -1,4 +1,4 @@
-package opengl3d.engine;
+package opengl3d.engine.system;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -10,6 +10,8 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCharModsCallback;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowFocusCallbackI;
